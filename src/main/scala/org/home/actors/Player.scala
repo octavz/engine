@@ -1,13 +1,11 @@
 package org.home.actors
 
-import akka.actor.Actor
-import akka.event.Logging
+import akka.actor.{ActorLogging, Actor}
 
-class Player extends Actor {
-  val log = Logging(context.system, this)
+class Player extends Actor with ActorLogging{
   def receive = {
-    case "test" ⇒ log.info("received test")
-    case x      ⇒ log.info("received unknown message: " + x )
+    case "test" => log.info("received test")
+    case x      => log.info("received unknown message: " + x )
   }
 }
 
