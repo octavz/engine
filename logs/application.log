@@ -1,0 +1,33 @@
+2014-10-15 22:07:12,996 - [INFO] - from play in pool-6-thread-2 
+Listening for HTTP on /0:0:0:0:0:0:0:0:9000
+
+2014-10-15 22:07:15,441 - [INFO] - from play in play-internal-execution-context-1 
+Starting application default Akka system.
+
+2014-10-15 22:07:15,446 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+
+2014-10-15 22:18:12,942 - [INFO] - from play in play-internal-execution-context-1 
+Starting application default Akka system.
+
+2014-10-15 22:18:12,945 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+
+2014-10-15 22:19:46,051 - [INFO] - from play in play-internal-execution-context-1 
+Starting application default Akka system.
+
+2014-10-15 22:19:46,053 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+
+2014-10-15 22:20:09,218 - [INFO] - from play in play-internal-execution-context-1 
+Starting application default Akka system.
+
+2014-10-15 22:20:09,220 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+
+2014-10-15 22:22:37,029 - [INFO] - from play in play-internal-execution-context-1 
+Starting application default Akka system.
+
+2014-10-15 22:22:37,032 - [INFO] - from play in play-internal-execution-context-1 
+Application started (Dev)
+

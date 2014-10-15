@@ -1,0 +1,11 @@
+
+(Android SDK Manager:15151): GLib-CRITICAL **: Source ID 432 was not found when attempting to remove it
+
+(Android SDK Manager:15151): GLib-CRITICAL **: Source ID 724 was not found when attempting to remove it
+
+(Android SDK Manager:15151): GLib-CRITICAL **: Source ID 1013 was not found when attempting to remove it
+
+(Android SDK Manager:15151): GLib-CRITICAL **: Source ID 679 was not found when attempting to remove it
+
+(Android SDK Manager:15151): GLib-CRITICAL **: Source ID 1022 was not found when attempting to remove it
+g_dbus_connection_real_closed: Remote peer vanished with error: Underlying GIOStream returned 0 bytes on an async read (g-io-error-quark, 0). Exiting.

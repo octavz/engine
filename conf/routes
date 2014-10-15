@@ -1,0 +1,7 @@
+GET     /               controllers.Main.index
+POST     /register               controllers.Main.register(login: String, password: String)
+
+GET    /api-docs        controllers.ApiHelpController.getResources()
+GET    /api-docs/main   controllers.ApiHelpController.getResource(path = "/main")
+
+GET    /docs/*file            controllers.Assets.at(path="/public", file)
