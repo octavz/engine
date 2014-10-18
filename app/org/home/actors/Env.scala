@@ -23,19 +23,19 @@ class Env(generator: ActorRef) extends Actor with ActorLogging {
     //context.system.scheduler.schedule(1.milli, 1.second, generator, GenNew)
   }
 
-  def login(login: String, password: String): Option[ActorRef] = Await.result(
-    repository.findUserByLoginAndEmail(login, password) flatMap {
-      case Some(user) =>
-        repository.createSession(UserSession(user.id, Randomizer.newId)) flatMap {
-          case true =>
-            context.system.actorSelection(s"user/$login").resolveOne(5.seconds) map (Some(_)) recover {
-              case _ => Some(context.system.actorOf(Player.props(user), name = login))
-            }
-          case _ => Future.successful(None)
-        }
-      case _ => Future.successful(None)
+  def login(login: String, password: String): Future[Boolean] = {
+
+    val f = for {
+      user <- repository.findUserByLoginAndEmail(login, password)
+      session <- repository.createSession(UserSession(user.getOrElse(throw new Exception("User not found")).id, Randomizer.newId))
+    } yield {
+      context.system.actorSelection(s"user/$login").resolveOne(5.seconds) recover {
+        case _ => context.system.actorOf(Player.props(user.get), name = login)
+      }
     }
-    , duration)
+
+    f map (_ => true) recover { case _ => false}
+  }
 
   def register(login: String, password: String): Future[Boolean] =
     repository.registerUser(UserModel(id = Randomizer.newId, login = login, password = password, name = login))
@@ -47,7 +47,10 @@ class Env(generator: ActorRef) extends Actor with ActorLogging {
 
   def receive = {
     case Start => start()
-    case LoginUser(l, p) => sender ! login(l, p)
+    case LoginUser(l, p) => login(l, p).map {
+      case true => NoError
+      case _ => Error
+    }.pipeTo(sender)
     case RegisterUser(l, p) => register(l, p).map {
       case true => NoError
       case _ => Error

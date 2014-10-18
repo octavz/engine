@@ -426,3 +426,52 @@ Shutdown application default Akka system.
 2014-10-15 22:25:23,360 - [INFO] - from play in pool-6-thread-2 
 Shutdown application default Akka system.
 
+2014-10-16 08:49:50,030 - [INFO] - from play in play-internal-execution-context-2 
+Shutdown application default Akka system.
+
+2014-10-16 08:49:57,055 - [ERROR] - from play in ForkJoinPool-4-worker-7 
+Cannot invoke the action, eventually got an error: scala.MatchError: true (of class java.lang.Boolean)
+
+2014-10-16 08:49:57,060 - [ERROR] - from application in ForkJoinPool-4-worker-7 
+
+
+! @6jpcdn0fm - Internal server error, for (POST) [/login?login=test&password=aaa] ->
+
+play.api.Application$$anon$1: Execution exception[[MatchError: true (of class java.lang.Boolean)]]
+	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.3.jar:2.3.3]
+	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.3.jar:2.3.3]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.3.jar:2.3.3]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.3.jar:2.3.3]
+	at scala.Option.map(Option.scala:145) [scala-library-2.11.2.jar:na]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.3.jar:2.3.3]
+	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.3.jar:2.3.3]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.2.jar:na]
+	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.3.jar:2.3.3]
+	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.impl.ExecutionContextImpl$AdaptedForkJoinTask.exec(ExecutionContextImpl.scala:121) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.2.jar:na]
+	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.2.jar:na]
+Caused by: scala.MatchError: true (of class java.lang.Boolean)
+	at controllers.MainController$$anonfun$login$1$$anonfun$apply$4.apply(MainController.scala:58) ~[classes/:na]
+	at controllers.MainController$$anonfun$login$1$$anonfun$apply$4.apply(MainController.scala:58) ~[classes/:na]
+	at scala.util.Success$$anonfun$map$1.apply(Try.scala:236) ~[scala-library-2.11.2.jar:na]
+	at scala.util.Try$.apply(Try.scala:191) ~[scala-library-2.11.2.jar:na]
+	at scala.util.Success.map(Try.scala:236) ~[scala-library-2.11.2.jar:na]
+	... 8 common frames omitted
+
+2014-10-16 08:51:20,897 - [INFO] - from play in play-internal-execution-context-2 
+Shutdown application default Akka system.
+
+2014-10-16 10:11:07,015 - [INFO] - from play in pool-15-thread-2 
+Shutdown application default Akka system.
+
