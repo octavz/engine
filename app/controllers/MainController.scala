@@ -56,8 +56,8 @@ object MainController extends Controller {
                 @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     val f = env ? LoginUser(login, password)
     f.map {
-      case NoError => Ok("ok")
-      case Error => BadRequest("not ok")
+      case session: String => Ok(session)
+      case _ => BadRequest("not ok")
     }
   }
 }

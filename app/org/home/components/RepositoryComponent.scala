@@ -12,7 +12,7 @@ trait RepositoryComponent {
 
     def findUserByLoginAndEmail(login: String, password: String): Future[Option[UserModel]]
 
-    def createSession(userSession: UserSession): Future[Boolean]
+    def createSession(userSession: UserSession): Future[UserSession]
 
     def registerUser(userModel: UserModel): Future[Boolean]
   }

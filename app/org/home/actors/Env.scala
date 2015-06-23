@@ -23,18 +23,20 @@ class Env(generator: ActorRef) extends Actor with ActorLogging {
     //context.system.scheduler.schedule(1.milli, 1.second, generator, GenNew)
   }
 
-  def login(login: String, password: String): Future[Boolean] = {
+  def login(login: String, password: String): Future[Option[UserSession]] = {
 
     val f = for {
       user <- repository.findUserByLoginAndEmail(login, password)
       session <- repository.createSession(UserSession(user.getOrElse(throw new Exception("User not found")).id, Randomizer.newId))
-    } yield {
-      context.system.actorSelection(s"user/$login").resolveOne(5.seconds) recover {
-        case _ => context.system.actorOf(Player.props(user.get), name = login)
-      }
-    }
+    } yield session
+    //      {
+    //
+    //      context.system.actorSelection(s"user/$login").resolveOne(5.seconds) recover {
+    //        case _ => context.system.actorOf(Player.props(user.get), name = login)
+    //      }
+    //}
 
-    f map (_ => true) recover { case _ => false}
+    f.map(s => Some(s)).recover { case _ => Option.empty[UserSession] }
   }
 
   def register(login: String, password: String): Future[Boolean] =
@@ -48,7 +50,7 @@ class Env(generator: ActorRef) extends Actor with ActorLogging {
   def receive = {
     case Start => start()
     case LoginUser(l, p) => login(l, p).map {
-      case true => NoError
+      case Some(s) => s.sessionId
       case _ => Error
     }.pipeTo(sender())
     case RegisterUser(l, p) => register(l, p).map {
