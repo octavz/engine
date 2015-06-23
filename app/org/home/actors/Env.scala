@@ -50,11 +50,11 @@ class Env(generator: ActorRef) extends Actor with ActorLogging {
     case LoginUser(l, p) => login(l, p).map {
       case true => NoError
       case _ => Error
-    }.pipeTo(sender)
+    }.pipeTo(sender())
     case RegisterUser(l, p) => register(l, p).map {
       case true => NoError
       case _ => Error
-    }.pipeTo(sender)
+    }.pipeTo(sender())
     case Shutdown => shutdown()
     case x => log.info("received unknown message: " + x)
   }

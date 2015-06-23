@@ -43,7 +43,7 @@ object MainController extends Controller {
   def register(
                 @ApiParam(value = "login") @QueryParam("login") login: String,
                 @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
-    val f = env ? RegisterUser("cucu", "bucu")
+    val f = env ? RegisterUser(login, password)
     f.map {
       case NoError => Ok("ok")
       case Error => BadRequest("not ok")

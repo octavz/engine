@@ -1,0 +1,1005 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <resourceExtensions />
+    <wildcardResourcePatterns>
+      <entry name="!?*.java" />
+      <entry name="!?*.form" />
+      <entry name="!?*.class" />
+      <entry name="!?*.groovy" />
+      <entry name="!?*.scala" />
+      <entry name="!?*.flex" />
+      <entry name="!?*.kt" />
+      <entry name="!?*.clj" />
+      <entry name="!?*.aj" />
+    </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="CopyrightManager" default="" />
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-encoding utf8 -g" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/root.iml" filepath="$PROJECT_DIR$/.idea/modules/root.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/root-build.iml" filepath="$PROJECT_DIR$/.idea/modules/root-build.iml" />
+    </modules>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="true" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="ScalaCompilerConfiguration">
+    <profile name="SBT 1" modules="root">
+      <option name="deprecationWarnings" value="true" />
+      <option name="uncheckedWarnings" value="true" />
+      <option name="featureWarnings" value="true" />
+      <parameters>
+        <parameter value="-encoding" />
+        <parameter value="utf8" />
+      </parameters>
+    </profile>
+  </component>
+  <component name="ScalaSbtSettings">
+    <option name="customLauncherPath" value="/usr/bin/sbt" />
+    <option name="linkedExternalProjectsSettings">
+      <SbtProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="jdk" value="1.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="0.13.5" />
+        <option name="useAutoImport" value="true" />
+        <option name="useOurOwnAutoImport" value="true" />
+      </SbtProjectSettings>
+    </option>
+    <option name="maximumHeapSize" value="1768" />
+    <option name="vmParameters" value="-XX:MaxPermSize=1384M" />
+  </component>
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="" />
+  </component>
+  <component name="libraryTable">
+    <library name="SBT: cglib:cglib-nodep:2.1_3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/cglib/cglib-nodep/2.1_3/jars/cglib-nodep.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: ch.qos.logback:logback-classic:1.1.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/ch.qos.logback/logback-classic/1.1.1/jars/logback-classic.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: ch.qos.logback:logback-core:1.1.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/ch.qos.logback/logback-core/1.1.1/jars/logback-core.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.couchbase.client:couchbase-client:1.4.4:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.couchbase.client/couchbase-client/jars/couchbase-client-1.4.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.core:jackson-annotations:2.4.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.core/jackson-annotations/bundles/jackson-annotations-2.4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.core:jackson-core:2.5.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.core/jackson-core/bundles/jackson-core-2.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.core:jackson-databind:2.5.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.core/jackson-databind/bundles/jackson-databind-2.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.4.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/bundles/jackson-jaxrs-base-2.4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.4.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/bundles/jackson-jaxrs-json-provider-2.4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.4.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.module/jackson-module-jaxb-annotations/bundles/jackson-module-jaxb-annotations-2.4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.module:jackson-module-jsonSchema:2.4.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.module/jackson-module-jsonSchema/bundles/jackson-module-jsonSchema-2.4.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.fasterxml.jackson.module:jackson-module-scala_2.11:2.5.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.fasterxml.jackson.module/jackson-module-scala_2.11/bundles/jackson-module-scala_2.11-2.5.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.google.code.findbugs:jsr305:2.0.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/com.google.code.findbugs/jsr305/2.0.3/jars/jsr305.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.google.guava:guava:16.0.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/com.google.guava/guava/16.0.1/bundles/guava.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.livestream:scredis_2.11:2.0.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.livestream/scredis_2.11/jars/scredis_2.11-2.0.6.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.ning:async-http-client:1.8.14:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.ning/async-http-client/jars/async-http-client-1.8.14.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.novocode:junit-interface:0.11-RC1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/com.novocode/junit-interface/0.11-RC1/jars/junit-interface.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.thoughtworks.paranamer:paranamer:2.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.thoughtworks.paranamer/paranamer/jars/paranamer-2.6.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.akka:akka-actor_2.11:2.3.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.akka/akka-actor_2.11/jars/akka-actor_2.11-2.3.6.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.akka:akka-slf4j_2.11:2.3.4:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/com.typesafe.akka/akka-slf4j_2.11/2.3.4/jars/akka-slf4j_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.netty:netty-http-pipelining:1.1.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/com.typesafe.netty/netty-http-pipelining/1.1.2/jars/netty-http-pipelining.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:build-link:2.3.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/build-link/jars/build-link-2.3.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-cache_2.11:2.3.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-cache_2.11/jars/play-cache_2.11-2.3.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-datacommons_2.11:2.3.5:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-datacommons_2.11/jars/play-datacommons_2.11-2.3.5.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-exceptions:2.3.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-exceptions/jars/play-exceptions-2.3.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-functional_2.11:2.3.5:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-functional_2.11/jars/play-functional_2.11-2.3.5.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-iteratees_2.11:2.3.5:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-iteratees_2.11/jars/play-iteratees_2.11-2.3.5.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-json_2.11:2.3.5:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-json_2.11/jars/play-json_2.11-2.3.5.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-test_2.11:2.3.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-test_2.11/jars/play-test_2.11-2.3.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play-ws_2.11:2.3.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play-ws_2.11/jars/play-ws_2.11-2.3.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:play_2.11:2.3.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play_2.11/jars/play_2.11-2.3.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.play:twirl-api_2.11:1.0.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/com.typesafe.play/twirl-api_2.11/1.0.2/jars/twirl-api_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.scala-logging:scala-logging-api_2.11:2.1.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.scala-logging/scala-logging-api_2.11/jars/scala-logging-api_2.11-2.1.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe.scala-logging:scala-logging-slf4j_2.11:2.1.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.scala-logging/scala-logging-slf4j_2.11/jars/scala-logging-slf4j_2.11-2.1.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.typesafe:config:1.2.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe/config/bundles/config-1.2.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.wordnik:swagger-annotations:1.3.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.wordnik/swagger-annotations/bundles/swagger-annotations-1.3.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.wordnik:swagger-core_2.11:1.3.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.wordnik/swagger-core_2.11/bundles/swagger-core_2.11-1.3.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.wordnik:swagger-jaxrs_2.11:1.3.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.wordnik/swagger-jaxrs_2.11/jars/swagger-jaxrs_2.11-1.3.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.wordnik:swagger-play2_2.11:1.3.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.wordnik/swagger-play2_2.11/jars/swagger-play2_2.11-1.3.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: commons-codec:commons-codec:1.9:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/commons-codec/commons-codec/1.9/jars/commons-codec.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: commons-collections:commons-collections:3.2.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/commons-collections/commons-collections/3.2.1/jars/commons-collections.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: commons-io:commons-io:2.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/commons-io/commons-io/2.2/jars/commons-io.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: commons-lang:commons-lang:2.4:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/jars/commons-lang-2.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: commons-logging:commons-logging:1.1.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/commons-logging/commons-logging/jars/commons-logging-1.1.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: commons-logging:commons-logging:1.1.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/commons-logging/commons-logging/1.1.3/jars/commons-logging.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: dom4j:dom4j:1.6.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/dom4j/dom4j/jars/dom4j-1.6.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: io.netty:netty:3.9.2.Final:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/io.netty/netty/bundles/netty-3.9.2.Final.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: javax.transaction:jta:1.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/javax.transaction/jta/1.1/jars/jta.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: javax.ws.rs:jsr311-api:1.1.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/javax.ws.rs/jsr311-api/jars/jsr311-api-1.1.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: joda-time:joda-time:2.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/joda-time/joda-time/2.3/jars/joda-time.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: junit:junit:4.11:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/junit/junit/4.11/jars/junit.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.java.dev.jna:jna:3.4.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/net.java.dev.jna/jna/3.4.0/jars/jna.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.java.dev.jna:platform:3.4.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/net.java.dev.jna/platform/3.4.0/jars/platform.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.sf.ehcache:ehcache-core:2.6.8:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/net.sf.ehcache/ehcache-core/2.6.8/jars/ehcache-core.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.sourceforge.cssparser:cssparser:0.9.11:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.cssparser/cssparser/jars/cssparser-0.9.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.sourceforge.htmlunit:htmlunit-core-js:2.13:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.htmlunit/htmlunit-core-js/jars/htmlunit-core-js-2.13.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.sourceforge.htmlunit:htmlunit:2.13:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.htmlunit/htmlunit/jars/htmlunit-2.13.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.sourceforge.nekohtml:nekohtml:1.9.19:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/net.sourceforge.nekohtml/nekohtml/jars/nekohtml-1.9.19.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: net.spy:spymemcached:2.11.4:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/net.spy/spymemcached/jars/spymemcached-2.11.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: oauth.signpost:signpost-commonshttp4:1.2.1.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/oauth.signpost/signpost-commonshttp4/jars/signpost-commonshttp4-1.2.1.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: oauth.signpost:signpost-core:1.2.1.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/oauth.signpost/signpost-core/jars/signpost-core-1.2.1.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.apache.commons:commons-exec:1.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.apache.commons/commons-exec/1.1/jars/commons-exec.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.apache.commons:commons-lang3:3.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.apache.commons/commons-lang3/3.1/jars/commons-lang3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.apache.httpcomponents:httpclient:4.0.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.httpcomponents/httpclient/jars/httpclient-4.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.apache.httpcomponents:httpclient:4.3.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.apache.httpcomponents/httpclient/4.3.1/jars/httpclient.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.apache.httpcomponents:httpcore-nio:4.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.httpcomponents/httpcore-nio/jars/httpcore-nio-4.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.apache.httpcomponents:httpcore:4.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.apache.httpcomponents/httpcore/4.3/jars/httpcore.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.apache.httpcomponents:httpmime:4.3.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.httpcomponents/httpmime/jars/httpmime-4.3.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.codehaus.jettison:jettison:1.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.codehaus.jettison/jettison/bundles/jettison-1.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.easytesting:fest-assert:1.4:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.easytesting/fest-assert/1.4/jars/fest-assert.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.easytesting:fest-util:1.1.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.easytesting/fest-util/1.1.6/jars/fest-util.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.eclipse.jetty:jetty-http:8.1.12.v20130726:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.eclipse.jetty/jetty-http/jars/jetty-http-8.1.12.v20130726.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.eclipse.jetty:jetty-io:8.1.12.v20130726:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.eclipse.jetty/jetty-io/jars/jetty-io-8.1.12.v20130726.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.eclipse.jetty:jetty-util:8.1.12.v20130726:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.eclipse.jetty/jetty-util/jars/jetty-util-8.1.12.v20130726.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.eclipse.jetty:jetty-websocket:8.1.12.v20130726:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.eclipse.jetty/jetty-websocket/jars/jetty-websocket-8.1.12.v20130726.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.fluentlenium:fluentlenium-core:0.9.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.fluentlenium/fluentlenium-core/0.9.2/jars/fluentlenium-core.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.fluentlenium:fluentlenium-festassert:0.9.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.fluentlenium/fluentlenium-festassert/0.9.2/jars/fluentlenium-festassert.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.hamcrest:hamcrest-core:1.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.hamcrest/hamcrest-core/1.3/jars/hamcrest-core.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.javassist:javassist:3.18.2-GA:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.javassist/javassist/3.18.2-GA/bundles/javassist.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.joda:joda-convert:1.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.joda/joda-convert/1.6/jars/joda-convert.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.json4s:json4s-ast_2.11:3.2.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.json4s/json4s-ast_2.11/jars/json4s-ast_2.11-3.2.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.json4s:json4s-core_2.11:3.2.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.json4s/json4s-core_2.11/jars/json4s-core_2.11-3.2.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.json4s:json4s-ext_2.11:3.2.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.json4s/json4s-ext_2.11/jars/json4s-ext_2.11-3.2.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.json4s:json4s-jackson_2.11:3.2.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.json4s/json4s-jackson_2.11/jars/json4s-jackson_2.11-3.2.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.json4s:json4s-native_2.11:3.2.10:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.json4s/json4s-native_2.11/jars/json4s-native_2.11-3.2.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.json:json:20080701:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.json/json/20080701/jars/json.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.mockito:mockito-all:1.9.5:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.mockito/mockito-all/jars/mockito-all-1.9.5.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.mockito:mockito-core:1.9.5:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.mockito/mockito-core/1.9.5/jars/mockito-core.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.objenesis:objenesis:1.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.objenesis/objenesis/1.0/jars/objenesis.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.reactivecouchbase:reactivecouchbase-core_2.11:0.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.reactivecouchbase/reactivecouchbase-core_2.11/jars/reactivecouchbase-core_2.11-0.3.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.reflections:reflections:0.9.9-RC1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.reflections/reflections/jars/reflections-0.9.9-RC1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang.modules:scala-parser-combinators_2.11:1.0.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-parser-combinators_2.11/bundles/scala-parser-combinators_2.11-1.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang.modules:scala-xml_2.11:1.0.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-xml_2.11/bundles/scala-xml_2.11-1.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang:scala-compiler:2.11.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.scala-lang/scala-compiler/2.11.0/jars/scala-compiler.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang:scala-library:2.11.2:jar" type="Scala">
+      <properties>
+        <compiler-classpath>
+          <root url="file://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.2.jar" />
+          <root url="file://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.2.jar" />
+          <root url="file://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.11.2.jar" />
+        </compiler-classpath>
+      </properties>
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang:scala-reflect:2.11.4:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.11.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang:scalap:2.11.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scalap/jars/scalap-2.11.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-sbt:test-interface:1.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-sbt/test-interface/jars/test-interface-1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-stm:scala-stm_2.11:0.7:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.scala-stm/scala-stm_2.11/0.7/jars/scala-stm_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scalaz:scalaz-concurrent_2.11:7.0.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.scalaz/scalaz-concurrent_2.11/7.0.6/bundles/scalaz-concurrent_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scalaz:scalaz-core_2.11:7.0.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.scalaz/scalaz-core_2.11/7.0.6/bundles/scalaz-core_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scalaz:scalaz-effect_2.11:7.0.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.scalaz/scalaz-effect_2.11/7.0.6/bundles/scalaz-effect_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-android-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-android-driver/2.39.0/jars/selenium-android-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-api:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-api/2.39.0/jars/selenium-api.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-chrome-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-chrome-driver/2.39.0/jars/selenium-chrome-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-firefox-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-firefox-driver/2.39.0/jars/selenium-firefox-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-htmlunit-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-htmlunit-driver/2.39.0/jars/selenium-htmlunit-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-ie-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-ie-driver/2.39.0/jars/selenium-ie-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-iphone-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-iphone-driver/2.39.0/jars/selenium-iphone-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-java:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-java/2.39.0/jars/selenium-java.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-remote-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-remote-driver/2.39.0/jars/selenium-remote-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-safari-driver:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-safari-driver/2.39.0/jars/selenium-safari-driver.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.seleniumhq.selenium:selenium-support:2.39.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.seleniumhq.selenium/selenium-support/2.39.0/jars/selenium-support.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.slf4j:jcl-over-slf4j:1.7.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.slf4j/jcl-over-slf4j/1.7.6/jars/jcl-over-slf4j.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.slf4j:jul-to-slf4j:1.7.6:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.slf4j/jul-to-slf4j/1.7.6/jars/jul-to-slf4j.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.slf4j:slf4j-api:1.7.7:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.slf4j/slf4j-api/1.7.7/jars/slf4j-api.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:classycle:1.4.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/classycle/1.4.3/jars/classycle.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:specs2-analysis_2.11:2.3.12:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/specs2-analysis_2.11/2.3.12/jars/specs2-analysis_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:specs2-common_2.11:2.3.12:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/specs2-common_2.11/2.3.12/jars/specs2-common_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:specs2-core_2.11:2.3.12:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/specs2-core_2.11/2.3.12/jars/specs2-core_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:specs2-junit_2.11:2.3.12:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/specs2-junit_2.11/2.3.12/jars/specs2-junit_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:specs2-matcher-extra_2.11:2.3.12:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/specs2-matcher-extra_2.11/2.3.12/jars/specs2-matcher-extra_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:specs2-matcher_2.11:2.3.12:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/specs2-matcher_2.11/2.3.12/jars/specs2-matcher_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.specs2:specs2-mock_2.11:2.3.12:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.specs2/specs2-mock_2.11/2.3.12/jars/specs2-mock_2.11.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.w3c.css:sac:1.3:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.w3c.css/sac/1.3/jars/sac.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.webbitserver:webbit:0.4.14:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.webbitserver/webbit/0.4.14/jars/webbit.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: stax:stax-api:1.0.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/stax/stax-api/jars/stax-api-1.0.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: xalan:serializer:2.7.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/xalan/serializer/2.7.1/jars/serializer.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: xalan:xalan:2.7.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/xalan/xalan/2.7.1/jars/xalan.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: xerces:xercesImpl:2.11.0:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/xerces/xercesImpl/2.11.0/jars/xercesImpl.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: xml-apis:xml-apis:1.4.01:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/xml-apis/xml-apis/1.4.01/jars/xml-apis.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+  </component>
+</project>
