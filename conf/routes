@@ -1,9 +1,10 @@
-GET     /                           controllers.MainController.index
-POST    /register                   controllers.MainController.register(login: String, password: String)
-POST    /login                      controllers.MainController.login(login: String, password: String)
+GET     /                           @controllers.MainController.index
+POST    /register                   @controllers.MainController.register(login: String, password: String)
+POST    /login                      @controllers.MainController.login(login: String, password: String)
 
-GET    /api-docs                    controllers.ApiHelpController.getResources()
-GET    /api-docs/main               controllers.ApiHelpController.getResource(path = "/main")
 
-GET    /docs/*file                  controllers.Assets.at(path="/public", file)
+GET    /api-docs              @pl.matisoft.swagger.ApiHelpController.getResources
+GET    /api-docs/main     @pl.matisoft.swagger.ApiHelpController.getResource(path = "/main")
+GET    /docs/*file            controllers.Assets.at(path="/public", file)
+
 

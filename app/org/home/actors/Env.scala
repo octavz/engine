@@ -2,41 +2,47 @@ package org.home.actors
 
 import _root_.org.home.components._
 import akka.actor._
-import messages._
+import akka.pattern._
+import org.home.actors.messages._
 import org.home.components.model.{UserModel, UserSession}
 import org.home.utils.Randomizer
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
-import akka.pattern._
 
 object Env {
-  def props(generator: ActorRef): Props = Props(new Env(generator) with RepositoryComponentImpl)
+  def props(): Props = Props(new Env() with RepositoryComponentImpl)
 }
 
-class Env(generator: ActorRef) extends Actor with ActorLogging {
-  this: RepositoryComponent =>
+class Env extends Actor with ActorLogging {
+  this : RepositoryComponent =>
   val duration = 2.second
+  val generator = context.actorOf(Props[Generator], name = "generator")
 
   def start() = {
     log.info("started")
-    //context.system.scheduler.schedule(1.milli, 1.second, generator, GenNew)
+    context.system.scheduler.schedule(1.milli, 10.milli, generator, GenNew)
   }
 
-  def login(login: String, password: String): Future[Option[UserSession]] = {
-
+  def login(login: String, password: String): Future[Option[(UserSession, UserModel)]] = {
     val f = for {
       user <- repository.findUserByLoginAndEmail(login, password)
       session <- repository.createSession(UserSession(user.getOrElse(throw new Exception("User not found")).id, Randomizer.newId))
-    } yield session
-    //      {
-    //
-    //      context.system.actorSelection(s"user/$login").resolveOne(5.seconds) recover {
-    //        case _ => context.system.actorOf(Player.props(user.get), name = login)
-    //      }
-    //}
-
-    f.map(s => Some(s)).recover { case _ => Option.empty[UserSession] }
+    } yield {
+        if (user.isEmpty) Future.successful(Option.empty[(UserSession, UserModel)])
+        val u = user.get
+        //if cant finds it creates an actor
+        context.system.actorSelection(s"user/$login").resolveOne(5.seconds) recover {
+          case _ =>
+            context.system.actorOf(Player.props(user.get), name = u.id)
+        } map {
+          a =>
+            println(s"Created or found actor at: ${a.path}")
+            Some(session, u)
+        }
+      }
+    f.flatMap(identity).recover { case _ => Option.empty[(UserSession, UserModel)] }
   }
 
   def register(login: String, password: String): Future[Boolean] =
@@ -50,7 +56,7 @@ class Env(generator: ActorRef) extends Actor with ActorLogging {
   def receive = {
     case Start => start()
     case LoginUser(l, p) => login(l, p).map {
-      case Some(s) => s.sessionId
+      case Some((session, user)) => (session, user)
       case _ => Error
     }.pipeTo(sender())
     case RegisterUser(l, p) => register(l, p).map {
@@ -58,7 +64,7 @@ class Env(generator: ActorRef) extends Actor with ActorLogging {
       case _ => Error
     }.pipeTo(sender())
     case Shutdown => shutdown()
-    case x => log.info("received unknown message: " + x)
+    case x => log.info("Env received unknown message: " + x)
   }
 
 }

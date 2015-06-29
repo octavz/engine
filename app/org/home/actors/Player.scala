@@ -13,7 +13,7 @@ class Player(user: UserModel) extends Actor with ActorLogging{
 
   def receive = {
     case Info => sender ! user
-    case x      => log.info("received unknown message: " + x )
+    case x      => log.info("Player received unknown message: " + x )
   }
 
 }

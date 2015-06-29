@@ -7,7 +7,7 @@ resolvers += "SBT repository" at "http://repo.typesafe.com/typesafe/simple/maven
 resolvers += "Third party repository" at "http://repo.typesafe.com/typesafe/simple/third-party/"
 
 // Use the Play sbt plugin for Play projects
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.3")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.1")
 
 
 logLevel := Level.Warn

@@ -1,9 +1,8 @@
 package org.home.components
 
-import org.home.components.model.{UserSession, UserModel}
+import org.home.components.model.{UserModel, UserSession}
 
 import scala.concurrent._
-import org.home.utils.Randomizer
 
 trait RepositoryComponent {
   val repository: Repository
@@ -16,5 +15,5 @@ trait RepositoryComponent {
 
     def registerUser(userModel: UserModel): Future[Boolean]
   }
-}
 
+}

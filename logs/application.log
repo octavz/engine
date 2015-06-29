@@ -1,61 +1,33 @@
-2015-06-23 23:00:44,692 - [INFO] - from play in pool-84-thread-3 
-Listening for HTTP on /0:0:0:0:0:0:0:0:9000
+2015-06-29 21:32:59,334 [INFO] from play.api.libs.concurrent.ActorSystemProvider in pool-4-thread-3 - Starting application default Akka system: application
+2015-06-29 21:32:59,393 [INFO] from play.core.server.NettyServer in pool-4-thread-3 - Listening for HTTP on /0:0:0:0:0:0:0:0:9000
+2015-06-29 21:33:11,119 [ERROR] from application in New I/O worker #1 - 
 
-2015-06-23 23:00:51,427 - [INFO] - from play in play-internal-execution-context-1 
-Starting application default Akka system.
-
-2015-06-23 23:00:51,453 - [INFO] - from play in play-internal-execution-context-1 
-Application started (Dev)
-
-2015-06-23 23:00:52,079 - [ERROR] - from play in ForkJoinPool-5-worker-13 
-Cannot invoke the action, eventually got an error: scala.MatchError: 39ff1e68-ecff-49e5-a7e6-7df329f20fb1 (of class java.lang.String)
-
-2015-06-23 23:00:52,090 - [ERROR] - from application in ForkJoinPool-5-worker-13 
-
-
-! @6mhekmadd - Internal server error, for (POST) [/login?login=cucu&password=test] ->
-
-play.api.Application$$anon$1: Execution exception[[MatchError: 39ff1e68-ecff-49e5-a7e6-7df329f20fb1 (of class java.lang.String)]]
-	at play.api.Application$class.handleError(Application.scala:296) ~[play_2.11-2.3.3.jar:2.3.3]
-	at play.api.DefaultApplication.handleError(Application.scala:402) [play_2.11-2.3.3.jar:2.3.3]
-	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.3.jar:2.3.3]
-	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3$$anonfun$applyOrElse$4.apply(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.3.jar:2.3.3]
-	at scala.Option.map(Option.scala:145) [scala-library-2.11.2.jar:na]
-	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:320) [play_2.11-2.3.3.jar:2.3.3]
-	at play.core.server.netty.PlayDefaultUpstreamHandler$$anonfun$3.applyOrElse(PlayDefaultUpstreamHandler.scala:316) [play_2.11-2.3.3.jar:2.3.3]
-	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:344) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.Future$$anonfun$recoverWith$1.apply(Future.scala:343) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.2.jar:na]
-	at play.api.libs.iteratee.Execution$trampoline$.execute(Execution.scala:46) [play-iteratees_2.11-2.3.5.jar:2.3.5]
-	at scala.concurrent.impl.CallbackRunnable.executeWithValue(Promise.scala:40) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scala:248) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.Promise$class.complete(Promise.scala:55) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:153) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.Future$$anonfun$map$1.apply(Future.scala:235) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:32) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.impl.ExecutionContextImpl$AdaptedForkJoinTask.exec(ExecutionContextImpl.scala:121) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1339) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:1979) [scala-library-2.11.2.jar:na]
-	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:107) [scala-library-2.11.2.jar:na]
-Caused by: scala.MatchError: 39ff1e68-ecff-49e5-a7e6-7df329f20fb1 (of class java.lang.String)
-	at controllers.MainController$$anonfun$login$1$$anonfun$apply$4.apply(MainController.scala:58) ~[classes/:na]
-	at controllers.MainController$$anonfun$login$1$$anonfun$apply$4.apply(MainController.scala:58) ~[classes/:na]
-	at scala.util.Success$$anonfun$map$1.apply(Try.scala:236) ~[scala-library-2.11.2.jar:na]
-	at scala.util.Try$.apply(Try.scala:191) ~[scala-library-2.11.2.jar:na]
-	at scala.util.Success.map(Try.scala:236) ~[scala-library-2.11.2.jar:na]
-	... 8 common frames omitted
-
-2015-06-23 23:01:47,956 - [INFO] - from play in play-internal-execution-context-1 
-Shutdown application default Akka system.
-
-2015-06-23 23:01:48,065 - [INFO] - from play in play-internal-execution-context-1 
-Starting application default Akka system.
-
-2015-06-23 23:01:48,070 - [INFO] - from play in play-internal-execution-context-1 
-Application started (Dev)
-
-2015-06-23 23:01:55,992 - [INFO] - from play in pool-84-thread-3 
-Shutdown application default Akka system.
-
+! @6mj5pjlni - Internal server error, for (GET) [/] ->
+ 
+play.sbt.PlayExceptions$CompilationException: Compilation error[type mismatch;
+ found   : scala.concurrent.Future[Option[Object]]
+ required: scala.concurrent.Future[Option[(org.home.components.model.UserSession, org.home.components.model.UserModel)]]]
+	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
+	at play.sbt.PlayExceptions$CompilationException$.apply(PlayExceptions.scala:27) ~[na:na]
+	at scala.Option.map(Option.scala:145) ~[scala-library-2.11.7.jar:na]
+	at play.sbt.run.PlayReload$$anonfun$taskFailureHandler$1.apply(PlayReload.scala:49) ~[na:na]
+	at play.sbt.run.PlayReload$$anonfun$taskFailureHandler$1.apply(PlayReload.scala:44) ~[na:na]
+	at scala.Option.map(Option.scala:145) ~[scala-library-2.11.7.jar:na]
+	at play.sbt.run.PlayReload$.taskFailureHandler(PlayReload.scala:44) ~[na:na]
+	at play.sbt.run.PlayReload$.compileFailure(PlayReload.scala:40) ~[na:na]
+	at play.sbt.run.PlayReload$$anonfun$compile$1.apply(PlayReload.scala:17) ~[na:na]
+	at play.sbt.run.PlayReload$$anonfun$compile$1.apply(PlayReload.scala:17) ~[na:na]
+	at scala.util.Either$LeftProjection.map(Either.scala:377) ~[scala-library-2.11.7.jar:na]
+	at play.sbt.run.PlayReload$.compile(PlayReload.scala:17) ~[na:na]
+	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3$$anonfun$2.apply(PlayRun.scala:60) ~[na:na]
+	at play.sbt.run.PlayRun$$anonfun$playRunTask$1$$anonfun$apply$2$$anonfun$apply$3$$anonfun$2.apply(PlayRun.scala:60) ~[na:na]
+	at play.runsupport.Reloader.reload(Reloader.scala:305) ~[na:na]
+	at play.core.server.DevServerStart$$anonfun$mainDev$1$$anon$1$$anonfun$get$1.apply(DevServerStart.scala:113) ~[play-server_2.11-2.4.1.jar:2.4.1]
+	at play.core.server.DevServerStart$$anonfun$mainDev$1$$anon$1$$anonfun$get$1.apply(DevServerStart.scala:111) ~[play-server_2.11-2.4.1.jar:2.4.1]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.liftedTree1$1(Future.scala:24) ~[scala-library-2.11.7.jar:na]
+	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.scala:24) ~[scala-library-2.11.7.jar:na]
+	at java.util.concurrent.ForkJoinTask$RunnableExecuteAction.exec(ForkJoinTask.java:1402) ~[na:1.8.0_45]
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289) ~[na:1.8.0_45]
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056) ~[na:1.8.0_45]
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1689) ~[na:1.8.0_45]
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157) ~[na:1.8.0_45]

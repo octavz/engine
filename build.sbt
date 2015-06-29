@@ -1,8 +1,8 @@
-import PlayKeys._
+
 
 name := "Actors"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.7"
 
 version := "0.1.1"
 
@@ -21,12 +21,14 @@ resolvers += "ReactiveCouchbase Releases" at "https://raw.github.com/ReactiveCou
 scalacOptions ++= Seq("-feature")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-cache" % "2.3.3",
-  "com.typesafe.play" %% "play-ws" % "2.3.3",
+  "com.typesafe.play" %% "play-cache" % "2.4.1",
+  "com.typesafe.play" %% "play-ws" % "2.4.1",
+  "com.typesafe.play" %% "play-json" % "2.4.1",
   "org.mockito" % "mockito-all" % "1.9.5",
-  "com.wordnik" %% "swagger-play2" % "1.3.10",
   "org.reactivecouchbase" %% "reactivecouchbase-core" % "0.3",
-  "com.fasterxml.jackson.module" %% "jackson-module-scala" % "2.5.2",
+  "pl.matisoft" %% "swagger-play24" % "1.4",
+  "com.wordnik" %% "swagger-core" % "1.3.12",
+  "com.wordnik" %% "swagger-jaxrs" % "1.3.12",
   "com.livestream" %% "scredis" % "2.0.6"
 )
 

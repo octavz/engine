@@ -5,22 +5,27 @@ import javax.ws.rs.QueryParam
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
+import com.google.inject.Inject
+import com.wordnik.swagger.annotations._
 import org.home.actors.messages.{LoginUser, _}
-import org.home.components.model.{UserModel, JsonFormats}
+import org.home.actors.{Env, Generator}
+import org.home.components.model.UserModel
+import play.api.Play.current
+import play.api.libs.concurrent.Akka
 import play.api.libs.json.Json
 import play.api.mvc._
-import play.api.Play.current
-import scala.concurrent._
-import ExecutionContext.Implicits.global
+import org.home.components.model.JsonFormats._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
-import play.api.libs.concurrent.Akka
-import JsonFormats._
-import com.wordnik.swagger.annotations._
 
 @Api(value = "/main", description = "Operations")
-object MainController extends Controller {
+@javax.inject.Singleton
+class MainController @Inject() (system: ActorSystem)extends Controller {
+  val environment = system.actorOf(Env.props(), name = "environment")
+  println(env.path)
+  env ! Start
 
   lazy val env = {
     println("Getting environment")
@@ -31,11 +36,18 @@ object MainController extends Controller {
 
   @ApiOperation(value = "Index", notes = "Index", response = classOf[UserModel], httpMethod = "GET", nickname = "index")
   def index = Action.async {
-    val f = env ? LoginUser("cucu", "bucu")
+    val f = env ? LoginUser("octav@test.com", "123456")
     f.flatMap {
-      case Some(r) =>
-        (r.asInstanceOf[ActorRef] ? Info).map(a => Ok(Json.toJson(a.asInstanceOf[UserModel])))
-      case _ => Future.successful(BadRequest("no user found"))
+      case err: Error =>
+        Future.successful(BadRequest("no user found"))
+      case (s, u) =>
+        val user = u.asInstanceOf[UserModel]
+        val res = Akka.system.actorSelection(s"user/${user.id}").resolveOne(2.seconds).flatMap {
+          actor =>
+            (actor ? Info).map(a => Ok(Json.toJson(a.asInstanceOf[UserModel])))
+        }
+        res
+      //Future.successful(Ok(s.toString))
     }
   }
 
@@ -52,8 +64,8 @@ object MainController extends Controller {
 
   @ApiOperation(value = "Login", notes = "Login", response = classOf[String], httpMethod = "POST", nickname = "login")
   def login(
-                @ApiParam(value = "login") @QueryParam("login") login: String,
-                @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
+             @ApiParam(value = "login") @QueryParam("login") login: String,
+             @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     val f = env ? LoginUser(login, password)
     f.map {
       case session: String => Ok(session)

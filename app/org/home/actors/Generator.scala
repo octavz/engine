@@ -7,9 +7,6 @@ import akka.actor._
 
 import org.home.utils.Randomizer._
 
-/**
- * Created by octav on 28.08.2014.
- */
 class Generator extends Actor with ActorLogging {
 
   def newEvent(): ActionEvent = {

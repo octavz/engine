@@ -1,20 +1,15 @@
 package org.home.components
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import org.home.components.model.JsonFormats._
 import org.home.components.model._
-import org.home.utils.Randomizer
-
-import scala.concurrent.Future
-import DbDriver._
-import JsonFormats._
-import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.libs.json.Json
 import scredis._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
 trait RepositoryComponentImpl extends RepositoryComponent {
-  val repository = new RepositoryImpl
-  val mapper = new ObjectMapper()
-  mapper.registerModule(DefaultScalaModule)
+  override val repository: Repository = new RepositoryImpl
 
   class RepositoryImpl extends Repository {
     val redis = new Redis()
@@ -24,7 +19,7 @@ trait RepositoryComponentImpl extends RepositoryComponent {
         res =>
           res.flatMap {
             s =>
-              val userModel = mapper.readValue(s, classOf[UserModel])
+              val userModel = Json.parse(s).as[UserModel]
               if (userModel.password == password) Some(userModel)
               else None
           }
@@ -33,15 +28,16 @@ trait RepositoryComponentImpl extends RepositoryComponent {
     }
 
     override def createSession(userSession: UserSession): Future[UserSession] = {
-      redis.set(userSession.sessionId, mapper.writeValueAsString(userSession)) map (_ => userSession)
+      redis.set(userSession.sessionId, Json.toJson(userSession).toString()) map (_ => userSession)
       //bucket.set[UserSession](userSession.sessionId, userSession) map (_.isSuccess)
     }
 
     override def registerUser(userModel: UserModel): Future[Boolean] = {
-      redis.set(userModel.login, mapper.writeValueAsString(userModel)) map (_ => true)
+      redis.set(userModel.login, Json.toJson(userModel).toString()) map (_ => true)
       //      bucket.set[UserModel](userModel.id, userModel) map {
       //        _.isSuccess
     }
+
 
   }
 
