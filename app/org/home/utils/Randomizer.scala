@@ -3,10 +3,12 @@ package org.home.utils
 import java.util.UUID
 import scala.util.Random
 
-/**
- * Created by octav on 28.08.2014.
- */
 object Randomizer {
+  def newString(length: Int = 10): String = Random.alphanumeric.take(length).mkString
+
+  def newLong(min: Long = 100, max: Long = 10000): Long = (Random.nextLong() % (max - min)) + min
+
+  def newInt(min: Int = 10, max: Int = 1000): Int = (Random.nextInt() % (max - min)) + min
 
   val timeSpanOffset = 10
 
