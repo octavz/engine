@@ -2,7 +2,6 @@ package org.home.actors
 
 
 import messages._
-
 import akka.actor._
 
 import org.home.utils.Randomizer._

@@ -5,7 +5,7 @@ import akka.actor._
 import akka.pattern._
 import org.home.actors.messages._
 import org.home.components.model.{UserModel, UserSession}
-import org.home.models.Sector
+import org.home.models.Universe
 import org.home.utils.Randomizer
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,17 +13,18 @@ import scala.concurrent._
 import scala.concurrent.duration._
 
 object Env {
-  def props(universe: List[Sector]): Props = Props(new Env(universe) with RepositoryComponentImpl)
+  def props(universe: Universe): Props = Props(new Env(universe) with RepositoryComponentImpl)
 }
 
-class Env(universe: List[Sector]) extends Actor with ActorLogging {
+class Env(universe: Universe) extends Actor with ActorLogging {
   this : RepositoryComponent =>
   val duration = 2.second
   val generator = context.actorOf(Props[Generator], name = "generator")
 
   def start() = {
     log.info("started")
-    context.system.scheduler.schedule(1.milli, 10.milli, generator, GenNew)
+    println(universe)
+    context.system.scheduler.schedule(1.milli, 100000.milli, generator, GenNew)
   }
 
   def login(login: String, password: String): Future[Option[(UserSession, UserModel)]] = {

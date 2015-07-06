@@ -10,6 +10,8 @@ object Randomizer {
 
   def newInt(min: Int = 10, max: Int = 1000): Int = (Random.nextInt() % (max - min)) + min
 
+  def newFromEnum(enum: Enumeration) = enum(newInt(0, enum.values.size - 1))
+
   val timeSpanOffset = 10
 
   /**

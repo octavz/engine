@@ -11,6 +11,7 @@ import org.home.actors.Env
 import org.home.actors.messages.{LoginUser, _}
 import org.home.components.model.JsonFormats._
 import org.home.components.model.UserModel
+import org.home.models.Universe
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
 import play.api.libs.json.Json
@@ -23,7 +24,7 @@ import scala.concurrent.duration._
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
 class MainController @Inject() (system: ActorSystem)extends Controller {
-  val environment = system.actorOf(Env.props(Universe.generate()), name = "environment")
+  val environment = system.actorOf(Env.props(Universe.create()), name = "environment")
   println(env.path)
   env ! Start
 
