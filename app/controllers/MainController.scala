@@ -9,12 +9,10 @@ import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
 import org.home.actors.Env
 import org.home.actors.messages.{LoginUser, _}
-import org.home.components.model.JsonFormats._
 import org.home.components.model.UserModel
 import org.home.models.Universe
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
-import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,8 +21,9 @@ import scala.concurrent.duration._
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
-class MainController @Inject() (system: ActorSystem)extends Controller {
-  val environment = system.actorOf(Env.props(Universe.create()), name = "environment")
+class MainController @Inject()(system: ActorSystem) extends Controller {
+  val universe = Universe.create()
+  val environment = system.actorOf(Env.props(universe), name = "environment")
   println(env.path)
   env ! Start
 
@@ -45,7 +44,8 @@ class MainController @Inject() (system: ActorSystem)extends Controller {
         val user = u.asInstanceOf[UserModel]
         val res = Akka.system.actorSelection(s"user/${user.id}").resolveOne(2.seconds).flatMap {
           actor =>
-            (actor ? Info).map(a => Ok(Json.toJson(a.asInstanceOf[UserModel])))
+            Future.successful(Ok(universe.toString))
+          //(actor ? Info).map(a => Ok(Json.toJson(a.asInstanceOf[UserModel])))
         }
         res
       //Future.successful(Ok(s.toString))

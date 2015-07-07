@@ -23,7 +23,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
 
   def start() = {
     log.info("started")
-    println(universe)
+    //println(universe)
     context.system.scheduler.schedule(1.milli, 100000.milli, generator, GenNew)
   }
 

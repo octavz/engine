@@ -29,7 +29,9 @@ libraryDependencies ++= Seq(
   "pl.matisoft" %% "swagger-play24" % "1.4",
   "com.wordnik" %% "swagger-core" % "1.3.12",
   "com.wordnik" %% "swagger-jaxrs" % "1.3.12",
-  "com.livestream" %% "scredis" % "2.0.6"
+  "com.livestream" %% "scredis" % "2.0.6",
+  "com.assembla.scala-incubator" %% "graph-test" % "1.9.0",
+  "com.assembla.scala-incubator" %% "graph-core" % "1.9.3"
 )
 
 javaOptions in Test += "-Dconfig.file=" + Option(System.getProperty("config.file")).getOrElse("conf/application.conf")
