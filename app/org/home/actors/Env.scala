@@ -29,7 +29,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
     context.system.scheduler.schedule(1.milli, 100000.milli, generator, GenNew)
   }
 
-  def login(login: String, password: String): Future[Option[(UserSession, UserModel)]] = {
+  def loginUser(login: String, password: String): Future[Option[(UserSession, UserModel)]] = {
     val f = for {
       user <- repository.findUserByLoginAndEmail(login, password)
       session <- repository.createSession(UserSession(user.getOrElse(throw new Exception("User not found")).id, newId))
@@ -49,7 +49,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
     f.flatMap(identity).recover { case _ => Option.empty[(UserSession, UserModel)] }
   }
 
-  def register(login: String, password: String): Future[Option[UserSession]] = {
+  def registerUser(login: String, password: String): Future[Option[UserSession]] = {
     val newUserId = newId
     val f = repository.registerUser(UserModel(id = newUserId, login = login, password = password, name = login)) flatMap {
       userModel =>
@@ -78,11 +78,11 @@ class Env(universe: Universe) extends Actor with ActorLogging {
 
   def receive = {
     case Start => start()
-    case LoginUser(l, p) => login(l, p).map {
+    case LoginUser(login, pass) => loginUser(login, pass).map {
       case Some((session, user)) => (session, user)
       case _ => Error
     }.pipeTo(sender())
-    case RegisterUser(l, p) => register(l, p).map {
+    case RegisterUser(login, pass) => registerUser(login, pass).map {
       case Some(s) => s
       case _ => Error
     }.pipeTo(sender())
