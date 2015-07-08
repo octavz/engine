@@ -5,12 +5,16 @@ object Constants {
 }
 
 
-object SectorObjectEnum extends Enumeration {
-  type ObjectType = Value
-  val RESOURCE = Value(0)
-  val FACTORY = Value(1)
-  val PLAYER = Value(2)
-  val NPC = Value(3)
+object SectorObjectTypes {
+  val RESOURCE = 0
+  val FACTORY = 1
+  val PLAYER = 2
+  val NPC = 3
+}
+
+object PlayerItemTypes extends  Enumeration {
+  val SHIP = 0
+  val FACTORY = 1
 }
 
 object SectorEnum {

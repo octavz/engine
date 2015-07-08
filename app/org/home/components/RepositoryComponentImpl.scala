@@ -32,8 +32,8 @@ trait RepositoryComponentImpl extends RepositoryComponent {
       //bucket.set[UserSession](userSession.sessionId, userSession) map (_.isSuccess)
     }
 
-    override def registerUser(userModel: UserModel): Future[Boolean] = {
-      redis.set(userModel.login, Json.toJson(userModel).toString()) map (_ => true)
+    override def registerUser(userModel: UserModel): Future[UserModel] = {
+      redis.set(userModel.login, Json.toJson(userModel).toString()) map (_ => userModel)
       //      bucket.set[UserModel](userModel.id, userModel) map {
       //        _.isSuccess
     }

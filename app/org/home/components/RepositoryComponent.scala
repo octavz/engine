@@ -13,7 +13,7 @@ trait RepositoryComponent {
 
     def createSession(userSession: UserSession): Future[UserSession]
 
-    def registerUser(userModel: UserModel): Future[Boolean]
+    def registerUser(userModel: UserModel): Future[UserModel]
   }
 
 }

@@ -6,6 +6,10 @@ import akka.actor._
 
 import org.home.utils.Randomizer._
 
+object Generator{
+  def props() = Props(new Generator)
+}
+
 class Generator extends Actor with ActorLogging {
 
   def newEvent(): ActionEvent = {

@@ -44,7 +44,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
         val user = u.asInstanceOf[UserModel]
         val res = Akka.system.actorSelection(s"user/${user.id}").resolveOne(2.seconds).flatMap {
           actor =>
-            Future.successful(Ok(universe.toString))
+            Future.successful(Ok(universe.toJson))
           //(actor ? Info).map(a => Ok(Json.toJson(a.asInstanceOf[UserModel])))
         }
         res

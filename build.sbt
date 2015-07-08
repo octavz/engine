@@ -31,6 +31,7 @@ libraryDependencies ++= Seq(
   "com.wordnik" %% "swagger-jaxrs" % "1.3.12",
   "com.livestream" %% "scredis" % "2.0.6",
   "com.assembla.scala-incubator" %% "graph-test" % "1.9.0",
+  "com.assembla.scala-incubator" %% "graph-json" % "1.9.2",
   "com.assembla.scala-incubator" %% "graph-core" % "1.9.3"
 )
 

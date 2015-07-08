@@ -127,18 +127,30 @@
         <root url="jar://$USER_HOME$/.ivy2/cache/com.assembla.scala-incubator/graph-core_2.11/jars/graph-core_2.11-1.9.3.jar!/" />
       </CLASSES>
       <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: com.assembla.scala-incubator:graph-json_2.11:1.9.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.assembla.scala-incubator/graph-json_2.11/jars/graph-json_2.11-1.9.1.jar!/" />
+      </CLASSES>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.ideaLibSources/graph-core_2.11-1.9.3-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.ideaLibSources/graph-json_2.11-1.9.1-sources.jar!/" />
       </SOURCES>
+    </library>
+    <library name="SBT: com.assembla.scala-incubator:graph-json_2.11:1.9.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/com.assembla.scala-incubator/graph-json_2.11/jars/graph-json_2.11-1.9.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
     <library name="SBT: com.assembla.scala-incubator:graph-test_2.11:1.9.0:jar">
       <CLASSES>
         <root url="jar://$USER_HOME$/.ivy2/cache/com.assembla.scala-incubator/graph-test_2.11/jars/graph-test_2.11-1.9.0.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.ideaLibSources/graph-test_2.11-1.9.0-sources.jar!/" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="SBT: com.couchbase.client:couchbase-client:1.4.4:jar">
       <CLASSES>
@@ -763,6 +775,13 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="SBT: net.liftweb:lift-json_2.11:2.6-M4:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/net.liftweb/lift-json_2.11/jars/lift-json_2.11-2.6-M4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="SBT: net.sf.ehcache:ehcache-core:2.6.11:jar">
       <CLASSES>
         <root url="jar://$USER_HOME$/.ivy2/cache/net.sf.ehcache/ehcache-core/jars/ehcache-core-2.6.11.jar!/" />
@@ -1197,9 +1216,23 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="SBT: org.scala-lang.modules:scala-xml_2.11:1.0.2:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-xml_2.11/bundles/scala-xml_2.11-1.0.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="SBT: org.scala-lang:scala-compiler:2.11.0:jar">
       <CLASSES>
         <root url="jar://$USER_HOME$/Apps/activator-1.3.4/repository/org.scala-lang/scala-compiler/2.11.0/jars/scala-compiler.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang:scala-compiler:2.11.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -1263,6 +1296,13 @@
     <library name="SBT: org.scala-lang:scalap:2.11.0:jar">
       <CLASSES>
         <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scalap/jars/scalap-2.11.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="SBT: org.scala-lang:scalap:2.11.1:jar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scalap/jars/scalap-2.11.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

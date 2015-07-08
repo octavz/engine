@@ -15,6 +15,7 @@ case object Shutdown extends BaseEvent
 case object GenNew extends BaseEvent 
 case class LoginUser(login: String, password: String)
 case class RegisterUser(login: String, password: String)
+case class NewPlayerItem(itemType: Int, itemProps: Map[String, String])
 case object Info
 case object NoError
 case object Error
