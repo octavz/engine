@@ -1,7 +1,9 @@
 package org.home.actors
 
-import akka.actor.{Props, Actor, ActorLogging}
+import akka.actor.{Actor, ActorLogging, Props}
+import org.home.actors.messages.State
 import org.home.utils.PlayerItemTypes
+import play.api.libs.json.Json
 
 object PlayerItem {
   def props(id: String, owner: String, name: String, itemType: Int, props: Map[String, String]): Props = {
@@ -13,11 +15,23 @@ object PlayerItem {
 }
 
 class Ship(id: String, owner: String, name: String, props: Map[String, String]) extends Actor with ActorLogging {
-  override def receive: Receive = ???
+  def state = {
+    s"""{"id": "$id", "owner":"$owner", "name":"$name" , "props":"${Json.toJson(props).toString()}"  }"""
+  }
+
+  override def receive: Receive = {
+    case State => sender ! state
+  }
 }
 
 class Factory(id: String, owner: String, name: String, props: Map[String, String]) extends Actor with ActorLogging {
-  override def receive: Receive = ???
+  def state = {
+    s"""{"id": "$id", "owner":"$owner", "name":"$name" , "props":"${Json.toJson(props).toString()}"  }"""
+  }
+
+  override def receive: Receive = {
+    case State => sender ! state
+  }
 }
 
 

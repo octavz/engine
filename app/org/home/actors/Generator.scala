@@ -13,7 +13,7 @@ object Generator{
 class Generator extends Actor with ActorLogging {
 
   def newEvent(): ActionEvent = {
-    GenericEvent(eventId = newId, newTimeSpan)
+    GenericEvent(eventId = nextId, newTimeSpan)
   }
 
   def receive = {

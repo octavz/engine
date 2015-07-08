@@ -13,7 +13,7 @@ object Sector extends Createable[Sector] {
 
   override def create(): Sector = {
     Sector(
-      id = Randomizer.newId,
+      id = Randomizer.nextId,
       name = Randomizer.newName,
       objects = List.range(1, Randomizer.newInt(1, 5)).map(_ => SectorObject.create()))
   }

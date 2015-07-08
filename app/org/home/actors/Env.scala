@@ -22,7 +22,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
   this: RepositoryComponent =>
   val duration = 2.second
   val generator = context.actorOf(Generator.props(), name = "generator")
-  val players: ListBuffer[ActorRef] = ListBuffer.empty
+  val players: ListBuffer[String] = ListBuffer.empty
 
   def start() = {
     log.info("started")
@@ -32,7 +32,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
   def loginUser(login: String, password: String): Future[Option[(UserSession, UserModel)]] = {
     val f = for {
       user <- repository.findUserByLoginAndEmail(login, password)
-      session <- repository.createSession(UserSession(user.getOrElse(throw new Exception("User not found")).id, newId))
+      session <- repository.createSession(UserSession(user.getOrElse(throw new Exception("User not found")).id, nextId))
     } yield {
         if (user.isEmpty) Future.successful(Option.empty[(UserSession, UserModel)])
         val u = user.get
@@ -50,14 +50,14 @@ class Env(universe: Universe) extends Actor with ActorLogging {
   }
 
   def registerUser(login: String, password: String): Future[Option[UserSession]] = {
-    val newUserId = newId
+    val newUserId = nextId
     val f = repository.registerUser(UserModel(id = newUserId, login = login, password = password, name = login)) flatMap {
       userModel =>
         //create player
-        val player = context.actorOf(Player.props(user = userModel), name = newUserId)
-        players += player
+        context.actorOf(Player.props(user = userModel), name = newUserId)
+        players += newUserId
         //login user
-        repository.createSession(UserSession(newUserId, newId)) map {
+        repository.createSession(UserSession(newUserId, nextId)) map {
           session =>
             Some(session)
         }
@@ -69,7 +69,6 @@ class Env(universe: Universe) extends Actor with ActorLogging {
         None
     }
   }
-
 
   def shutdown() = {
     log.info("shutdown")

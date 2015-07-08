@@ -7,7 +7,7 @@ case class SectorObject(id: String, name: String, objType: Int, position: Sector
 object SectorObject extends Createable[SectorObject] {
 
   override def create(): SectorObject = SectorObject(
-    id = Randomizer.newId,
+    id = Randomizer.nextId,
     name = Randomizer.newRoman(),
     objType = Randomizer.newInt(0, 3),
     position = SectorPosition.create(),

@@ -43,7 +43,7 @@ object Randomizer {
    */
   //  def newId = UUID.randomUUID().toString
 
-  def newId = newString(12).toLowerCase()
+  def nextId = newString(12).toLowerCase
 
   /**
    * @return a random time span in seconds
