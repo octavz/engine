@@ -8,6 +8,9 @@ import play.api.Logger._
 import akka.pattern._
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
+import akka.util.Timeout
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Player {
   def props(user: UserModel): Props = Props(new Player(user))
@@ -15,6 +18,8 @@ object Player {
 
 class Player(user: UserModel) extends Actor with ActorLogging {
   val items: ListBuffer[String] = ListBuffer.empty
+
+  implicit val askTimeout = Timeout(2.second)
 
   def newItem(itemType: Int, props: Map[String, String]): Option[String] = {
     try {
