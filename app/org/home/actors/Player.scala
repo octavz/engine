@@ -1,17 +1,18 @@
 package org.home.actors
 
 import akka.actor._
+import akka.pattern._
 import akka.util.Timeout
 import org.home.actors.messages._
 import org.home.components.model.UserModel
 import org.home.utils.Randomizer._
 import play.api.Logger
 import play.api.Logger._
-import akka.pattern._
+
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import scala.concurrent.ExecutionContext.Implicits.global
 
 object Player {
   def props(user: UserModel): Props = Props(new Player(user))
@@ -40,7 +41,7 @@ class Player(user: UserModel) extends Actor with ActorLogging {
       c =>
         val cf = c ? State
         cf map {
-          case e: Either[String, String] => e
+          case e: Either[_, _] => e
         }
     })
 
@@ -64,7 +65,6 @@ class Player(user: UserModel) extends Actor with ActorLogging {
     }
   }
 
-
   def receive = {
     case NewPlayerItem(itemType, props) =>
       val rep = newItem(itemType, props) match {
@@ -73,7 +73,7 @@ class Player(user: UserModel) extends Actor with ActorLogging {
       }
       sender ! rep
     case Info => sender ! user
-    case State =>  state.pipeTo(sender())
+    case State => state.pipeTo(sender())
     case x => log.info("Player received unknown message: " + x)
   }
 
