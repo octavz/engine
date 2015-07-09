@@ -25,8 +25,13 @@ class Ship(id: String, owner: String, name: String, props: Map[String, String]) 
 }
 
 class Factory(id: String, owner: String, name: String, props: Map[String, String]) extends Actor with ActorLogging {
-  def state = {
-    s"""{"id": "$id", "owner":"$owner", "name":"$name" , "props":"${Json.toJson(props).toString()}"  }"""
+  def state: Either[String, String] = {
+    try {
+      Right( s"""{"id": "$id", "owner":"$owner", "name":"$name" , "props":"${Json.toJson(props).toString()}"  }""")
+    }
+    catch {
+      case e: Throwable => Left(e.getMessage)
+    }
   }
 
   override def receive: Receive = {

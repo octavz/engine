@@ -1,13 +1,17 @@
 package org.home.actors
 
 import akka.actor._
+import akka.util.Timeout
 import org.home.actors.messages._
 import org.home.components.model.UserModel
 import org.home.utils.Randomizer._
+import play.api.Logger
 import play.api.Logger._
 import akka.pattern._
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Player {
   def props(user: UserModel): Props = Props(new Player(user))
@@ -15,6 +19,7 @@ object Player {
 
 class Player(user: UserModel) extends Actor with ActorLogging {
   val items: ListBuffer[String] = ListBuffer.empty
+  implicit val askTimeout = Timeout(2.second)
 
   def newItem(itemType: Int, props: Map[String, String]): Option[String] = {
     try {
@@ -29,11 +34,34 @@ class Player(user: UserModel) extends Actor with ActorLogging {
     }
   }
 
-  def state: String = {
+  def state: Future[Either[String, String]] = {
     //return state here
-    val childrenState = context.children.toList.map(_ ? State)
-    val s = Future.sequence(childrenState) map (_.mkString(","))
-    s"""{"items" : [$s]}"""
+    val childrenState = Future.sequence(context.children.toList.map {
+      c =>
+        val cf = c ? State
+        cf map {
+          case e: Either[String, String] => e
+        }
+    })
+
+    val f = childrenState map {
+      lst =>
+        lst map {
+          case Right(s) => s
+          case _ => throw new RuntimeException("Failed to get state")
+        }
+    } map {
+      lst =>
+        val st = s"""{"id" : ${user.id},"items" : [${lst.mkString(",")}]}"""
+        println(st)
+        Right(st)
+    }
+
+    f recover {
+      case e: Throwable =>
+        Logger.logger.error("getPlayerState", e)
+        Left(e.getMessage)
+    }
   }
 
 
@@ -45,7 +73,7 @@ class Player(user: UserModel) extends Actor with ActorLogging {
       }
       sender ! rep
     case Info => sender ! user
-    case State => sender ! state
+    case State =>  state.pipeTo(sender())
     case x => log.info("Player received unknown message: " + x)
   }
 

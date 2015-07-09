@@ -3,6 +3,7 @@ package org.home.actors
 import _root_.org.home.components._
 import akka.actor._
 import akka.pattern._
+import akka.util.Timeout
 import org.home.actors.messages._
 import org.home.components.model.{UserModel, UserSession}
 import org.home.models.Universe
@@ -21,6 +22,7 @@ object Env {
 class Env(universe: Universe) extends Actor with ActorLogging {
   this: RepositoryComponent =>
   val duration = 2.second
+  implicit val askTimeout = Timeout(2.second)
   val generator = context.actorOf(Generator.props(), name = "generator")
   val players: ListBuffer[String] = ListBuffer.empty
 
@@ -29,45 +31,73 @@ class Env(universe: Universe) extends Actor with ActorLogging {
     context.system.scheduler.schedule(1.milli, 100000.milli, generator, GenNew)
   }
 
-  def loginUser(login: String, password: String): Future[Option[(UserSession, UserModel)]] = {
+  def loginUser(login: String, password: String): Future[Either[String, (UserSession, UserModel)]] = {
     val f = for {
       user <- repository.findUserByLoginAndEmail(login, password)
       session <- repository.createSession(UserSession(user.getOrElse(throw new Exception("User not found")).id, nextId))
     } yield {
-        if (user.isEmpty) Future.successful(Option.empty[(UserSession, UserModel)])
-        val u = user.get
-        //if cant finds it creates an actor
-        context.system.actorSelection(s"user/$login").resolveOne(5.seconds) recover {
-          case _ =>
-            context.system.actorOf(Player.props(user.get), name = u.id)
-        } map {
-          a =>
-            println(s"Created or found actor at: ${a.path}")
-            Some(session, u)
+        if (user.isEmpty) Future.successful(Left("No user found"))
+        else {
+          val u = user.get
+          //if cant finds it creates an actor
+          context.actorSelection(s"$login").resolveOne(duration) recover {
+            case _ =>
+              val ref = context.actorOf(Player.props(user.get), name = u.id)
+              println(s"User actor created at ${ref.path}")
+              ref
+          } map {
+            a =>
+              println(s"Created or found actor at: ${a.path}")
+              //create player
+              players += u.id
+              Right(session, u)
+          }
         }
       }
-    f.flatMap(identity).recover { case _ => Option.empty[(UserSession, UserModel)] }
+    f.flatMap(identity).recover { case ex: Throwable => Left(ex.getMessage) }
   }
 
-  def registerUser(login: String, password: String): Future[Option[UserSession]] = {
-    val newUserId = nextId
-    val f = repository.registerUser(UserModel(id = newUserId, login = login, password = password, name = login)) flatMap {
+  def registerUser(login: String, password: String): Future[Either[String, UserSession]] = {
+    val u = UserModel(id = login, login = login, password = password, name = login)
+    val f = repository.registerUser(u) flatMap {
       userModel =>
         //create player
-        context.actorOf(Player.props(user = userModel), name = newUserId)
-        players += newUserId
+        context.actorOf(Player.props(user = userModel), name = u.id)
+        players += login
         //login user
-        repository.createSession(UserSession(newUserId, nextId)) map {
-          session =>
-            Some(session)
+        repository.createSession(UserSession(u.id, nextId)) map {
+          session => Right(session)
         }
     }
 
     f recover {
       case e: Throwable =>
         Logger.logger.error("register", e)
-        None
+        Left(e.getMessage)
     }
+  }
+
+  def dispatchAsk(msg: Any): Future[Either[String, List[String]]] = {
+    println("Asking children for state")
+    if (players.isEmpty) Future.successful(Right(List.empty))
+    else {
+      val children = players.map(p => context.actorSelection(s"$p"))
+      val f = Future.sequence(children.map { c =>
+        (c ? msg) map {
+          case e: Either[String, String] => e
+        }
+      }).map { lst =>
+        Right(lst.map {
+          case Left(err) => throw new RuntimeException(err)
+          case Right(s) => s
+        }.toList)
+      }
+
+      f recover {
+        case e: Throwable => Left(e.getMessage)
+      }
+    }
+
   }
 
   def shutdown() = {
@@ -77,14 +107,9 @@ class Env(universe: Universe) extends Actor with ActorLogging {
 
   def receive = {
     case Start => start()
-    case LoginUser(login, pass) => loginUser(login, pass).map {
-      case Some((session, user)) => (session, user)
-      case _ => Error
-    }.pipeTo(sender())
-    case RegisterUser(login, pass) => registerUser(login, pass).map {
-      case Some(s) => s
-      case _ => Error
-    }.pipeTo(sender())
+    case LoginUser(login, pass) => loginUser(login, pass).pipeTo(sender())
+    case RegisterUser(login, pass) => registerUser(login, pass).pipeTo(sender())
+    case State => dispatchAsk(State).pipeTo(sender())
     case Shutdown => shutdown()
     case x => log.info("Env received unknown message: " + x)
   }

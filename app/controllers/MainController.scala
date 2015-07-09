@@ -9,15 +9,18 @@ import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
 import org.home.actors.Env
 import org.home.actors.messages.{LoginUser, _}
-import org.home.components.model.UserModel
+import org.home.components.model.{UserSession, UserModel}
 import org.home.models.Universe
+import play.api.Logger
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
+import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
+import org.home.components.model.JsonFormats._
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
@@ -38,9 +41,8 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   def index = Action.async {
     val f = env ? LoginUser("octav@test.com", "123456")
     f.flatMap {
-      case err: Error =>
-        Future.successful(BadRequest("no user found"))
-      case (s, u) =>
+      case Left(err) => Future.successful(BadRequest(err.toString))
+      case Right((s, u)) =>
         val user = u.asInstanceOf[UserModel]
         val res = Akka.system.actorSelection(s"user/${user.id}").resolveOne(2.seconds).flatMap {
           actor =>
@@ -58,8 +60,8 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
                 @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     val f = env ? RegisterUser(login, password)
     f.map {
-      case NoError => Ok("ok")
-      case Error => BadRequest("not ok")
+      case Right(session) => Ok(Json.toJson(session.asInstanceOf[UserSession]))
+      case Left(err) => BadRequest(err.toString)
     }
   }
 
@@ -69,8 +71,27 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
              @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     val f = env ? LoginUser(login, password)
     f.map {
-      case session: String => Ok(session)
-      case _ => BadRequest("not ok")
+      case e: Either[String, (UserSession, UserModel)] => e match {
+        case Right((session, user)) => Ok(Json.toJson(session))
+        case Left(err) => BadRequest(err)
+      }
+      case x => BadRequest(x.toString)
+    }
+  }
+
+  @ApiOperation(value = "Get state", response = classOf[String], httpMethod = "GET", nickname = "getState")
+  def getState = Action.async {
+    val f = (env ? State) map {
+      case e: Either[String, List[String]] => e match {
+        case Left(err) => BadRequest(err)
+        case Right(lst) => Ok(lst.mkString("\n-------------------\n"))
+      }
+    }
+    f recover {
+      case e: Throwable =>
+        Logger.logger.error("getState", e)
+        println(e.getMessage)
+        BadRequest(e.getMessage)
     }
   }
 }
