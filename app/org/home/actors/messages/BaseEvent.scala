@@ -16,8 +16,9 @@ case object GenNew extends BaseEvent
 case class LoginUser(login: String, password: String)
 case class RegisterUser(login: String, password: String)
 case class NewPlayerItem(itemType: Int, itemProps: Map[String, String])
-case class PlayerState(userId: String)
+case class GetPlayerState(userId: String)
 case object State
+case object Tic
 case object Info
 case object NoError
 case object Error

@@ -1270,9 +1270,7 @@
         <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.7.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="jar://$USER_HOME$/.ideaLibSources/scala-library-2.11.7-sources.jar!/" />
-      </SOURCES>
+      <SOURCES />
     </library>
     <library name="SBT: org.scala-lang:scala-reflect:2.11.1:jar">
       <CLASSES>

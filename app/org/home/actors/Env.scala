@@ -28,7 +28,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
 
   def start() = {
     log.info("started")
-    context.system.scheduler.schedule(1.milli, 100000.milli, generator, GenNew)
+    context.system.scheduler.schedule(20.seconds, 1.second, generator, GenNew)
   }
 
   def loginUser(login: String, password: String): Future[Either[String, (UserSession, UserModel)]] = {
@@ -62,7 +62,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
     val f = repository.registerUser(u) flatMap {
       userModel =>
         //create player
-        context.actorOf(Player.props(user = userModel), name = u.id)
+        val ref = context.actorOf(Player.props(user = userModel), name = u.id)
         players += login
         //login user
         repository.createSession(UserSession(u.id, nextId)) map {
@@ -97,7 +97,14 @@ class Env(universe: Universe) extends Actor with ActorLogging {
         case e: Throwable => Left(e.getMessage)
       }
     }
+  }
 
+  def turn() = {
+    println("Asking children to end turn")
+    if (players.nonEmpty) {
+      val all = players.map(p => context.actorSelection(s"$p"))
+      all.foreach(_ ! Tic)
+    }
   }
 
   def shutdown() = {
@@ -111,6 +118,7 @@ class Env(universe: Universe) extends Actor with ActorLogging {
     case RegisterUser(login, pass) => registerUser(login, pass).pipeTo(sender())
     case State => dispatchAsk(State).pipeTo(sender())
     case Shutdown => shutdown()
+    case Tic => turn()
     case x => log.info("Env received unknown message: " + x)
   }
 

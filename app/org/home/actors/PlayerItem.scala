@@ -6,17 +6,21 @@ import org.home.utils.PlayerItemTypes
 import play.api.libs.json.Json
 
 object PlayerItem {
-  def props(id: String, owner: String, name: String, itemType: Int, props: Map[String, String]): Props = {
+  def props(itemType: Int, state: PlayerItemState): Props = {
     itemType match {
-      case PlayerItemTypes.SHIP => Props(new Ship(id, name, owner, props))
-      case PlayerItemTypes.FACTORY => Props(new Factory(id, name, owner, props))
+      case PlayerItemTypes.SHIP => Props(new Ship(state))
+      case PlayerItemTypes.FACTORY => Props(new Factory(state))
     }
   }
 }
 
-class Ship(id: String, owner: String, name: String, props: Map[String, String]) extends Actor with ActorLogging {
-  def state = {
-    s"""{"id": "$id", "owner":"$owner", "name":"$name" , "props":"${Json.toJson(props).toString()}"  }"""
+case class PlayerItemState(id: String, owner: String, name: String, props: Map[String, String]) extends GenericState {
+  implicit val jsonFormat = Json.format[PlayerItemState]
+}
+
+class Ship(initState: PlayerItemState) extends Actor with ActorLogging {
+  def state: GenericState = {
+    initState
   }
 
   override def receive: Receive = {
@@ -24,14 +28,9 @@ class Ship(id: String, owner: String, name: String, props: Map[String, String]) 
   }
 }
 
-class Factory(id: String, owner: String, name: String, props: Map[String, String]) extends Actor with ActorLogging {
-  def state: Either[String, String] = {
-    try {
-      Right( s"""{"id": "$id", "owner":"$owner", "name":"$name" , "props":"${Json.toJson(props).toString()}"  }""")
-    }
-    catch {
-      case e: Throwable => Left(e.getMessage)
-    }
+class Factory(initState: PlayerItemState) extends Actor with ActorLogging {
+  def state: GenericState = {
+    initState
   }
 
   override def receive: Receive = {

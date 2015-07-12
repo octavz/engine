@@ -7,7 +7,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
-import org.home.actors.Env
+import org.home.actors.{PlayerState, Env}
 import org.home.actors.messages.{LoginUser, _}
 import org.home.components.model.{UserSession, UserModel}
 import org.home.models.Universe
@@ -32,7 +32,9 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
 
   lazy val env = {
     println("Getting environment")
-    Await.result(Akka.system.actorSelection("user/environment").resolveOne(1.second), 1.second)
+    val ref = Await.result(Akka.system.actorSelection("user/environment").resolveOne(1.second), 1.second)
+    system.scheduler.schedule(1.seconds, 1.second, ref, Tic)
+    ref
   }
 
   implicit val askTimeout = Timeout(2.second)
@@ -82,9 +84,9 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   @ApiOperation(value = "Get state", response = classOf[String], httpMethod = "GET", nickname = "getState")
   def getState = Action.async {
     val f = (env ? State) map {
-      case e: Either[String, List[String]] => e match {
+      case e: Either[String, PlayerState] => e match {
         case Left(err) => BadRequest(err)
-        case Right(lst) => Ok(lst.mkString("\n-------------------\n"))
+        case Right(s) => Ok(Json.toJson(s))
       }
     }
     f recover {

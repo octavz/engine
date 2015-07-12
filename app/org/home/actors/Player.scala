@@ -8,6 +8,7 @@ import org.home.components.model.UserModel
 import org.home.utils.Randomizer._
 import play.api.Logger
 import play.api.Logger._
+import play.api.libs.json.Json
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -18,6 +19,10 @@ object Player {
   def props(user: UserModel): Props = Props(new Player(user))
 }
 
+case class PlayerState(owner: String, playerItemsState: List[PlayerItemState]) extends GenericState {
+  implicit val jsonFormatter = Json.format[PlayerState]
+}
+
 class Player(user: UserModel) extends Actor with ActorLogging {
   val items: ListBuffer[String] = ListBuffer.empty
   implicit val askTimeout = Timeout(2.second)
@@ -25,7 +30,7 @@ class Player(user: UserModel) extends Actor with ActorLogging {
   def newItem(itemType: Int, props: Map[String, String]): Option[String] = {
     try {
       val newItemId = nextId
-      context.actorOf(PlayerItem.props(id = newItemId, owner = user.id, name = newRoman(), itemType = itemType, Map.empty), name = nextId)
+      context.actorOf(PlayerItem.props(itemType, PlayerItemState(id = newItemId, owner = user.id, name = newRoman(), Map.empty)), name = nextId)
       items += newItemId
       Some(newItemId)
     } catch {
@@ -35,28 +40,21 @@ class Player(user: UserModel) extends Actor with ActorLogging {
     }
   }
 
-  def state: Future[Either[String, String]] = {
+  def state: Future[Either[String, PlayerState]] = {
     //return state here
     val childrenState = Future.sequence(context.children.toList.map {
       c =>
         val cf = c ? State
         cf map {
-          case e: Either[_, _] => e
+          case x: PlayerItemState =>
+            Right(x)
+          case _ =>
+            logger.error(s"Cannot get state for ${c.path}")
+            Left(s"Cannot get state for ${c.path}")
         }
     })
 
-    val f = childrenState map {
-      lst =>
-        lst map {
-          case Right(s) => s
-          case _ => throw new RuntimeException("Failed to get state")
-        }
-    } map {
-      lst =>
-        val st = s"""{"id" : ${user.id},"items" : [${lst.mkString(",")}]}"""
-        println(st)
-        Right(st)
-    }
+    val f = childrenState map { lst => Right(PlayerState(user.id, lst.filterNot(_.isLeft).map(_.right.get))) }
 
     f recover {
       case e: Throwable =>
@@ -74,6 +72,7 @@ class Player(user: UserModel) extends Actor with ActorLogging {
       sender ! rep
     case Info => sender ! user
     case State => state.pipeTo(sender())
+    case Tic => log.info("Received tic...")
     case x => log.info("Player received unknown message: " + x)
   }
 
