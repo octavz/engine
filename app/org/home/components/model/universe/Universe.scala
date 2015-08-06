@@ -1,7 +1,5 @@
-package org.home.models
+package org.home.components.model.universe
 
-
-import org.home.models.Universe.UniverseNet
 import org.home.utils.Randomizer
 
 import scalax.collection.GraphEdge.UnDiEdge
@@ -16,7 +14,7 @@ import scalax.collection.edge._, scalax.collection.edge.Implicits._
 
 import scalax.collection.io.json._
 
-case class Universe(sectors: UniverseNet, label: String) {
+case class Universe(sectors: Universe.UniverseNet, label: String) {
 
   def toJson = Universe.toJson(sectors)
 
@@ -38,6 +36,7 @@ object Universe extends Createable[Universe] {
       })
 
     val net = randomGraphGen.draw
+
     net.nodes.foreach {
       n =>
         println(n.value)

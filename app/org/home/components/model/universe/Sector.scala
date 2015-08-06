@@ -1,4 +1,4 @@
-package org.home.models
+package org.home.components.model.universe
 
 import org.home.utils.Randomizer
 
@@ -17,5 +17,6 @@ object Sector extends Createable[Sector] {
       name = Randomizer.newName,
       objects = List.range(1, Randomizer.newInt(1, 5)).map(_ => SectorObject.create()))
   }
+
 }
 

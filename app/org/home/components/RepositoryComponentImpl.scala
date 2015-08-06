@@ -38,7 +38,11 @@ trait RepositoryComponentImpl extends RepositoryComponent {
       //        _.isSuccess
     }
 
-
+    override def getPlayerState(userId: String): Future[Option[PlayerState]] = {
+      redis.get(userId) map {
+        opt => opt.map(json => Json.parse(json).as[PlayerState])
+      }
+    }
   }
 
 }

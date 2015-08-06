@@ -1,4 +1,4 @@
-package org.home.models
+package org.home.components.model.universe
 
 import org.home.utils.Randomizer
 

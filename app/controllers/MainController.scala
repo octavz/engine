@@ -2,15 +2,16 @@ package controllers
 
 import javax.ws.rs.QueryParam
 
+
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
-import org.home.actors.{PlayerState, Env}
+import org.home.actors.Env
 import org.home.actors.messages.{LoginUser, _}
-import org.home.components.model.{UserSession, UserModel}
-import org.home.models.Universe
+import org.home.components.model._
+import org.home.components.model.universe._
 import play.api.Logger
 import play.api.Play.current
 import play.api.libs.concurrent.Akka
@@ -33,7 +34,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   lazy val env = {
     println("Getting environment")
     val ref = Await.result(Akka.system.actorSelection("user/environment").resolveOne(1.second), 1.second)
-    system.scheduler.schedule(1.seconds, 1.second, ref, Tic)
+    system.scheduler.schedule(1.seconds, 100.second, ref, Tic)
     ref
   }
 
@@ -43,8 +44,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   def index = Action.async {
     val f = env ? LoginUser("octav@test.com", "123456")
     f.flatMap {
-      case Left(err) => Future.successful(BadRequest(err.toString))
-      case Right((s, u)) =>
+      case (s, u) =>
         val user = u.asInstanceOf[UserModel]
         val res = Akka.system.actorSelection(s"user/${user.id}").resolveOne(2.seconds).flatMap {
           actor =>
@@ -62,8 +62,8 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
                 @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     val f = env ? RegisterUser(login, password)
     f.map {
-      case Right(session) => Ok(Json.toJson(session.asInstanceOf[UserSession]))
-      case Left(err) => BadRequest(err.toString)
+      case Right(session: UserSession) => Ok(Json.toJson(session))
+      case Left(err: String) => BadRequest(err)
     }
   }
 
@@ -73,21 +73,18 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
              @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     val f = env ? LoginUser(login, password)
     f.map {
-      case e: Either[String, (UserSession, UserModel)] => e match {
-        case Right((session, user)) => Ok(Json.toJson(session))
-        case Left(err) => BadRequest(err)
-      }
-      case x => BadRequest(x.toString)
+      case Right((session: UserSession, user)) => Ok(Json.toJson(session))
+      case Left(err: String) => BadRequest(err)
     }
   }
 
   @ApiOperation(value = "Get state", response = classOf[String], httpMethod = "GET", nickname = "getState")
   def getState = Action.async {
     val f = (env ? State) map {
-      case e: Either[String, PlayerState] => e match {
-        case Left(err) => BadRequest(err)
-        case Right(s) => Ok(Json.toJson(s))
-      }
+      case Right(s: List[PlayerState]) => Ok(Json.toJson(s))
+      case x =>
+        println(x)
+        BadRequest("I got this: insted of state: " + x.toString)
     }
     f recover {
       case e: Throwable =>

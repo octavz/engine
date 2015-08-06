@@ -4,33 +4,34 @@ import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
 import org.home.actors.messages._
-import org.home.components.model.UserModel
 import org.home.utils.Randomizer._
 import play.api.Logger
 import play.api.Logger._
-import play.api.libs.json.Json
 
+import scala.collection.immutable.Queue
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
+import org.home.components.model._
 
 object Player {
-  def props(user: UserModel): Props = Props(new Player(user))
+  def props(state: PlayerState): Props = Props(new Player(state))
 }
 
-case class PlayerState(owner: String, playerItemsState: List[PlayerItemState]) extends GenericState {
-  implicit val jsonFormatter = Json.format[PlayerState]
-}
-
-class Player(user: UserModel) extends Actor with ActorLogging {
+class Player(var state: PlayerState) extends Actor with ActorLogging {
   val items: ListBuffer[String] = ListBuffer.empty
   implicit val askTimeout = Timeout(2.second)
 
   def newItem(itemType: Int, props: Map[String, String]): Option[String] = {
     try {
       val newItemId = nextId
-      context.actorOf(PlayerItem.props(itemType, PlayerItemState(id = newItemId, owner = user.id, name = newRoman(), Map.empty)), name = nextId)
+      context.actorOf(PlayerItem.props(
+        PlayerItemState(
+          id = newItemId
+          , itemType = itemType
+          , name = newRoman()
+          , props = Map.empty)), name = nextId)
       items += newItemId
       Some(newItemId)
     } catch {
@@ -40,7 +41,16 @@ class Player(user: UserModel) extends Actor with ActorLogging {
     }
   }
 
-  def state: Future[Either[String, PlayerState]] = {
+  def restore(playerState: PlayerState) = {
+    state = playerState
+    playerState.itemsState.foreach {
+      s =>
+        context.actorOf(PlayerItem.props(s), name = s.id)
+        items += s.id
+    }
+  }
+
+  def getState: Future[Either[String, PlayerState]] = {
     //return state here
     val childrenState = Future.sequence(context.children.toList.map {
       c =>
@@ -54,7 +64,14 @@ class Player(user: UserModel) extends Actor with ActorLogging {
         }
     })
 
-    val f = childrenState map { lst => Right(PlayerState(user.id, lst.filterNot(_.isLeft).map(_.right.get))) }
+    val f = childrenState map {
+      lst =>
+        Right(PlayerState(
+          owner = state.owner
+          , qu = Queue.empty[Int]
+          , startSector = state.startSector
+          , itemsState = lst.filterNot(_.isLeft).map(_.right.get)))
+    }
 
     f recover {
       case e: Throwable =>
@@ -70,8 +87,8 @@ class Player(user: UserModel) extends Actor with ActorLogging {
         case _ => Error
       }
       sender ! rep
-    case Info => sender ! user
-    case State => state.pipeTo(sender())
+    case Info => sender ! state.owner
+    case State => getState.pipeTo(sender())
     case Tic => log.info("Received tic...")
     case x => log.info("Player received unknown message: " + x)
   }
