@@ -1,4 +1,4 @@
-package org.home.components.model.universe
+package org.home.models.universe
 
 trait Createable[T] {
 

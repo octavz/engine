@@ -2,20 +2,20 @@ package org.home.actors
 
 import akka.actor.{Actor, ActorLogging, Props}
 import org.home.actors.messages.State
-import org.home.components.model.PlayerItemState
-import org.home.utils.PlayerItemTypes
+import org.home.models.ItemState
+import org.home.utils.ItemType
 import play.api.libs.json.Json
 
 object PlayerItem {
-  def props(state: PlayerItemState): Props = {
+  def props(state: ItemState): Props = {
     state.itemType match {
-      case PlayerItemTypes.SHIP => Props(new Ship(state))
-      case PlayerItemTypes.FACTORY => Props(new Factory(state))
+      case ItemType.SHIP => Props(new Ship(state))
+      case ItemType.BASE => Props(new Factory(state))
     }
   }
 }
 
-class BasicPlayerItem(var initState: PlayerItemState) extends Actor with ActorLogging {
+class BasicPlayerItem(var initState: ItemState) extends Actor with ActorLogging {
   def state: GenericState = {
     initState
   }
@@ -25,10 +25,10 @@ class BasicPlayerItem(var initState: PlayerItemState) extends Actor with ActorLo
   }
 }
 
-class Ship(initState: PlayerItemState) extends BasicPlayerItem(initState) {
+class Ship(initState: ItemState) extends BasicPlayerItem(initState) {
 }
 
-class Factory(initState: PlayerItemState) extends BasicPlayerItem(initState) {
+class Factory(initState: ItemState) extends BasicPlayerItem(initState) {
 }
 
 

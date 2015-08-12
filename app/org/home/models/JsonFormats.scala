@@ -1,11 +1,12 @@
-package org.home.components.model
+package org.home.models
 
-import org.home.components.model.universe._
+import org.home.models.universe._
 import play.api.libs.json._
 
 object JsonFormats {
   implicit val fmtUserModel = Json.format[UserModel]
   implicit val fmtUserSession = Json.format[UserSession]
-  implicit val fmtPlayerItemState =  Json.format[PlayerItemState]
+  implicit val fmtPlayerItemState =  Json.format[ItemState]
+  implicit val fmtPlayerAction = Json.format[PlayerAction]
   implicit val fmtPlayerState =  Json.format[PlayerState]
 }

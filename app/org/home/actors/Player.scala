@@ -8,12 +8,11 @@ import org.home.utils.Randomizer._
 import play.api.Logger
 import play.api.Logger._
 
-import scala.collection.immutable.Queue
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
-import org.home.components.model._
+import org.home.models._
 
 object Player {
   def props(state: PlayerState): Props = Props(new Player(state))
@@ -27,7 +26,7 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
     try {
       val newItemId = nextId
       context.actorOf(PlayerItem.props(
-        PlayerItemState(
+        ItemState(
           id = newItemId
           , itemType = itemType
           , name = newRoman()
@@ -43,7 +42,7 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
 
   def restore(playerState: PlayerState) = {
     state = playerState
-    playerState.itemsState.foreach {
+    playerState.items.foreach {
       s =>
         context.actorOf(PlayerItem.props(s), name = s.id)
         items += s.id
@@ -56,8 +55,7 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
       c =>
         val cf = c ? State
         cf map {
-          case x: PlayerItemState =>
-            Right(x)
+          case x: ItemState => Right(x)
           case _ =>
             logger.error(s"Cannot get state for ${c.path}")
             Left(s"Cannot get state for ${c.path}")
@@ -68,9 +66,9 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
       lst =>
         Right(PlayerState(
           owner = state.owner
-          , qu = Queue.empty[Int]
+          , qu = state.qu
           , startSector = state.startSector
-          , itemsState = lst.filterNot(_.isLeft).map(_.right.get)))
+          , items = lst.filterNot(_.isLeft).map(_.right.get)))
     }
 
     f recover {

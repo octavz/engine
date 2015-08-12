@@ -1,11 +1,12 @@
-GET     /                           @controllers.MainController.index
-POST    /register                   @controllers.MainController.register(login: String, password: String)
-POST    /login                      @controllers.MainController.login(login: String, password: String)
-POST    /state                      @controllers.MainController.getState
+GET     /                           @org.home.controllers.MainController.index
+POST    /register                   @org.home.controllers.MainController.register(login: String, password: String, scenario: Int)
+POST    /login                      @org.home.controllers.MainController.login(login: String, password: String)
+GET     /state                      @org.home.controllers.MainController.stateForSession
+POST    /start/:createNew           @org.home.controllers.MainController.start(createNew: Boolean )
 
 
-GET    /api-docs              @pl.matisoft.swagger.ApiHelpController.getResources
-GET    /api-docs/main     @pl.matisoft.swagger.ApiHelpController.getResource(path = "/main")
-GET    /docs/*file            controllers.Assets.at(path="/public/swagger", file)
+GET    /api-docs                    @pl.matisoft.swagger.ApiHelpController.getResources
+GET    /api-docs/main               @pl.matisoft.swagger.ApiHelpController.getResource(path = "/main")
+GET    /docs/*file                  controllers.Assets.at(path="/public/swagger", file)
 
 

@@ -1,5 +1,7 @@
 package org.home.utils
 
+import org.home.models.universe.{Sector, Universe}
+
 import scala.util.Random
 
 object Randomizer {
@@ -37,6 +39,12 @@ object Randomizer {
   def newFromEnum(enum: Enumeration) = enum(newInt(0, enum.values.size - 1))
 
   val timeSpanOffset = 10
+
+
+  def someSector(universe: Universe): Sector = {
+    val nodes = universe.sectors.nodes.map(_.value.asInstanceOf[Sector])
+    nodes.drop(Randomizer.newInt(0, nodes.size)).head
+  }
 
   /**
    * @return random string id
