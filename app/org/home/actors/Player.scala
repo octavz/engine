@@ -4,6 +4,7 @@ import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
 import org.home.actors.messages._
+import org.home.models.universe.SectorPosition
 import org.home.utils.Randomizer._
 import play.api.Logger
 import play.api.Logger._
@@ -87,6 +88,8 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
       sender ! rep
     case Info => sender ! state.owner
     case State => getState.pipeTo(sender())
+    case MoveShipInSector(SectorPosition(x, y, z)) =>
+
     case Tic => log.info("Received tic...")
     case x => log.info("Player received unknown message: " + x)
   }

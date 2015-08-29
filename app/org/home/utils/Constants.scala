@@ -5,6 +5,9 @@ object Constants {
   val KEY_UNIVERSE = "universe"
 }
 
+object ScenarioType {
+  val NORMAL = 0
+}
 
 object SectorObjectTypes {
   val RESOURCE = 0

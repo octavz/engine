@@ -1,5 +1,7 @@
 package org.home.actors.messages
 
+import org.home.models.universe.SectorPosition
+
 trait BaseEvent
 
 sealed trait ActionEvent extends BaseEvent with Serializable {
@@ -25,6 +27,8 @@ case class NewPlayerItem(itemType: Int, itemProps: Map[String, String])
 case class GetPlayerState(userId: String)
 
 case class State(sessionId: Option[String] = None)
+
+case class MoveShipInSector(to: SectorPosition)
 
 case object SaveUniverse
 
