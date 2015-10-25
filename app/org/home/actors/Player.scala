@@ -90,7 +90,7 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
     case State => getState.pipeTo(sender())
     case MoveShipInSector(SectorPosition(x, y, z)) =>
 
-    case Tic => log.info("Received tic...")
+    case Tic(time) => log.info(s"${state.owner.name} received tic...$time")
     case x => log.info("Player received unknown message: " + x)
   }
 

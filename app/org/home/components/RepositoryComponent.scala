@@ -13,13 +13,15 @@ trait RepositoryComponent {
 
     def loadUniverse(label: String): Future[Option[Universe]]
 
-    def stateForUser(userId: String): Future[Option[PlayerState]]
+    def loadAllPlayers(): Future[Seq[PlayerState]]
 
-    def findUserByLoginAndEmail(login: String, password: String): Future[Option[PlayerState]]
+    def stateForPlayer(userId: String): Future[Option[PlayerState]]
+
+    def findByLoginAndEmail(login: String, password: String): Future[Option[PlayerState]]
 
     def createSession(userSession: UserSession): Future[UserSession]
 
-    def registerUser(playerState: PlayerState): Future[PlayerState]
+    def registerPlayer(playerState: PlayerState): Future[PlayerState]
   }
 
 }

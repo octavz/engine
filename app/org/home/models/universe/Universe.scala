@@ -1,6 +1,7 @@
 package org.home.models.universe
 
 import org.home.components.RepositoryComponent
+import org.home.models.PlayerState
 import org.home.utils.Randomizer
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -9,21 +10,20 @@ import scalax.collection.generator.{NodeDegreeRange, RandomGraph}
 import scalax.collection.immutable.Graph
 import scalax.collection.io.json.descriptor.{Descriptor, NodeDescriptor}
 import scalax.collection.io.json.descriptor.predefined.UnDi
-
 import scalax.collection._
 import scalax.collection.GraphPredef._, scalax.collection.GraphEdge._
 import scalax.collection.edge._, scalax.collection.edge.Implicits._
-
 import scalax.collection.io.json._
 
-case class Universe(sectors: Universe.UniverseNet, label: String) {
 
-}
+case class Universe(sectors: Universe.UniverseNet, label: String)
+
+case class FullUniverse(universe: Universe, players: Seq[PlayerState])
 
 class UniverseService {
   this: RepositoryComponent =>
 
-  def loadUniverse(forceRestart: Boolean = false): Future[Universe] = {
+  def loadUniverse(forceRestart: Boolean = false): Future[FullUniverse] = {
 
     implicit val ec = ExecutionContext.global
     def createNew = {
@@ -35,11 +35,11 @@ class UniverseService {
     }
 
     if (forceRestart) {
-      createNew
+      createNew map (u => FullUniverse(u, Seq.empty))
     } else {
       repository.loadUniverse("main") flatMap {
-        case Some(u) => Future.successful(u)
-        case _ => createNew
+        case Some(u) => repository.loadAllPlayers() map (FullUniverse(u, _))
+        case _ => throw new Exception("Universe main not found")
       }
     }
   }

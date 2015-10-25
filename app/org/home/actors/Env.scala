@@ -13,8 +13,8 @@ import org.home.utils.Randomizer._
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
-import scala.collection.immutable.Queue
 import scala.concurrent.duration._
+import play.api.Logger
 
 object Env {
   def props(universeService: UniverseService, forceRestart: Boolean): Props =
@@ -26,7 +26,17 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
 
   val duration = 2.second
 
-  lazy val universe = Await.result(universeService.loadUniverse(forceRestart), duration)
+  def init(): Future[FullUniverse] = universeService.loadUniverse(forceRestart) map {
+    case res@FullUniverse(u, players) =>
+      players foreach {
+        ps =>
+          val ref = context.actorOf(Player.props(ps), name = ps.owner.id)
+          Logger.info(s"Player created at ${ref.path}")
+      }
+      res
+  }
+
+  lazy val universe: FullUniverse = Await.result(init(), duration)
 
   implicit val askTimeout = Timeout(2.second)
   val generator = context.actorOf(Generator.props(), name = "generator")
@@ -40,19 +50,17 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   def loginUser(login: String, password: String): Future[(String, PlayerState)] = {
     val f = for {
       ps <- repository
-        .findUserByLoginAndEmail(login, password)
+        .findByLoginAndEmail(login, password)
         .map(_.getOrElse(throw new Exception("User not found")))
       session <- repository.createSession(UserSession(ps.owner.id, nextId))
     } yield {
         //if cant finds it creates an actor
         context.actorSelection(s"${ps.owner.id}").resolveOne(duration) recover {
           case _ =>
-            val ref = context.actorOf(Player.props(ps), name = ps.owner.id)
-            println(s"User actor created at ${ref.path}")
-            ref
+            throw new Exception(s"Player actor ${ps.owner.id} not found!!")
         } map {
           a =>
-            println(s"Created or found actor at: ${a.path}")
+            Logger.info(s"Player found at ${a.path}")
             //save session
             sessions += session
             (session.sessionId, ps)
@@ -63,8 +71,13 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
 
   def registerUser(login: String, password: String, scenario: Int): Future[(String, PlayerState)] = {
     val newUser = UserModel(id = Randomizer.nextId, login = login, password = password, name = login)
-    val newState = PlayerState.newPlayer(newUser, scenario, universe  )
-    repository.registerUser(newState) flatMap (_ => loginUser(newUser.login, newUser.password))
+    val newState = PlayerState.newPlayer(newUser, scenario, universe.universe)
+    repository.registerPlayer(newState) flatMap {
+      _ =>
+        val ref = context.actorOf(Player.props(newState), name = newState.owner.id)
+        Logger.info(s"Player registered at ${ref.path}")
+        loginUser(newUser.login, newUser.password)
+    }
   }
 
   def stateForSession(sessionId: String): Future[Either[String, PlayerState]] = {
@@ -83,15 +96,15 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     }
   }
 
-  def turn() = {
-    println("Asking children to end turn")
+  def turn(time: Long) = {
+    Logger.info("Asking children to end turn")
     if (sessions.nonEmpty) {
-      val all = sessions.map(p => context.actorSelection(s"$p"))
-      all.foreach(_ ! Tic)
+      val all = sessions.map(p => context.actorSelection(s"${p.userId}"))
+      all.foreach(_ ! Tic(time))
     }
   }
 
-  def saveUniverse(): Future[Boolean] = universeService.saveUniverse(universe)
+  def saveUniverse(): Future[Boolean] = universeService.saveUniverse(universe.universe)
 
   def shutdown() = {
     log.info("shutdown")
@@ -108,13 +121,12 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     case State(session) =>
       stateForSession(session.getOrElse("No session sent")).pipeTo(sender())
     case SaveUniverse =>
-      println("Saving universe")
+      Logger.info("Saving universe")
       saveUniverse().pipeTo(sender())
     case GetUniverse =>
       Future.successful(universe).pipeTo(sender())
     case Shutdown => shutdown()
-    case Tic =>
-      turn()
+    case Tic(time) => turn(time)
     case x =>
       log.info("Env received unknown message: " + x)
   }

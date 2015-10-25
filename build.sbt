@@ -24,7 +24,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-ws" % "2.4.1",
   "com.typesafe.play" %% "play-json" % "2.4.1",
   "org.mockito" % "mockito-all" % "1.9.5",
-  "org.reactivecouchbase" %% "reactivecouchbase-core" % "0.3",
   "pl.matisoft" %% "swagger-play24" % "1.4",
   "com.wordnik" %% "swagger-core" % "1.3.12",
   "com.wordnik" %% "swagger-jaxrs" % "1.3.12",
@@ -37,4 +36,3 @@ libraryDependencies ++= Seq(
 javaOptions in Test += "-Dconfig.file=" + Option(System.getProperty("config.file")).getOrElse("conf/application.conf")
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
-

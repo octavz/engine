@@ -9,4 +9,3 @@ GET    /api-docs                    @pl.matisoft.swagger.ApiHelpController.getRe
 GET    /api-docs/main               @pl.matisoft.swagger.ApiHelpController.getResource(path = "/main")
 GET    /docs/*file                  controllers.Assets.at(path="/public/swagger", file)
 
-

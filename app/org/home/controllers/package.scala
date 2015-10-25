@@ -19,9 +19,13 @@ package object controllers extends Results {
 
   def response[T](call: => Future[T])(implicit request: Request[AnyContent], write: Writes[T]): Future[Result] = {
     val ret = try {
-      call.map(r => Ok(Json.toJson(r))).recover {
+      call.map{r =>
+      val json = Json.toJson(r)
+        Logger.info(json.toString())
+        Ok(json)
+      }.recover {
         case e: Throwable =>
-          Logger.logger.error("", e)
+          Logger.error("", e)
           BadRequest(Json.toJson(ErrorMessage(e.getMessage)))
       }
     } catch {
@@ -39,7 +43,7 @@ package object controllers extends Results {
     val ret = try {
       call.recover {
         case e: Throwable =>
-          Logger.logger.error("", e)
+          Logger.error("", e)
           BadRequest(Json.toJson(ErrorMessage(e.getMessage)))
       }
     } catch {

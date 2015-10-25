@@ -34,7 +34,7 @@ case object SaveUniverse
 
 case object GetUniverse
 
-case object Tic
+case class Tic(time: Long)
 
 case object Info
 

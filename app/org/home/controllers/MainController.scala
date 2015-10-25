@@ -13,6 +13,7 @@ import org.home.actors.messages.{LoginUser, _}
 import org.home.components.RepositoryComponentRedis
 import org.home.models._
 import org.home.models.universe._
+import play.api.Logger
 import play.api.libs.concurrent.Akka
 import play.api.libs.json.Json
 import play.api.mvc._
@@ -28,10 +29,16 @@ import play.api.Play.current
 class MainController @Inject()(system: ActorSystem) extends Controller {
   val universeService = new UniverseService with RepositoryComponentRedis
 
+  var time = 0
+  def newTic() = {
+    time = time + 1
+    Tic(time)
+  }
+
   lazy val env = {
     println("Getting environment")
     val ref = Await.result(Akka.system.actorSelection("user/environment").resolveOne(1.second), 1.second)
-    system.scheduler.schedule(1.seconds, 100.second, ref, Tic)
+    system.scheduler.schedule(1.seconds, 5.second) ( ref ! newTic() )
     ref
   }
 
@@ -60,7 +67,10 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
     implicit request =>
       simpleResponse {
         env ? GetUniverse map {
-          case u: Universe => Ok(Universe.toJson(u.sectors))
+          case u: Universe =>
+            val ret = Universe.toJson(u.sectors)
+            Logger.info(ret)
+            Ok(ret)
         }
       }
   }
@@ -74,7 +84,9 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       simpleResponse {
         env ? RegisterUser(login, password, scenario) map {
           case (session: String, ps: PlayerState) =>
-            Ok(Json.toJson(ps)).withHeaders("Authorization" -> session)
+            val ret = Json.toJson(ps)
+            Logger.info(ret.toString())
+            Ok(ret).withHeaders("Authorization" -> session)
           case x => throw new RuntimeException(s"Unknown message: ${x.toString}")
         }
       }
@@ -88,7 +100,9 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       simpleResponse {
         env ? LoginUser(login, password) map {
           case (session: String, ps: PlayerState) =>
-            Ok(Json.toJson(ps)).withHeaders("Authorization" -> session)
+            val ret =Json.toJson(ps)
+            Logger.info(ret.toString())
+            Ok(ret).withHeaders("Authorization" -> session)
           case x => throw new RuntimeException(s"Unknown message: ${x.toString}")
         }
       }
@@ -109,3 +123,4 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       }
   }
 }
+

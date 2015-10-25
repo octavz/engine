@@ -16,10 +16,11 @@ object ItemFactory {
     , location = Some(location)
     , props = Map.empty)
 
-  def newBasicBase = ItemState(
+  def newBasicBase(location: UniverseLocation) = ItemState(
     id = Randomizer.nextId
     , name = Randomizer.newName
     , itemType = ItemType.BASE
+    , location = Some(location)
     , props = Map.empty
   )
 

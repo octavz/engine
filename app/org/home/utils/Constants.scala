@@ -3,6 +3,8 @@ package org.home.utils
 object Constants {
   val KEY_LOGINS = "login-values"
   val KEY_UNIVERSE = "universe"
+  val USER_NS = "u"
+  val SESSION_NS = "s"
 }
 
 object ScenarioType {
