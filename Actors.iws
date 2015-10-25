@@ -33,14 +33,14 @@
     <favorites_list name="Actors" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.47604167">
+    <splitter split-orientation="horizontal" split-proportion="0.38020834">
       <split-first>
         <leaf>
           <file leaf-file-name="Player.scala" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/app/org/home/actors/Player.scala">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.21661721">
-                  <caret line="60" column="58" selection-start-line="60" selection-start-column="58" selection-end-line="60" selection-end-column="58" />
+                <state vertical-scroll-proportion="1.1780416">
+                  <caret line="93" column="14" selection-start-line="93" selection-start-column="14" selection-end-line="93" selection-end-column="14" />
                   <folding />
                 </state>
               </provider>
@@ -50,13 +50,13 @@
       </split-first>
       <split-second>
         <leaf>
-          <file leaf-file-name="MainController.scala" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/app/org/home/controllers/MainController.scala">
+          <file leaf-file-name="Env.scala" pinned="false" current-in-tab="true">
+            <entry file="file://$PROJECT_DIR$/app/org/home/actors/Env.scala">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="0.10682493">
-                  <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+                <state vertical-scroll-proportion="0.6231454">
+                  <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
                   <folding>
-                    <element signature="e#30#72#0" expanded="true" />
+                    <element signature="e#25#60#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -131,10 +131,10 @@
         <option value="$PROJECT_DIR$/app/org/home/controllers/MainController.scala" />
         <option value="$PROJECT_DIR$/app/org/home/components/RepositoryComponent.scala" />
         <option value="$PROJECT_DIR$/app/org/home/models/universe/Universe.scala" />
-        <option value="$PROJECT_DIR$/app/org/home/actors/Env.scala" />
         <option value="$PROJECT_DIR$/app/org/home/utils/Constants.scala" />
-        <option value="$PROJECT_DIR$/app/org/home/actors/Player.scala" />
         <option value="$PROJECT_DIR$/app/org/home/components/RepositoryComponentRedis.scala" />
+        <option value="$PROJECT_DIR$/app/org/home/actors/Player.scala" />
+        <option value="$PROJECT_DIR$/app/org/home/actors/Env.scala" />
       </list>
     </option>
   </component>
@@ -1058,16 +1058,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/org/home/controllers/MainController.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10682493">
-          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding>
-            <element signature="e#30#72#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/org/home/models/universe/Universe.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.10703667">
@@ -1104,39 +1094,6 @@
             <marker date="1445757191113" expanded="false" signature="-1:-1" placeholder="..." />
             <marker date="1445757191113" expanded="true" signature="-1:-1" placeholder="{...}" />
             <marker date="1445757191113" expanded="true" signature="-1:-1" placeholder="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/org/home/actors/Env.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4281467">
-          <caret line="38" column="35" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
-          <folding>
-            <marker date="1445760659834" expanded="false" signature="-1:-1" placeholder="..." />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="..." />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="{...}" />
-            <marker date="1445760659834" expanded="true" signature="-1:-1" placeholder="..." />
           </folding>
         </state>
       </provider>
@@ -1288,9 +1245,60 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/org/home/actors/Player.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.21661721">
-          <caret line="60" column="58" selection-start-line="60" selection-start-column="58" selection-end-line="60" selection-end-column="58" />
+        <state vertical-scroll-proportion="1.1780416">
+          <caret line="93" column="14" selection-start-line="93" selection-start-column="14" selection-end-line="93" selection-end-column="14" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/org/home/controllers/MainController.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5014837">
+          <caret line="71" column="27" selection-start-line="71" selection-start-column="27" selection-end-line="71" selection-end-column="27" />
+          <folding>
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="..." />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="(...)" />
+            <marker date="1445674619919" expanded="true" signature="-1:-1" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/org/home/actors/Env.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6231454">
+          <caret line="104" column="8" selection-start-line="104" selection-start-column="8" selection-end-line="104" selection-end-column="8" />
+          <folding>
+            <element signature="e#25#60#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

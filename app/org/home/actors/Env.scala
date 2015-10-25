@@ -27,10 +27,11 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   val duration = 2.second
 
   def init(): Future[FullUniverse] = universeService.loadUniverse(forceRestart) map {
-    case res@FullUniverse(u, players) =>
-      players foreach {
+    case res@FullUniverse(u, all) =>
+      all foreach {
         ps =>
           val ref = context.actorOf(Player.props(ps), name = ps.owner.id)
+          players += ps
           Logger.info(s"Player created at ${ref.path}")
       }
       res
@@ -41,6 +42,7 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   implicit val askTimeout = Timeout(2.second)
   val generator = context.actorOf(Generator.props(), name = "generator")
   val sessions = ListBuffer.empty[UserSession]
+  val players = ListBuffer.empty[PlayerState]
 
   def start() = {
     log.info("Starting new universe.")
@@ -75,6 +77,7 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     repository.registerPlayer(newState) flatMap {
       _ =>
         val ref = context.actorOf(Player.props(newState), name = newState.owner.id)
+        players += newState
         Logger.info(s"Player registered at ${ref.path}")
         loginUser(newUser.login, newUser.password)
     }
@@ -98,8 +101,8 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
 
   def turn(time: Long) = {
     Logger.info("Asking children to end turn")
-    if (sessions.nonEmpty) {
-      val all = sessions.map(p => context.actorSelection(s"${p.userId}"))
+    if (players.nonEmpty) {
+      val all = players.map(p => context.actorSelection(s"${p.owner.id}"))
       all.foreach(_ ! Tic(time))
     }
   }
