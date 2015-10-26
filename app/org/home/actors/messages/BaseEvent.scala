@@ -30,6 +30,8 @@ case class State(sessionId: Option[String] = None)
 
 case class MoveShipInSector(to: SectorPosition)
 
+case class GetPlayer(id: String)
+
 case object SaveUniverse
 
 case object GetUniverse

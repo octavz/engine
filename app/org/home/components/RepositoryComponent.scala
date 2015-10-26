@@ -1,5 +1,6 @@
 package org.home.components
 
+import org.home.dto.PlayerDTO
 import org.home.models._
 import org.home.models.universe._
 
@@ -9,7 +10,8 @@ trait RepositoryComponent {
   val repository: Repository
 
   trait Repository {
-    def saveUniverse(universe: Universe): Future[Boolean]
+
+    def saveUniverse(universe: Universe, forceRestart: Boolean): Future[Boolean]
 
     def loadUniverse(label: String): Future[Option[Universe]]
 

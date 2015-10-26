@@ -28,7 +28,7 @@ class UniverseService {
     implicit val ec = ExecutionContext.global
     def createNew = {
       val u = Universe.create()
-      repository.saveUniverse(u) map {
+      repository.saveUniverse(u, forceRestart) map {
         case true => u
         case _ => throw new RuntimeException("Universe cannot be created")
       }
@@ -44,7 +44,7 @@ class UniverseService {
     }
   }
 
-  def saveUniverse(universe: Universe) = repository.saveUniverse(universe)
+  def saveUniverse(universe: Universe) = repository.saveUniverse(universe, forceRestart = false)
 
 }
 

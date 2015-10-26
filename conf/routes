@@ -3,6 +3,7 @@ POST    /register                   @org.home.controllers.MainController.registe
 POST    /login                      @org.home.controllers.MainController.login(login: String, password: String)
 GET     /state                      @org.home.controllers.MainController.stateForSession
 POST    /start/:createNew           @org.home.controllers.MainController.start(createNew: Boolean )
+GET     /player/:id                 @org.home.controllers.MainController.getPlayer(id: String)
 
 
 GET    /api-docs                    @pl.matisoft.swagger.ApiHelpController.getResources

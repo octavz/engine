@@ -5,6 +5,7 @@ import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
 import org.home.actors.messages._
+import org.home.dto.PlayerDTO
 import org.home.models._
 import org.home.models.universe._
 import org.home.utils.Randomizer
@@ -114,6 +115,11 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     context.system.shutdown()
   }
 
+  def getPlayer(id: String): Future[Option[PlayerDTO]] =
+    repository.stateForPlayer(id) map {
+      _.map(ps => PlayerDTO(id = ps.owner.id, name = ps.owner.name))
+    }
+
   def receive = {
     case Start =>
       sender() ! start()
@@ -121,15 +127,14 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
       loginUser(login, pass).pipeTo(sender())
     case RegisterUser(login, pass, scenario) =>
       registerUser(login, pass, scenario).pipeTo(sender())
-    case State(session) =>
-      stateForSession(session.getOrElse("No session sent")).pipeTo(sender())
+    case State(session) => stateForSession(session.getOrElse("No session sent")).pipeTo(sender())
     case SaveUniverse =>
       Logger.info("Saving universe")
       saveUniverse().pipeTo(sender())
-    case GetUniverse =>
-      Future.successful(universe).pipeTo(sender())
+    case GetUniverse => Future.successful(universe).pipeTo(sender())
     case Shutdown => shutdown()
     case Tic(time) => turn(time)
+    case GetPlayer(id) => getPlayer(id).pipeTo(sender())
     case x =>
       log.info("Env received unknown message: " + x)
   }

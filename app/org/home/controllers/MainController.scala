@@ -1,8 +1,6 @@
 package org.home.controllers
 
 import javax.ws.rs.{PathParam, QueryParam}
-
-
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
@@ -11,6 +9,7 @@ import com.wordnik.swagger.annotations._
 import org.home.actors.Env
 import org.home.actors.messages.{LoginUser, _}
 import org.home.components.RepositoryComponentRedis
+import org.home.dto.PlayerDTO
 import org.home.models._
 import org.home.models.universe._
 import play.api.Logger
@@ -30,6 +29,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   val universeService = new UniverseService with RepositoryComponentRedis
 
   var time = 0
+
   def newTic() = {
     time = time + 1
     Tic(time)
@@ -38,7 +38,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   lazy val env = {
     println("Getting environment")
     val ref = Await.result(Akka.system.actorSelection("user/environment").resolveOne(1.second), 1.second)
-    system.scheduler.schedule(1.seconds, 5.second) ( ref ! newTic() )
+    system.scheduler.schedule(1.seconds, 5.second)(ref ! newTic())
     ref
   }
 
@@ -53,11 +53,13 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
         response {
           system.actorOf(Env.props(universeService, forceRestart = createNew), name = "environment") ? Start flatMap {
             _ =>
-              env ? SaveUniverse map {
-                ok =>
-                  if (ok.toString.toBoolean) StringResponse("Done")
-                  else throw new RuntimeException("Saving failed")
-              }
+              if (createNew) {
+                env ? SaveUniverse map {
+                  ok =>
+                    if (ok.toString.toBoolean) StringResponse("Done")
+                    else throw new RuntimeException("Saving failed")
+                }
+              } else Future.successful(StringResponse("Done"))
           }
         }
     }
@@ -71,6 +73,21 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
             val ret = Universe.toJson(u.sectors)
             Logger.info(ret)
             Ok(ret)
+        }
+      }
+  }
+
+  @ApiOperation(value = "GetPlayer", notes = "Gets player public", response = classOf[PlayerDTO], httpMethod = "GET", nickname = "getPlayer")
+  def getPlayer(@PathParam("id") id: String) = Action.async {
+    implicit request =>
+      response {
+        env ? GetPlayer(id) map {
+          case Some(a) => a match {
+            case d: PlayerDTO => a.asInstanceOf[PlayerDTO]
+            case _ => throw new Exception("No idea what i got")
+          }
+          case None => throw new Exception("User not found.")
+          case _ => throw new Exception("No idea what i got")
         }
       }
   }
@@ -100,7 +117,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       simpleResponse {
         env ? LoginUser(login, password) map {
           case (session: String, ps: PlayerState) =>
-            val ret =Json.toJson(ps)
+            val ret = Json.toJson(ps)
             Logger.info(ret.toString())
             Ok(ret).withHeaders("Authorization" -> session)
           case x => throw new RuntimeException(s"Unknown message: ${x.toString}")

@@ -1,5 +1,6 @@
 package org.home.components
 
+import org.home.dto.PlayerDTO
 import org.home.models.JsonFormats._
 import org.home.models._
 import org.home.models.universe.Universe
@@ -23,7 +24,7 @@ trait RepositoryComponentRedis extends RepositoryComponent {
 
     def woUserNS = woNS(USER_NS)
 
-    def withUniNS: String =withNS( KEY_UNIVERSE)
+    def withUniNS: String = withNS(KEY_UNIVERSE)
 
     def woSessionNS = woNS(SESSION_NS)
 
@@ -72,20 +73,24 @@ trait RepositoryComponentRedis extends RepositoryComponent {
         opt => opt.map(json => json.toPlayerState)
       }
 
-    override def saveUniverse(universe: Universe): Future[Boolean] = {
+    override def saveUniverse(universe: Universe, forceRestart: Boolean): Future[Boolean] = {
       val json = Universe.toJson(universe.sectors)
-      redis.flushDB() flatMap {
-        _ =>
-          redis.set(universe.label.withUniNS, json) flatMap {
-            _ =>
-              registerPlayer(PlayerState(
-                owner = UserModel("admin", "admin", "admin", "admin")
-                , qu = Queue.empty
-                , startSector = ""
-                , items = List.empty)) map { _ =>
-                true
-              }
-          }
+      if (forceRestart) {
+        redis.flushDB() flatMap {
+          _ =>
+            redis.set(universe.label.withUniNS, json) flatMap {
+              _ =>
+                registerPlayer(PlayerState(
+                  owner = UserModel("admin-id", "admin", "Administrator", "a")
+                  , qu = Queue.empty
+                  , startSector = ""
+                  , items = List.empty)) map { _ =>
+                  true
+                }
+            }
+        }
+      } else {
+        redis.set(universe.label.withUniNS, json) map (_ => true)
       }
     }
 
@@ -106,6 +111,7 @@ trait RepositoryComponentRedis extends RepositoryComponent {
           }.toSeq)
         case None => throw new Exception("Cannot find index key")
       }
+
   }
 
 }
