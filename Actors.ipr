@@ -63,6 +63,12 @@
       <SbtProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="jdk" value="1.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/project" />
+          </set>
+        </option>
       </SbtProjectSettings>
     </option>
     <option name="maximumHeapSize" value="1768" />
@@ -296,7 +302,9 @@
         <root url="jar://$USER_HOME$/.ivy2/cache/com.google.inject/guice/jars/guice-4.0.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.ideaLibSources/guice-4.0-sources.jar!/" />
+      </SOURCES>
     </library>
     <library name="SBT: com.livestream:scredis_2.11:2.0.6:jar">
       <CLASSES>
@@ -541,7 +549,9 @@
         <root url="jar://$USER_HOME$/.ivy2/cache/com.typesafe.play/play_2.11/jars/play_2.11-2.4.1.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.ideaLibSources/play_2.11-2.4.1-sources.jar!/" />
+      </SOURCES>
     </library>
     <library name="SBT: com.typesafe.play:twirl-api_2.11:1.0.2:jar">
       <CLASSES>

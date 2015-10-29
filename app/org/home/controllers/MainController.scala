@@ -6,7 +6,6 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
-import org.home.actors.Env
 import org.home.actors.messages.{LoginUser, _}
 import org.home.components.RepositoryComponentRedis
 import org.home.dto.PlayerDTO
@@ -28,17 +27,9 @@ import play.api.Play.current
 class MainController @Inject()(system: ActorSystem) extends Controller {
   val universeService = new UniverseService with RepositoryComponentRedis
 
-  var time = 0
-
-  def newTic() = {
-    time = time + 1
-    Tic(time)
-  }
-
   lazy val env = {
     println("Getting environment")
     val ref = Await.result(Akka.system.actorSelection("user/environment").resolveOne(1.second), 1.second)
-    system.scheduler.schedule(1.seconds, 5.second)(ref ! newTic())
     ref
   }
 
@@ -46,20 +37,14 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
 
   @ApiOperation(value = "Start", notes = "Start or reset universe",
     response = classOf[String], httpMethod = "POST", nickname = "start")
-  def start(
-             @ApiParam(value = "createNew", defaultValue = "false") @PathParam("createNew") createNew: Boolean) =
+  def start() =
     Action.async {
       implicit request =>
         response {
-          system.actorOf(Env.props(universeService, forceRestart = createNew), name = "environment") ? Start flatMap {
-            _ =>
-              if (createNew) {
-                env ? SaveUniverse map {
-                  ok =>
-                    if (ok.toString.toBoolean) StringResponse("Done")
-                    else throw new RuntimeException("Saving failed")
-                }
-              } else Future.successful(StringResponse("Done"))
+          env ? SaveUniverse map {
+            ok =>
+              if (ok.toString.toBoolean) StringResponse("Done")
+              else throw new RuntimeException("Saving failed")
           }
         }
     }

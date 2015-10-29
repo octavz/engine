@@ -27,27 +27,33 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
 
   val duration = 2.second
 
+  var universe: FullUniverse = _
+
+  implicit val askTimeout = Timeout(2.second)
+  val generator = context.actorOf(Generator.props(), name = "generator")
+  val sessions = ListBuffer.empty[UserSession]
+  var players: ListBuffer[PlayerState] = _
+
+  def start() = {
+    log.info("Starting new universe.")
+    context.system.scheduler.schedule(20.seconds, 10.second, generator, GenNew)
+    init() map {
+      v =>
+        universe = v
+    }
+  }
+
   def init(): Future[FullUniverse] = universeService.loadUniverse(forceRestart) map {
     case res@FullUniverse(u, all) =>
       all foreach {
         ps =>
           val ref = context.actorOf(Player.props(ps), name = ps.owner.id)
+          if(players == null) players = ListBuffer.empty
           players += ps
           Logger.info(s"Player created at ${ref.path}")
       }
+      println(res)
       res
-  }
-
-  lazy val universe: FullUniverse = Await.result(init(), duration)
-
-  implicit val askTimeout = Timeout(2.second)
-  val generator = context.actorOf(Generator.props(), name = "generator")
-  val sessions = ListBuffer.empty[UserSession]
-  val players = ListBuffer.empty[PlayerState]
-
-  def start() = {
-    log.info("Starting new universe.")
-    context.system.scheduler.schedule(20.seconds, 10.second, generator, GenNew)
   }
 
   def loginUser(login: String, password: String): Future[(String, PlayerState)] = {
@@ -121,8 +127,7 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     }
 
   def receive = {
-    case Start =>
-      sender() ! start()
+    case Start => start().pipeTo(sender())
     case LoginUser(login, pass) =>
       loginUser(login, pass).pipeTo(sender())
     case RegisterUser(login, pass, scenario) =>
