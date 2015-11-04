@@ -1,7 +1,7 @@
 package org.home.models.universe
 
 import org.home.components.RepositoryComponent
-import org.home.models.PlayerState
+import org.home.models.{UserSession, PlayerState}
 import org.home.utils.Randomizer
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -18,7 +18,7 @@ import scalax.collection.io.json._
 
 case class Universe(sectors: Universe.UniverseNet, label: String)
 
-case class FullUniverse(universe: Universe, players: Seq[PlayerState])
+case class FullUniverse(universe: Universe, players: Seq[PlayerState], sessions: Seq[UserSession])
 
 class UniverseService {
   this: RepositoryComponent =>
@@ -35,10 +35,16 @@ class UniverseService {
     }
 
     if (forceRestart) {
-      createNew map (u => FullUniverse(u, Seq.empty))
+      createNew map (u => FullUniverse(u, Seq.empty, Seq.empty))
     } else {
       repository.loadUniverse("main") flatMap {
-        case Some(u) => repository.loadAllPlayers() map (FullUniverse(u, _))
+        case Some(u) => repository.loadAllPlayers() flatMap {
+          players =>
+            repository.loadAllSessions() map {
+              sessions =>
+                FullUniverse(u, players, sessions)
+            }
+        }
         case _ => throw new Exception("Universe main not found")
       }
     }

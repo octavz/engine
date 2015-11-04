@@ -30,7 +30,8 @@ libraryDependencies ++= Seq(
   "com.livestream" %% "scredis" % "2.0.6",
   "com.assembla.scala-incubator" %% "graph-test" % "1.9.0",
   "com.assembla.scala-incubator" %% "graph-json" % "1.9.2",
-  "com.assembla.scala-incubator" %% "graph-core" % "1.9.3"
+  "com.assembla.scala-incubator" %% "graph-core" % "1.9.3",
+  "com.softwaremill.quicklens" %% "quicklens" % "1.4.2"
 )
 
 javaOptions in Test += "-Dconfig.file=" + Option(System.getProperty("config.file")).getOrElse("conf/application.conf")

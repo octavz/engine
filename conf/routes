@@ -4,6 +4,7 @@ POST    /login                      @org.home.controllers.MainController.login(l
 GET     /state                      @org.home.controllers.MainController.stateForSession
 POST    /start/                     @org.home.controllers.MainController.start()
 GET     /player/:id                 @org.home.controllers.MainController.getPlayer(id: String)
+POST    /action                     @org.home.controllers.MainController.createAction
 
 
 GET    /api-docs                    @pl.matisoft.swagger.ApiHelpController.getResources

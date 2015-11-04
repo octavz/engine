@@ -1,5 +1,7 @@
 package org.home.actors.messages
 
+import org.home.dto.PlayerActionDTO
+import org.home.models.UniverseLocation
 import org.home.models.universe.SectorPosition
 
 trait BaseEvent
@@ -12,34 +14,34 @@ sealed trait ActionEvent extends BaseEvent with Serializable {
 
 case class GenericEvent(eventId: String, eventLifetime: Long) extends ActionEvent with Serializable
 
-case object Start extends BaseEvent
+case object StartEvent extends BaseEvent
 
-case object Shutdown extends BaseEvent
+case object ShutdownEvent extends BaseEvent
 
-case object GenNew extends BaseEvent
+case object GenNewEvent extends BaseEvent
 
-case class LoginUser(login: String, password: String)
+case class LoginUserEvent(login: String, password: String)
 
-case class RegisterUser(login: String, password: String, scenario: Int)
+case class RegisterUserEvent(login: String, password: String, scenario: Int)
 
-case class NewPlayerItem(itemType: Int, itemProps: Map[String, String])
+case class NewPlayerItemEvent(itemType: Int, itemProps: Map[String, String], location: UniverseLocation)
 
-case class GetPlayerState(userId: String)
+case class StateEvent(sessionId: Option[String] = None)
 
-case class State(sessionId: Option[String] = None)
+case class PlayerActionEvent(dto: PlayerActionDTO)
 
-case class MoveShipInSector(to: SectorPosition)
+case class MoveInSectorEvent(itemId: String, to: SectorPosition)
 
-case class GetPlayer(id: String)
+case class GetPlayerEvent(id: String)
 
-case object SaveUniverse
+case object SaveUniverseEvent
 
-case object GetUniverse
+case object GetUniverseEvent
 
-case class Tic(time: Long)
+case class TicEvent(time: Long)
 
-case object Info
+case object InfoEvent
 
-case object NoError
+case object NoErrorEvent
 
-case object Error
+case object ErrorEvent

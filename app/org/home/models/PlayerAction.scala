@@ -1,4 +1,4 @@
 package org.home.models
 
-case class PlayerAction(actionType: Int, createdOn: Long, finishOn: Long)
+case class PlayerAction(actionType: Int, createdOn: Long, finishOn: Long, data: Option[String])
 

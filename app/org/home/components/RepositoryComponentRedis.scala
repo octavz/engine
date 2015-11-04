@@ -11,6 +11,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import org.home.utils.Constants._
 import scala.collection.immutable.Queue
+import com.softwaremill.quicklens._
 
 trait RepositoryComponentRedis extends RepositoryComponent {
   override val repository: Repository = new RepositoryRedis
@@ -31,6 +32,8 @@ trait RepositoryComponentRedis extends RepositoryComponent {
     def withSessionNS: String = withNS(SESSION_NS)
 
     def toPlayerState: PlayerState = Json.parse(s).as[PlayerState].prepare
+
+    def toUserSession: UserSession = Json.parse(s).as[UserSession].modify(_.sessionId).using(_.woNS(SESSION_NS))
   }
 
   implicit class PlayerOps(ps: PlayerState) {
@@ -84,7 +87,8 @@ trait RepositoryComponentRedis extends RepositoryComponent {
                   owner = UserModel("admin-id", "admin", "Administrator", "a")
                   , qu = Queue.empty
                   , startSector = ""
-                  , items = List.empty)) map { _ =>
+                  , items = List.empty
+                  , resources = List.empty)) map { _ =>
                   true
                 }
             }
@@ -112,6 +116,14 @@ trait RepositoryComponentRedis extends RepositoryComponent {
         case None => throw new Exception("Cannot find index key")
       }
 
+    private def loadSession(k: String): Future[UserSession] = redis.get(k) map (_.get.toUserSession)
+
+    override def loadAllSessions(): Future[Seq[UserSession]] = {
+      redis.keys(s"$SESSION_NS:*") flatMap {
+        keys =>
+          Future.sequence(keys.toSeq.map(loadSession))
+      }
+    }
   }
 
 }

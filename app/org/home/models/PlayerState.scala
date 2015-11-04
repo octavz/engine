@@ -6,7 +6,8 @@ import org.home.utils.{ItemType, Randomizer, ScenarioType}
 case class PlayerState(owner: UserModel
                        , qu: ActionQu
                        , startSector: String
-                       , items: List[ItemState])
+                       , items: List[ItemState]
+                       , resources: List[ResState])
 
 object PlayerState {
   def newPlayer(owner: UserModel, scenario: Int, universe: Universe) = {
@@ -19,9 +20,9 @@ object PlayerState {
         , qu = emptyActionQu
         , startSector = startSector
         , items = List(
-          ItemFactory.newBasicShip(UniverseLocation(startSector, SectorPosition(x, y, z)))
-          , ItemFactory.newResource(ItemType.RES_MONEY, 100)
-        ))
+          ItemFactory.newBasicShip(UniverseLocation(startSector, SectorPosition(x, y, z))))
+        , resources = List(ItemFactory.newResource(ItemType.RES_MONEY, 100))
+      )
     }
   }
 }

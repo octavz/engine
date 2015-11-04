@@ -17,6 +17,8 @@ trait RepositoryComponent {
 
     def loadAllPlayers(): Future[Seq[PlayerState]]
 
+    def loadAllSessions(): Future[Seq[UserSession]]
+
     def stateForPlayer(userId: String): Future[Option[PlayerState]]
 
     def findByLoginAndEmail(login: String, password: String): Future[Option[PlayerState]]

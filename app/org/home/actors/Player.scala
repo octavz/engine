@@ -6,7 +6,6 @@ import akka.util.Timeout
 import org.home.actors.messages._
 import org.home.models.universe.SectorPosition
 import org.home.utils.Randomizer._
-import play.api.Logger
 import play.api.Logger._
 
 import scala.collection.mutable.ListBuffer
@@ -14,6 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import org.home.models._
+import com.softwaremill.quicklens._
 
 object Player {
   def props(state: PlayerState): Props = Props(new Player(state))
@@ -23,7 +23,7 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
   val items: ListBuffer[String] = ListBuffer.empty
   implicit val askTimeout = Timeout(2.second)
 
-  def newItem(itemType: Int, props: Map[String, String]): Option[String] = {
+  def newItem(itemType: Int, props: Map[String, String], location: UniverseLocation): Option[String] = {
     try {
       val newItemId = nextId
       context.actorOf(PlayerItem.props(
@@ -31,7 +31,9 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
           id = newItemId
           , itemType = itemType
           , name = newRoman()
-          , props = Map.empty)), name = nextId)
+          , props = Map.empty
+          , location = location
+        )), name = nextId)
       items += newItemId
       Some(newItemId)
     } catch {
@@ -50,47 +52,27 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
     }
   }
 
-  def getState: Future[Either[String, PlayerState]] = {
-    //return state here
-    val childrenState = Future.sequence(context.children.toList.map {
-      c =>
-        val cf = c ? State
-        cf map {
-          case x: ItemState => Right(x)
-          case _ =>
-            logger.error(s"Cannot get state for ${c.path}")
-            Left(s"Cannot get state for ${c.path}")
-        }
-    })
+  def turn(time: Long) = {
 
-    val f = childrenState map {
-      lst =>
-        Right(PlayerState(
-          owner = state.owner
-          , qu = state.qu
-          , startSector = state.startSector
-          , items = lst.filterNot(_.isLeft).map(_.right.get)))
-    }
+  }
 
-    f recover {
-      case e: Throwable =>
-        Logger.logger.error("getPlayerState", e)
-        Left(e.getMessage)
-    }
+  def move(itemId: String, newPos: SectorPosition) = {
+    state = state.modify(_.items.eachWhere(_.id == itemId).location.sectorPosition).setTo(newPos)
   }
 
   def receive = {
-    case NewPlayerItem(itemType, props) =>
-      val rep = newItem(itemType, props) match {
+    case NewPlayerItemEvent(itemType, props, location) =>
+      val rep = newItem(itemType, props, location) match {
         case Some(id) => id
-        case _ => Error
+        case _ => ErrorEvent
       }
       sender ! rep
-    case Info => sender ! state.owner
-    case State => getState.pipeTo(sender())
-    case MoveShipInSector(SectorPosition(x, y, z)) =>
+    case InfoEvent => sender ! state.owner
+    case StateEvent => sender ! state
+    case MoveInSectorEvent(itemId, SectorPosition(x, y, z)) =>
 
-    case t@Tic(time) =>
+    case t@TicEvent(time) =>
+      turn(time)
       log.info(s"${state.owner.name} received tic...$time")
     case x => log.info("Player received unknown message: " + x)
   }

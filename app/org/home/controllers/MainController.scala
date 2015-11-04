@@ -6,9 +6,9 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
-import org.home.actors.messages.{LoginUser, _}
+import org.home.actors.messages.{LoginUserEvent, _}
 import org.home.components.RepositoryComponentRedis
-import org.home.dto.PlayerDTO
+import org.home.dto.{PlayerActionDTO, PlayerDTO}
 import org.home.models._
 import org.home.models.universe._
 import play.api.Logger
@@ -41,7 +41,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
     Action.async {
       implicit request =>
         response {
-          env ? SaveUniverse map {
+          env ? SaveUniverseEvent map {
             ok =>
               if (ok.toString.toBoolean) StringResponse("Done")
               else throw new RuntimeException("Saving failed")
@@ -53,10 +53,9 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   def index = Action.async {
     implicit request =>
       simpleResponse {
-        env ? GetUniverse map {
-          case u: Universe =>
-            val ret = Universe.toJson(u.sectors)
-            Logger.info(ret)
+        env ? GetUniverseEvent map {
+          case u: FullUniverse =>
+            val ret = Universe.toJson(u.universe.sectors)
             Ok(ret)
         }
       }
@@ -66,7 +65,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   def getPlayer(@PathParam("id") id: String) = Action.async {
     implicit request =>
       response {
-        env ? GetPlayer(id) map {
+        env ? GetPlayerEvent(id) map {
           case Some(a) => a match {
             case d: PlayerDTO => a.asInstanceOf[PlayerDTO]
             case _ => throw new Exception("No idea what i got")
@@ -84,7 +83,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
                 @ApiParam(value = "scenario", defaultValue = "0") @QueryParam("scenario") scenario: Int) = Action.async {
     implicit request =>
       simpleResponse {
-        env ? RegisterUser(login, password, scenario) map {
+        env ? RegisterUserEvent(login, password, scenario) map {
           case (session: String, ps: PlayerState) =>
             val ret = Json.toJson(ps)
             Logger.info(ret.toString())
@@ -100,7 +99,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
              @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     implicit request =>
       simpleResponse {
-        env ? LoginUser(login, password) map {
+        env ? LoginUserEvent(login, password) map {
           case (session: String, ps: PlayerState) =>
             val ret = Json.toJson(ps)
             Logger.info(ret.toString())
@@ -118,11 +117,30 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   def stateForSession = Action.async {
     implicit request =>
       response {
-        env ? State(request.sessionId) map {
-          case Right(s: PlayerState) => s
-          case x => throw new RuntimeException(s"Unknown message: ${x.toString}")
+        env ? StateEvent(request.sessionId) map {
+          case s: PlayerState => s
+          case x => throw new RuntimeException(s"Unknown message when expecting state: ${x.toString}")
         }
       }
   }
+
+  @ApiOperation(value = "Create action", response = classOf[Boolean], httpMethod = "POST", nickname = "createAction")
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(name = "Authorization", value = "authorization", defaultValue = "", required = true, dataType = "string", paramType = "header"),
+    new ApiImplicitParam(value = "The player action", required = true, dataType = "org.home.dto.PlayerActionDTO", paramType = "body")
+  ))
+  def createAction() = Action.async {
+    implicit request =>
+      request.body.asJson.map {
+        json =>
+          response {
+            env ? PlayerActionEvent(json.as[PlayerActionDTO]) map {
+              case Right(_) => true
+              case _ => false
+            }
+          }
+      }.getOrElse(throw new Exception("Bad Json"))
+  }
+
 }
 

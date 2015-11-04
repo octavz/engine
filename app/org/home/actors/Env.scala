@@ -1,6 +1,6 @@
 package org.home.actors
 
-import _root_.org.home.components._
+import org.home.components._
 import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
@@ -32,27 +32,27 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   implicit val askTimeout = Timeout(2.second)
   val generator = context.actorOf(Generator.props(), name = "generator")
   val sessions = ListBuffer.empty[UserSession]
-  var players: ListBuffer[PlayerState] = _
+  var players: ListBuffer[PlayerState] = ListBuffer.empty
 
   def start() = {
     log.info("Starting new universe.")
-    context.system.scheduler.schedule(20.seconds, 10.second, generator, GenNew)
+    context.system.scheduler.schedule(20.seconds, 10.second, generator, GenNewEvent)
     init() map {
-      v =>
-        universe = v
+      u =>
+        universe = u
+        Logger.info("Universe finished loading....")
     }
   }
 
   def init(): Future[FullUniverse] = universeService.loadUniverse(forceRestart) map {
-    case res@FullUniverse(u, all) =>
+    case res@FullUniverse(u, all, sess) =>
       all foreach {
         ps =>
           val ref = context.actorOf(Player.props(ps), name = ps.owner.id)
-          if(players == null) players = ListBuffer.empty
           players += ps
           Logger.info(s"Player created at ${ref.path}")
       }
-      println(res)
+      sess.foreach(sessions.+=)
       res
   }
 
@@ -63,18 +63,18 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
         .map(_.getOrElse(throw new Exception("User not found")))
       session <- repository.createSession(UserSession(ps.owner.id, nextId))
     } yield {
-        //if cant finds it creates an actor
-        context.actorSelection(s"${ps.owner.id}").resolveOne(duration) recover {
-          case _ =>
-            throw new Exception(s"Player actor ${ps.owner.id} not found!!")
-        } map {
-          a =>
-            Logger.info(s"Player found at ${a.path}")
-            //save session
-            sessions += session
-            (session.sessionId, ps)
-        }
+      //if can't finds it creates an actor
+      context.actorSelection(s"${ps.owner.id}").resolveOne(duration) recover {
+        case _ =>
+          throw new Exception(s"Player actor ${ps.owner.id} not found!!")
+      } map {
+        a =>
+          Logger.info(s"Player found at ${a.path}")
+          //save session
+          sessions += session
+          (session.sessionId, ps)
       }
+    }
     f.flatMap(identity)
   }
 
@@ -90,27 +90,21 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     }
   }
 
-  def stateForSession(sessionId: String): Future[Either[String, PlayerState]] = {
-    val f = sessions.find(_.sessionId == sessionId) match {
+  def stateForSession(sessionId: String): Future[PlayerState] =
+    sessions.find(_.sessionId == sessionId) match {
       case Some(session) =>
-        context.actorSelection(s"${session.userId}") ? State map {
-          case Right(s: PlayerState) => Right(s)
+        context.actorSelection(s"${session.userId}") ? StateEvent map {
+          case s: PlayerState => s
           case m => throw new RuntimeException(s"Message unknowns $m")
         }
-      case _ => Future.successful(Left(s"User with session: $sessionId not found."))
+      case _ => throw new Exception(s"User with session: $sessionId not found.")
     }
-
-    f recover {
-      case e: Throwable =>
-        Left(e.getMessage)
-    }
-  }
 
   def turn(time: Long) = {
     Logger.info("Asking children to end turn")
     if (players.nonEmpty) {
       val all = players.map(p => context.actorSelection(s"${p.owner.id}"))
-      all.foreach(_ ! Tic(time))
+      all.foreach(_ ! TicEvent(time))
     }
   }
 
@@ -127,21 +121,16 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     }
 
   def receive = {
-    case Start => start().pipeTo(sender())
-    case LoginUser(login, pass) =>
-      loginUser(login, pass).pipeTo(sender())
-    case RegisterUser(login, pass, scenario) =>
-      registerUser(login, pass, scenario).pipeTo(sender())
-    case State(session) => stateForSession(session.getOrElse("No session sent")).pipeTo(sender())
-    case SaveUniverse =>
-      Logger.info("Saving universe")
-      saveUniverse().pipeTo(sender())
-    case GetUniverse => Future.successful(universe).pipeTo(sender())
-    case Shutdown => shutdown()
-    case Tic(time) => turn(time)
-    case GetPlayer(id) => getPlayer(id).pipeTo(sender())
-    case x =>
-      log.info("Env received unknown message: " + x)
+    case StartEvent => start().pipeTo(sender())
+    case LoginUserEvent(login, pass) => loginUser(login, pass).pipeTo(sender())
+    case RegisterUserEvent(login, pass, scenario) => registerUser(login, pass, scenario).pipeTo(sender())
+    case StateEvent(session) => stateForSession(session.getOrElse("No session sent")).pipeTo(sender())
+    case SaveUniverseEvent => saveUniverse().pipeTo(sender())
+    case GetUniverseEvent => Future.successful(universe).pipeTo(sender())
+    case ShutdownEvent => shutdown()
+    case TicEvent(time) => turn(time)
+    case GetPlayerEvent(id) => getPlayer(id).pipeTo(sender())
+    case x => log.info("Env received unknown message: " + x)
   }
 
 }

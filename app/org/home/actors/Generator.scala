@@ -17,7 +17,7 @@ class Generator extends Actor with ActorLogging {
   }
 
   def receive = {
-    case GenNew => sender ! newEvent()
+    case GenNewEvent => sender ! newEvent()
     case x => log.info(x.toString)
   }
 

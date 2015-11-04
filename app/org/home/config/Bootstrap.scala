@@ -5,7 +5,7 @@ import javax.inject.Inject
 import akka.actor.ActorSystem
 import akka.util.Timeout
 import org.home.actors.Env
-import org.home.actors.messages.{Tic, Start}
+import org.home.actors.messages.{TicEvent, StartEvent}
 import org.home.components.RepositoryComponentRedis
 import org.home.models.universe.UniverseService
 import akka.pattern.ask
@@ -24,10 +24,10 @@ class Bootstrap @Inject()(val system: ActorSystem) {
 
   def newTic() = {
     time = time + 1
-    Tic(time)
+    TicEvent(time)
   }
 
-  system.actorOf(Env.props(universeService, forceRestart = false), name = "environment") ? Start map {
+  system.actorOf(Env.props(universeService, forceRestart = false), name = "environment") ? StartEvent map {
     _ =>
       Logger.info("Getting environment")
       val ref = Await.result(system.actorSelection("user/environment").resolveOne(1.second), 1.second)
