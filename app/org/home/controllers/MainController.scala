@@ -15,7 +15,6 @@ import play.api.Logger
 import play.api.libs.concurrent.Akka
 import play.api.libs.json.Json
 import play.api.mvc._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -99,6 +98,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
              @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
     implicit request =>
       simpleResponse {
+        
         env ? LoginUserEvent(login, password) map {
           case (session: String, ps: PlayerState) =>
             val ret = Json.toJson(ps)

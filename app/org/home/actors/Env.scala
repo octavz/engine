@@ -26,7 +26,6 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   this: RepositoryComponent =>
 
   val duration = 2.second
-
   var universe: FullUniverse = _
 
   implicit val askTimeout = Timeout(2.second)

@@ -15,9 +15,13 @@ resolvers += "ReactiveCouchbase Snapshots" at "https://raw.github.com/ReactiveCo
 
 resolvers += "ReactiveCouchbase Releases" at "https://raw.github.com/ReactiveCouchbase/repository/master/releases/"
 
+resolvers += "NetBeans" at "http://bits.netbeans.org/nexus/content/groups/netbeans"
+
+
 //scalacOptions ++= Seq("-feature", "-Xlog-implicits")
 
 scalacOptions ++= Seq("-feature")
+
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-cache" % "2.4.1",
@@ -32,6 +36,8 @@ libraryDependencies ++= Seq(
   "com.assembla.scala-incubator" %% "graph-json" % "1.9.2",
   "com.assembla.scala-incubator" %% "graph-core" % "1.9.3",
   "com.softwaremill.quicklens" %% "quicklens" % "1.4.2"
+  //"org.netbeans.api" % "org-netbeans-api-java" % "RELEASE731",
+  //"org.netbeans.api" % "org-netbeans-modules-java-source" % "RELEASE731"
 )
 
 javaOptions in Test += "-Dconfig.file=" + Option(System.getProperty("config.file")).getOrElse("conf/application.conf")

@@ -6,12 +6,12 @@ import org.home.models._
 import org.home.models.universe.Universe
 import play.api.libs.json.Json
 import scredis._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import org.home.utils.Constants._
 import scala.collection.immutable.Queue
 import com.softwaremill.quicklens._
+import play.api.Logger
 
 trait RepositoryComponentRedis extends RepositoryComponent {
   override val repository: Repository = new RepositoryRedis
@@ -66,6 +66,7 @@ trait RepositoryComponentRedis extends RepositoryComponent {
             throw new RuntimeException(s"User with login ${playerState.owner.login} already exists!")
           redis.withTransaction {
             t =>
+              t.
               t.hSet(KEY_LOGINS, playerState.owner.login, playerState.owner.id)
               t.set(playerState.owner.id.withUserNS, Json.toJson(playerState).toString())
           } map (_ => playerState)
@@ -121,7 +122,11 @@ trait RepositoryComponentRedis extends RepositoryComponent {
     override def loadAllSessions(): Future[Seq[UserSession]] = {
       redis.keys(s"$SESSION_NS:*") flatMap {
         keys =>
-          Future.sequence(keys.toSeq.map(loadSession))
+          Future.sequence(keys.toSeq.map(loadSession)) map {
+            s => 
+              Logger.info(s.toString)
+              s
+          }
       }
     }
   }

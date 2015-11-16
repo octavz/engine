@@ -28,16 +28,14 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
       val newItemId = nextId
       context.actorOf(PlayerItem.props(
         ItemState(
-          id = newItemId
-          , itemType = itemType
-          , name = newRoman()
-          , props = Map.empty
-          , location = location
-        )), name = nextId)
+          id = newItemId, itemType = itemType, name = newRoman(), props = Map.empty, location = location
+        )
+      ), name = nextId)
       items += newItemId
       Some(newItemId)
-    } catch {
-      case e: Throwable =>
+    }
+    catch {
+      case e: Throwable ⇒
         logger.error("newItem", e)
         None
     }
@@ -46,7 +44,7 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
   def restore(playerState: PlayerState) = {
     state = playerState
     playerState.items.foreach {
-      s =>
+      s ⇒
         context.actorOf(PlayerItem.props(s), name = s.id)
         items += s.id
     }
@@ -61,20 +59,20 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
   }
 
   def receive = {
-    case NewPlayerItemEvent(itemType, props, location) =>
+    case NewPlayerItemEvent(itemType, props, location) ⇒
       val rep = newItem(itemType, props, location) match {
-        case Some(id) => id
-        case _ => ErrorEvent
+        case Some(id) ⇒ id
+        case _        ⇒ ErrorEvent
       }
       sender ! rep
-    case InfoEvent => sender ! state.owner
-    case StateEvent => sender ! state
-    case MoveInSectorEvent(itemId, SectorPosition(x, y, z)) =>
+    case InfoEvent ⇒ sender ! state.owner
+    case StateEvent ⇒ sender ! state
+    case MoveInSectorEvent(itemId, SectorPosition(x, y, z)) ⇒
 
-    case t@TicEvent(time) =>
+    case t @ TicEvent(time) ⇒
       turn(time)
       log.info(s"${state.owner.name} received tic...$time")
-    case x => log.info("Player received unknown message: " + x)
+    case x ⇒ log.info("Player received unknown message: " + x)
   }
 
 }
