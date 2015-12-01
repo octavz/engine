@@ -1,9 +1,9 @@
 package org.home
 
-import scala.collection.immutable.Queue
+import scala.collection.mutable.ArrayBuffer
 
 package object models {
-  type ActionQu = Queue[PlayerAction]
+  type ActionQu = ArrayBuffer[PlayerAction]
 
-  def emptyActionQu = Queue.empty[PlayerAction]
+  def emptyActionQu: ActionQu = ArrayBuffer.empty[PlayerAction]
 }

@@ -12,6 +12,7 @@ import org.home.utils.Constants._
 import scala.collection.immutable.Queue
 import com.softwaremill.quicklens._
 import play.api.Logger
+import scala.collection.mutable.ArrayBuffer
 
 trait RepositoryComponentRedis extends RepositoryComponent {
   override val repository: Repository = new RepositoryRedis
@@ -66,7 +67,6 @@ trait RepositoryComponentRedis extends RepositoryComponent {
             throw new RuntimeException(s"User with login ${playerState.owner.login} already exists!")
           redis.withTransaction {
             t =>
-              t.
               t.hSet(KEY_LOGINS, playerState.owner.login, playerState.owner.id)
               t.set(playerState.owner.id.withUserNS, Json.toJson(playerState).toString())
           } map (_ => playerState)
@@ -86,7 +86,7 @@ trait RepositoryComponentRedis extends RepositoryComponent {
               _ =>
                 registerPlayer(PlayerState(
                   owner = UserModel("admin-id", "admin", "Administrator", "a")
-                  , qu = Queue.empty
+                  , qu = ArrayBuffer.empty
                   , startSector = ""
                   , items = List.empty
                   , resources = List.empty)) map { _ =>

@@ -24,9 +24,9 @@ scalacOptions ++= Seq("-feature")
 
 
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-cache" % "2.4.1",
-  "com.typesafe.play" %% "play-ws" % "2.4.1",
-  "com.typesafe.play" %% "play-json" % "2.4.1",
+  "com.typesafe.play" %% "play-cache" % "2.4.4",
+  "com.typesafe.play" %% "play-ws" % "2.4.4",
+  "com.typesafe.play" %% "play-json" % "2.4.4",
   "org.mockito" % "mockito-all" % "1.9.5",
   "pl.matisoft" %% "swagger-play24" % "1.4",
   "com.wordnik" %% "swagger-core" % "1.3.12",

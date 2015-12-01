@@ -5,7 +5,9 @@ import javax.annotation.Resource
 import org.home.actors.GenericState
 import org.home.utils.{ResourceNames, ItemType, Randomizer}
 
-case class ItemState(id: String, name: String, itemType: Int, props: Map[String, String], location: UniverseLocation ) extends GenericState {}
+case class ItemState(id: String, name: String, itemType: Int, props: Map[String, String], location: UniverseLocation ) extends GenericState {
+  val speed = props.get("speed").getOrElse(throw new Exception("Speed is not defined")).toInt
+}
 
 case class ResState(id: String, name: String, itemType: Int, props: Map[String, String] ) extends GenericState {}
 

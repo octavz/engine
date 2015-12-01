@@ -10,7 +10,9 @@ case class PlayerState(owner: UserModel
                        , resources: List[ResState])
 
 object PlayerState {
-  def newPlayer(owner: UserModel, scenario: Int, universe: Universe) = {
+  val DEFAULT_MONEY = 100
+
+  def newPlayer(owner: UserModel, scenario: Int, universe: Universe): PlayerState = {
     val startSector = Randomizer.someSector(universe).id
     val (x, y, z) = (0, 0, 0)
 
@@ -21,7 +23,7 @@ object PlayerState {
         , startSector = startSector
         , items = List(
           ItemFactory.newBasicShip(UniverseLocation(startSector, SectorPosition(x, y, z))))
-        , resources = List(ItemFactory.newResource(ItemType.RES_MONEY, 100))
+        , resources = List(ItemFactory.newResource(ItemType.RES_MONEY, DEFAULT_MONEY))
       )
     }
   }

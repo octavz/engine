@@ -20,6 +20,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import org.home.models.JsonFormats._
 import play.api.Play.current
+import org.home.utils.ActionType
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
@@ -36,12 +37,12 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
 
   @ApiOperation(value = "Start", notes = "Start or reset universe",
     response = classOf[String], httpMethod = "POST", nickname = "start")
-  def start() =
+  def start(): Action[AnyContent] =
     Action.async {
-      implicit request =>
+      implicit request ⇒
         response {
           env ? SaveUniverseEvent map {
-            ok =>
+            ok ⇒
               if (ok.toString.toBoolean) StringResponse("Done")
               else throw new RuntimeException("Saving failed")
           }
@@ -49,11 +50,11 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
     }
 
   @ApiOperation(value = "GetUniverse", notes = "Gets current universe", response = classOf[String], httpMethod = "GET", nickname = "index")
-  def index = Action.async {
-    implicit request =>
+  def index: Action[AnyContent] = Action.async {
+    implicit request ⇒
       simpleResponse {
         env ? GetUniverseEvent map {
-          case u: FullUniverse =>
+          case u: FullUniverse ⇒
             val ret = Universe.toJson(u.universe.sectors)
             Ok(ret)
         }
@@ -61,16 +62,16 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   }
 
   @ApiOperation(value = "GetPlayer", notes = "Gets player public", response = classOf[PlayerDTO], httpMethod = "GET", nickname = "getPlayer")
-  def getPlayer(@PathParam("id") id: String) = Action.async {
-    implicit request =>
+  def getPlayer(@PathParam("id") id: String): Action[AnyContent] = Action.async {
+    implicit request ⇒
       response {
         env ? GetPlayerEvent(id) map {
-          case Some(a) => a match {
-            case d: PlayerDTO => a.asInstanceOf[PlayerDTO]
-            case _ => throw new Exception("No idea what i got")
+          case Some(a) ⇒ a match {
+            case d: PlayerDTO ⇒ a.asInstanceOf[PlayerDTO]
+            case _ ⇒ throw new Exception("No idea what i got")
           }
-          case None => throw new Exception("User not found.")
-          case _ => throw new Exception("No idea what i got")
+          case None ⇒ throw new Exception("User not found.")
+          case _ ⇒ throw new Exception("No idea what i got")
         }
       }
   }
@@ -79,15 +80,16 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   def register(
                 @ApiParam(value = "login") @QueryParam("login") login: String,
                 @ApiParam(value = "password") @QueryParam("password") password: String,
-                @ApiParam(value = "scenario", defaultValue = "0") @QueryParam("scenario") scenario: Int) = Action.async {
-    implicit request =>
+                @ApiParam(value = "scenario", defaultValue = "0") @QueryParam("scenario") scenario: Int
+              ): Action[AnyContent] = Action.async {
+    implicit request ⇒
       simpleResponse {
         env ? RegisterUserEvent(login, password, scenario) map {
-          case (session: String, ps: PlayerState) =>
+          case (session: String, ps: PlayerState) ⇒
             val ret = Json.toJson(ps)
             Logger.info(ret.toString())
-            Ok(ret).withHeaders("Authorization" -> session)
-          case x => throw new RuntimeException(s"Unknown message: ${x.toString}")
+            Ok(ret).withHeaders("Authorization" → session)
+          case x ⇒ throw new RuntimeException(s"Unknown message: ${x.toString}")
         }
       }
   }
@@ -95,16 +97,17 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   @ApiOperation(value = "Login", notes = "Login", response = classOf[PlayerState], httpMethod = "POST", nickname = "login")
   def login(
              @ApiParam(value = "login") @QueryParam("login") login: String,
-             @ApiParam(value = "password") @QueryParam("password") password: String) = Action.async {
-    implicit request =>
+             @ApiParam(value = "password") @QueryParam("password") password: String
+           ): Action[AnyContent] = Action.async {
+    implicit request ⇒
       simpleResponse {
-        
+
         env ? LoginUserEvent(login, password) map {
-          case (session: String, ps: PlayerState) =>
+          case (session: String, ps: PlayerState) ⇒
             val ret = Json.toJson(ps)
             Logger.info(ret.toString())
-            Ok(ret).withHeaders("Authorization" -> session)
-          case x => throw new RuntimeException(s"Unknown message: ${x.toString}")
+            Ok(ret).withHeaders("Authorization" → session)
+          case x ⇒ throw new RuntimeException(s"Unknown message: ${x.toString}")
         }
       }
   }
@@ -114,30 +117,39 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
     new ApiImplicitParam(name = "Authorization", value = "authorization", defaultValue = "",
       required = true, dataType = "string", paramType = "header")
   ))
-  def stateForSession = Action.async {
-    implicit request =>
+  def stateForSession: Action[AnyContent] = Action.async {
+    implicit request ⇒
       response {
         env ? StateEvent(request.sessionId) map {
-          case s: PlayerState => s
-          case x => throw new RuntimeException(s"Unknown message when expecting state: ${x.toString}")
+          case s: PlayerState ⇒ s
+          case x ⇒ throw new RuntimeException(s"Unknown message when expecting state: ${x.toString}")
         }
       }
   }
 
   @ApiOperation(value = "Create action", response = classOf[Boolean], httpMethod = "POST", nickname = "createAction")
   @ApiImplicitParams(Array(
-    new ApiImplicitParam(name = "Authorization", value = "authorization", defaultValue = "", required = true, dataType = "string", paramType = "header"),
+    new ApiImplicitParam(name = "Authorization", value = "authorization", required = true, dataType = "string", paramType = "header"),
     new ApiImplicitParam(value = "The player action", required = true, dataType = "org.home.dto.PlayerActionDTO", paramType = "body")
   ))
-  def createAction() = Action.async {
-    implicit request =>
+  def createAction(): Action[AnyContent] = Action.async {
+    implicit request ⇒
       request.body.asJson.map {
-        json =>
+        json ⇒
           response {
-            env ? PlayerActionEvent(json.as[PlayerActionDTO]) map {
-              case Right(_) => true
-              case _ => false
+            val req = json.as[PlayerActionDTO]
+            req.action match {
+              case ActionType.MOVE_SECTOR ⇒
+                val ev = PlayerActionEvent[MoveInSectorAction](
+                  actionType = req.action
+                  , sessionId = request.sessionId
+                  , action = Json.parse(req.data).as[MoveInSectorAction])
+                env ? ev map {
+                  case Right(_) ⇒ true
+                  case _ ⇒ false
+                }
             }
+
           }
       }.getOrElse(throw new Exception("Bad Json"))
   }

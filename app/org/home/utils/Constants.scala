@@ -33,3 +33,10 @@ object ResourceNames {
 object SectorEnum {
 }
 
+object ActionType {
+  val MOVE_SECTOR = 0
+}
+
+object ActionDuration {
+  val MOVE_DURATION = 1
+}

@@ -17,43 +17,45 @@ package object controllers extends Results {
   implicit val fmtErrror = Json.format[ErrorMessage]
   implicit val fmtStringResponse = Json.format[StringResponse]
 
-  def response[T](call: => Future[T])(implicit request: Request[AnyContent], write: Writes[T]): Future[Result] = {
+  def response[T](call: ⇒ Future[T])(implicit request: Request[AnyContent], write: Writes[T]): Future[Result] = {
     val ret = try {
-      call.map{r =>
-      val json = Json.toJson(r)
+      call.map{ r ⇒
+        val json = Json.toJson(r)
         Logger.info(json.toString())
         Ok(json)
       }.recover {
-        case e: Throwable =>
+        case e: Throwable ⇒
           Logger.error("", e)
           BadRequest(Json.toJson(ErrorMessage(e.getMessage)))
       }
-    } catch {
-      case e: Throwable =>
+    }
+    catch {
+      case e: Throwable ⇒
         Future.successful(BadRequest(Json.toJson(ErrorMessage(e.getMessage))))
     }
     ret map {
-      r =>
+      r ⇒
         if (r.header.headers.contains("Authorization")) r
-        else r.withHeaders("Authorization" -> request.sessionId.getOrElse(""))
+        else r.withHeaders("Authorization" → request.sessionId.getOrElse(""))
     }
   }
 
-  def simpleResponse(call: => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+  def simpleResponse(call: ⇒ Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
     val ret = try {
       call.recover {
-        case e: Throwable =>
+        case e: Throwable ⇒
           Logger.error("", e)
           BadRequest(Json.toJson(ErrorMessage(e.getMessage)))
       }
-    } catch {
-      case e: Throwable =>
+    }
+    catch {
+      case e: Throwable ⇒
         Future.successful(BadRequest(Json.toJson(ErrorMessage(e.getMessage))))
     }
     ret map {
-      r =>
+      r ⇒
         (if (r.header.headers.contains("Authorization")) r
-        else r.withHeaders("Authorization" -> request.sessionId.getOrElse(""))).withHeaders("Content-Type" -> "application/json")
+        else r.withHeaders("Authorization" → request.sessionId.getOrElse(""))).withHeaders("Content-Type" → "application/json")
     }
   }
 
