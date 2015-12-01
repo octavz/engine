@@ -8,14 +8,16 @@ import org.home.actors.messages._
 import org.home.dto.PlayerDTO
 import org.home.models._
 import org.home.models.universe._
-import org.home.utils.Randomizer
+import org.home.utils.{ActionType, Randomizer}
 import org.home.utils.Randomizer._
+import play.api.libs.json.Json
 
 import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import scala.concurrent.duration._
 import play.api.Logger
+import org.home.models.JsonFormats._
 
 object Env {
   def props(universeService: UniverseService, forceRestart: Boolean): Props =
@@ -33,7 +35,7 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   val sessions = ListBuffer.empty[UserSession]
   var players: ListBuffer[PlayerState] = ListBuffer.empty
 
-  def start() = {
+  def start(): Future[Any] = {
     log.info("Starting new universe.")
     context.system.scheduler.schedule(20.seconds, 10.second, generator, GenNewEvent)
     init() map {
@@ -99,7 +101,7 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
       case _ => throw new Exception(s"User with session: $sessionId not found.")
     }
 
-  def turn(time: Long) = {
+  def turn(time: Long): Unit = {
     Logger.info("Asking children to end turn")
     if (players.nonEmpty) {
       val all = players.map(p => context.actorSelection(s"${p.owner.id}"))
@@ -109,7 +111,7 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
 
   def saveUniverse(): Future[Boolean] = universeService.saveUniverse(universe.universe)
 
-  def shutdown() = {
+  def shutdown(): Unit = {
     log.info("shutdown")
     context.system.shutdown()
   }
@@ -117,6 +119,17 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   def getPlayer(id: String): Future[Option[PlayerDTO]] =
     repository.stateForPlayer(id) map {
       _.map(ps => PlayerDTO(id = ps.owner.id, name = ps.owner.name))
+    }
+
+  def performAction(actionEvent: PlayerActionEvent): Future[Any] =
+    sessions.find(_.sessionId == actionEvent.sessionId) match {
+      case Some(session) =>
+        actionEvent.actionType match {
+          case ActionType.MOVE_SECTOR =>
+            val action = Json.parse(actionEvent.actionData).as[MoveInSectorAction]
+            context.actorSelection(s"${session.userId}") ? action
+        }
+      case _ => throw new Exception(s"User with session: ${actionEvent.sessionId} not found.")
     }
 
   def receive = {
@@ -129,6 +142,7 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     case ShutdownEvent => shutdown()
     case TicEvent(time) => turn(time)
     case GetPlayerEvent(id) => getPlayer(id).pipeTo(sender())
+    case a: PlayerActionEvent => performAction(a).pipeTo(sender())
     case x => log.info("Env received unknown message: " + x)
   }
 

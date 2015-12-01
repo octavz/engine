@@ -1,9 +1,7 @@
 package org.home.actors.messages
 
-import org.home.dto.PlayerActionDTO
 import org.home.models.UniverseLocation
 import org.home.models.universe.SectorPosition
-import org.home.models.EnvState
 
 trait BaseEvent
 
@@ -30,7 +28,7 @@ case class StateEvent(sessionId: Option[String] = None)
 
 case class MoveInSectorAction(itemId: String, to: SectorPosition)
 
-case class PlayerActionEvent[T](actionType: Int, sessionId: Option[String], action: T)
+case class PlayerActionEvent(actionType: Int, sessionId: Option[String], actionData: String)
 
 case class GetPlayerEvent(id: String)
 

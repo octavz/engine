@@ -3,10 +3,12 @@ package org.home.models
 import org.home.models.universe.{SectorPosition, Universe}
 import org.home.utils.{ItemType, Randomizer, ScenarioType}
 
+import scala.collection.mutable.ArrayBuffer
+
 case class PlayerState(owner: UserModel
                        , qu: ActionQu
                        , startSector: String
-                       , items: List[ItemState]
+                       , items: ArrayBuffer[ItemState]
                        , resources: List[ResState])
 
 object PlayerState {
@@ -21,7 +23,7 @@ object PlayerState {
         owner = owner
         , qu = emptyActionQu
         , startSector = startSector
-        , items = List(
+        , items = ArrayBuffer(
           ItemFactory.newBasicShip(UniverseLocation(startSector, SectorPosition(x, y, z))))
         , resources = List(ItemFactory.newResource(ItemType.RES_MONEY, DEFAULT_MONEY))
       )

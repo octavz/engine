@@ -140,10 +140,10 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
             val req = json.as[PlayerActionDTO]
             req.action match {
               case ActionType.MOVE_SECTOR ⇒
-                val ev = PlayerActionEvent[MoveInSectorAction](
+                val ev = PlayerActionEvent(
                   actionType = req.action
                   , sessionId = request.sessionId
-                  , action = Json.parse(req.data).as[MoveInSectorAction])
+                  , actionData = req.data)
                 env ? ev map {
                   case Right(_) ⇒ true
                   case _ ⇒ false

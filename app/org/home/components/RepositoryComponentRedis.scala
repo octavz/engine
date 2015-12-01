@@ -9,10 +9,9 @@ import scredis._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import org.home.utils.Constants._
-import scala.collection.immutable.Queue
 import com.softwaremill.quicklens._
 import play.api.Logger
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ListBuffer, ArrayBuffer}
 
 trait RepositoryComponentRedis extends RepositoryComponent {
   override val repository: Repository = new RepositoryRedis
@@ -86,9 +85,9 @@ trait RepositoryComponentRedis extends RepositoryComponent {
               _ =>
                 registerPlayer(PlayerState(
                   owner = UserModel("admin-id", "admin", "Administrator", "a")
-                  , qu = ArrayBuffer.empty
+                  , qu = emptyActionQu
                   , startSector = ""
-                  , items = List.empty
+                  , items = ArrayBuffer.empty
                   , resources = List.empty)) map { _ =>
                   true
                 }
@@ -123,7 +122,7 @@ trait RepositoryComponentRedis extends RepositoryComponent {
       redis.keys(s"$SESSION_NS:*") flatMap {
         keys =>
           Future.sequence(keys.toSeq.map(loadSession)) map {
-            s => 
+            s =>
               Logger.info(s.toString)
               s
           }
