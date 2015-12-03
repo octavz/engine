@@ -2,6 +2,7 @@ package org.home.utils
 
 import org.home.models.universe.{Sector, Universe}
 
+import scala.reflect.ClassTag
 import scala.util.Random
 
 object Randomizer {
@@ -27,12 +28,20 @@ object Randomizer {
 
   def newString(length: Int = 10): String = Random.alphanumeric.take(length).mkString
 
-  def newName = {
+  def newName: String = {
     val rand = newInt(0, names.size - 1)
     names(rand)
   }
 
-  def newLong(min: Long = 100, max: Long = 10000): Long =  (Math.abs(Random.nextLong()) % (max - min)) + min
+  import scala.reflect._
+
+  def newNumeric[T <: AnyVal : ClassTag](): T = {
+    if (classTag[T].runtimeClass == classOf[Int]) newInt().asInstanceOf[T]
+    else if (classTag[T].runtimeClass == classOf[Long]) newLong().asInstanceOf[T]
+    else throw new Exception(s"Random not implemented for type ${classTag[T].runtimeClass.getName}")
+  }
+
+  def newLong(min: Long = 100, max: Long = 10000): Long = (Math.abs(Random.nextLong()) % (max - min)) + min
 
   def newInt(min: Int = 10, max: Int = 1000): Int = min + Random.nextInt((max - min) + 1)
 
@@ -47,26 +56,26 @@ object Randomizer {
   }
 
   /**
-   * @return random string id
-   */
+    * @return random string id
+    */
   //  def newId = UUID.randomUUID().toString
 
   def nextId = newString(12).toLowerCase
 
   /**
-   * @return a random time span in seconds
-   */
+    * @return a random time span in seconds
+    */
   def newTimeSpan = Random.nextLong() + 10
 
   def newRoman() = toRomanNumerals(newInt())
 
-  private def toRomanNumerals( number: Int) : String = {
-    toRomanNumerals( number, List( ("M", 1000),("CM", 900), ("D", 500), ("CD", 400), ("C", 100), ("XC", 90),
-      ("L", 50), ("XL",40), ("X", 10), ("IX", 9), ("V", 5), ("IV", 4), ("I", 1) ))
+  private def toRomanNumerals(number: Int): String = {
+    toRomanNumerals(number, List(("M", 1000), ("CM", 900), ("D", 500), ("CD", 400), ("C", 100), ("XC", 90),
+      ("L", 50), ("XL", 40), ("X", 10), ("IX", 9), ("V", 5), ("IV", 4), ("I", 1)))
   }
 
-  private def toRomanNumerals( number: Int, digits: List[(String, Int)] ) : String = digits match {
+  private def toRomanNumerals(number: Int, digits: List[(String, Int)]): String = digits match {
     case Nil => ""
-    case h :: t => h._1 * ( number / h._2 ) + toRomanNumerals( number % h._2, t )
+    case h :: t => h._1 * (number / h._2) + toRomanNumerals(number % h._2, t)
   }
 }

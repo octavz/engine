@@ -1,8 +1,8 @@
 package org.home.models.universe
 
-import org.home.utils.Randomizer
+import org.home.utils.{Vector3D, Randomizer}
 
-case class SectorObject(id: String, name: String, objType: Int, position: SectorPosition, size: ObjectSize)
+case class SectorObject(id: String, name: String, objType: Int, position: Vector3D[Long], size: ObjectSize)
 
 object SectorObject extends Createable[SectorObject] {
 
@@ -10,7 +10,7 @@ object SectorObject extends Createable[SectorObject] {
     id = Randomizer.nextId,
     name = Randomizer.newRoman(),
     objType = Randomizer.newInt(0, 3),
-    position = SectorPosition.create(),
+    position = Vector3D.create[Long](),
     size = ObjectSize.create())
 }
 

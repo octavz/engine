@@ -4,7 +4,6 @@ import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
 import org.home.actors.messages._
-import org.home.models.universe.SectorPosition
 import org.home.utils.Randomizer._
 import play.api.Logger._
 import scala.collection.mutable.ListBuffer
@@ -68,14 +67,11 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
         context.actorSelection(s"${item.id}").resolveOne(duration) flatMap { actorItem =>
           actorItem ? action
         }
-      //        val distance = Ops.dist(item.location.sectorPosition, newPos)
-      //        val time = Math.floor(distance * item.speed).toLong
-      //        state.qu += PlayerAction(ActionType.MOVE_SECTOR, currentTime, currentTime + time, itemId, Some(newPos.toString))
       case _ ⇒ throw new Exception(s"Cannot find item ${action.itemId}")
     }
   }
 
-  def receive = {
+  def receive: Receive = {
     case NewPlayerItemEvent(itemType, props, location) ⇒
       val rep = newItem(itemType, props, location) match {
         case Some(id) ⇒ id

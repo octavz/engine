@@ -1,7 +1,7 @@
 package org.home.models
 
-import org.home.models.universe.{SectorPosition, Universe}
-import org.home.utils.{ItemType, Randomizer, ScenarioType}
+import org.home.models.universe.{ Universe}
+import org.home.utils.{Vector3D, ItemType, Randomizer, ScenarioType}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -24,7 +24,7 @@ object PlayerState {
         , qu = emptyActionQu
         , startSector = startSector
         , items = ArrayBuffer(
-          ItemFactory.newBasicShip(UniverseLocation(startSector, SectorPosition(x, y, z))))
+          ItemFactory.newBasicShip(UniverseLocation(startSector, Vector3D(x, y, z))))
         , resources = List(ItemFactory.newResource(ItemType.RES_MONEY, DEFAULT_MONEY))
       )
     }

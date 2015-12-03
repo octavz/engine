@@ -1,7 +1,7 @@
 package org.home.actors.messages
 
 import org.home.models.UniverseLocation
-import org.home.models.universe.SectorPosition
+import org.home.utils.Vector3D
 
 trait BaseEvent
 
@@ -26,7 +26,7 @@ case class NewPlayerItemEvent(itemType: Int, itemProps: Map[String, String], loc
 
 case class StateEvent(sessionId: Option[String] = None)
 
-case class MoveInSectorAction(itemId: String, to: SectorPosition)
+case class MoveInSectorAction(itemId: String, to: Vector3D[Long])
 
 case class PlayerActionEvent(actionType: Int, sessionId: Option[String], actionData: String)
 

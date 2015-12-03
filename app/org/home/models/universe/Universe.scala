@@ -2,8 +2,6 @@ package org.home.models.universe
 
 import org.home.components.RepositoryComponent
 import org.home.models.{UserSession, PlayerState}
-import org.home.utils.Randomizer
-
 import scala.concurrent.{ExecutionContext, Future}
 import scalax.collection.GraphEdge.UnDiEdge
 import scalax.collection.generator.{NodeDegreeRange, RandomGraph}
@@ -14,7 +12,6 @@ import scalax.collection._
 import scalax.collection.GraphPredef._, scalax.collection.GraphEdge._
 import scalax.collection.edge._, scalax.collection.edge.Implicits._
 import scalax.collection.io.json._
-
 
 case class Universe(sectors: Universe.UniverseNet, label: String)
 
