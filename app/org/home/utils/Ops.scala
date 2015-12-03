@@ -22,6 +22,13 @@ object Vector3D {
 
 object Ops {
 
+  def getNextPoint(v0: Vector3D[Long], v1: Vector3D[Long], t: Int = 1): Vector3D[Long] = {
+    val dir = Vector3D(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z)
+    def x(t: Long): Long = v0.x - t * dir.x
+    def y(t: Long): Long = v0.y - t * dir.y
+    def z(t: Long): Long = v0.z - t * dir.z
+    Vector3D(x(t), y(t), z(t))
+  }
 
   implicit class ConvertFromString[T <: AnyVal : ClassTag](s: String) {
     def convert: T = {

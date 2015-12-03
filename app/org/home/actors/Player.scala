@@ -6,15 +6,9 @@ import akka.util.Timeout
 import org.home.actors.messages._
 import org.home.utils.Randomizer._
 import play.api.Logger._
-import scala.collection.mutable.ListBuffer
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 import scala.concurrent.duration._
 import org.home.models._
-import org.home.utils.ActionType
-import org.home.models.PlayerAction
-import org.home.utils.ActionDuration
-import org.home.utils.Ops
 
 object Player {
   def props(state: PlayerState): Props = Props(new Player(state))
@@ -61,7 +55,6 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
   }
 
   def move(action: MoveInSectorAction): Unit = {
-    //state = state.modify(_.items.eachWhere(_.id == itemId).location.sectorPosition).setTo(newPos)
     state.items.find(s ⇒ s.id == action.itemId) match {
       case Some(item) ⇒
         context.actorSelection(s"${item.id}").resolveOne(duration) flatMap { actorItem =>

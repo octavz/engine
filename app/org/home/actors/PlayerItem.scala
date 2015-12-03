@@ -3,8 +3,8 @@ package org.home.actors
 import akka.actor.{Actor, ActorLogging, Props}
 import org.home.actors.messages.{TicEvent, MoveInSectorAction, StateEvent}
 import org.home.models.{PlayerAction, ItemState}
-import org.home.utils.{Vector3D, ActionType, Ops, ItemType}
-import play.api.libs.json.Json
+import org.home.utils._
+import com.softwaremill.quicklens._
 
 object PlayerItem {
   def props(state: ItemState): Props = {
@@ -23,6 +23,7 @@ abstract class BasicPlayerItem(var state: ItemState) extends Actor with ActorLog
   def turn(time: Long): Unit = {
     log.info(s"Item ${state.id} received tic... $time")
     currentTime = time
+    updateTurnState()
   }
 
   override def receive: Receive = {
@@ -31,11 +32,12 @@ abstract class BasicPlayerItem(var state: ItemState) extends Actor with ActorLog
   }
 }
 
-class Ship(initState: ItemState) extends BasicPlayerItem(initState) {
+class Ship(shipState: ItemState) extends BasicPlayerItem(shipState) {
 
-  def registerMove(a: MoveInSectorAction): Unit = {
+  def registerMoveAction(a: MoveInSectorAction): Unit = {
     val newQu = state.qu.filterNot(_.actionType == ActionType.MOVE_SECTOR)
-    newQu += PlayerAction(actionType = ActionType.MOVE_SECTOR
+    newQu += PlayerAction(id = Randomizer.nextId
+      , actionType = ActionType.MOVE_SECTOR
       , createdOn = currentTime
       , lastModified = currentTime
       , target = Some(state.id)
@@ -45,32 +47,31 @@ class Ship(initState: ItemState) extends BasicPlayerItem(initState) {
   }
 
   override def receive: Receive = {
-    case a: MoveInSectorAction => registerMove(a)
+    case a: MoveInSectorAction => registerMoveAction(a)
   }
 
-  import  Ops._
+  def removeActionFromQu(id: String): Unit = state.qu ++= state.qu.filterNot(_.id == id)
 
-  protected def performMove(lastModified: Long, serFinalPosition: String) = {
-    val finalPosition = Vector3D.fromString[Long](serFinalPosition)
-    val v0 = Vector3D(state.location.sectorPosition.x, state.location.sectorPosition.y, state.location.sectorPosition.z)
-    val v1 = Vector3D(finalPosition.x, finalPosition.y, finalPosition.y)
-    val dir = Vector3D(v1.x - v0.x, v1.y - v0.y, v1.z - v0.z)
-    def x(t: Long): Long = v0.x - t * dir.x
-    def y(t: Long): Long = v0.y - t * dir.y
-    def z(t: Long): Long = v0.z - t * dir.z
-    val newPos = Vector3D(x(1), y(1), z(1))
-  }
+  protected def performMove() =
+    state.qu.find(_.actionType == ActionType.MOVE_SECTOR) match {
+      case Some(action) =>
+        val serFinalPosition = action.data.getOrElse(throw new RuntimeException("No data for move action"))
+        val finalPosition = Vector3D.fromString[Long](serFinalPosition)
+        val newPos = Ops.getNextPoint(state.location.sectorPosition, finalPosition)
+        state = state.modify(_.location.sectorPosition).setTo(newPos)
+        if (newPos == finalPosition) removeActionFromQu(action.id)
+      case _ => throw new RuntimeException("Move not allowed, there is no such action")
+    }
 
   override def updateTurnState(): Unit = {
     state.qu.foreach {
-      case a@PlayerAction(ActionType.MOVE_SECTOR, createdOn, lastModified, target, data) =>
-        performMove(lastModified, data.getOrElse(throw new Exception("Final position is not found")))
+      case _: PlayerAction => performMove()
       case _ =>
     }
   }
 }
 
-class Factory(initState: ItemState) extends BasicPlayerItem(initState) {
+class Factory(factoryState: ItemState) extends BasicPlayerItem(factoryState) {
   override def updateTurnState(): Unit = ???
 }
 

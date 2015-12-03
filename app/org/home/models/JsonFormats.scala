@@ -1,7 +1,6 @@
 package org.home.models
 
 import org.home.dto.{PlayerActionDTO, PlayerDTO}
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 import org.home.models.universe._
@@ -33,7 +32,5 @@ object JsonFormats {
   implicit val fmtPlayerActionDTO = Json.format[PlayerActionDTO]
   implicit val readsMoveInSectorAction = Json.reads[MoveInSectorAction]
 
-  import play.api.libs.json._
-  import play.api.libs.functional.syntax._
 
 }
