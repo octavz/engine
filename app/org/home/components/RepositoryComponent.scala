@@ -1,6 +1,5 @@
 package org.home.components
 
-import org.home.dto.PlayerDTO
 import org.home.models._
 import org.home.models.universe._
 

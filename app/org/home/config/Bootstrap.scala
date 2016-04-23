@@ -4,8 +4,8 @@ import javax.inject.Inject
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import org.home.actors.Env
-import org.home.actors.messages.{TicEvent, StartEvent}
+import org.home.game.world.Env
+import org.home.messages.{TicEvent, StartEvent}
 import org.home.components.RepositoryComponentRedis
 import org.home.models.universe.UniverseService
 import akka.pattern.ask
@@ -14,15 +14,15 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Bootstrap @Inject()(val system: ActorSystem) {
+class Bootstrap @Inject() (val system: ActorSystem) {
 
   val universeService = new UniverseService with RepositoryComponentRedis
 
   implicit val askTimeout = Timeout(5.second)
 
-  var time = 0
+  var time = 0L
 
-  def newTic() = {
+  def newTic(): TicEvent = {
     time = time + 1
     TicEvent(time)
   }
@@ -30,9 +30,13 @@ class Bootstrap @Inject()(val system: ActorSystem) {
   system.actorOf(Env.props(universeService, forceRestart = false), name = "environment") ? StartEvent map {
     _ =>
       Logger.info("Getting environment")
-      val ref = Await.result(system.actorSelection("user/environment").resolveOne(1.second), 1.second)
+      val ref = Await.result(
+        system.actorSelection("user/environment")
+          .resolveOne(1.second), 1.second
+      )
       system.scheduler.schedule(1.seconds, 5.second)(ref ! newTic())
       Logger.info("Environment loaded.")
   }
 
 }
+

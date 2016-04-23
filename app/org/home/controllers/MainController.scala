@@ -6,7 +6,7 @@ import akka.pattern.ask
 import akka.util.Timeout
 import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
-import org.home.actors.messages.{LoginUserEvent, _}
+import org.home.messages.{LoginUserEvent, _}
 import org.home.components.RepositoryComponentRedis
 import org.home.dto.{PlayerActionDTO, PlayerDTO}
 import org.home.models._
@@ -29,27 +29,23 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
 
   lazy val env = {
     println("Getting environment")
-    val ref = Await.result(Akka.system.actorSelection("user/environment").resolveOne(1.second), 1.second)
-    ref
+    Await.result(system.actorSelection("user/environment").resolveOne(1.second), 1.second)
   }
 
   implicit val askTimeout = Timeout(5.second)
 
-  @ApiOperation(value = "Start", notes = "Start or reset universe",
-    response = classOf[String], httpMethod = "POST", nickname = "start")
+  @ApiOperation(value = "Start", notes = "Start or reset universe", response = classOf[String],
+    httpMethod = "POST", nickname = "start")
   def start(): Action[AnyContent] =
     Action.async {
       implicit request ⇒
         response {
-          env ? SaveUniverseEvent map {
-            ok ⇒
-              if (ok.toString.toBoolean) StringResponse("Done")
-              else throw new RuntimeException("Saving failed")
-          }
+          env ? StartEvent map {r => StringResponse(r.toString) }
         }
     }
 
-  @ApiOperation(value = "GetUniverse", notes = "Gets current universe", response = classOf[String], httpMethod = "GET", nickname = "index")
+  @ApiOperation(value = "GetUniverse", notes = "Gets current universe", response = classOf[String],
+    httpMethod = "GET", nickname = "index")
   def index: Action[AnyContent] = Action.async {
     implicit request ⇒
       simpleResponse {
@@ -61,7 +57,8 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       }
   }
 
-  @ApiOperation(value = "GetPlayer", notes = "Gets player public", response = classOf[PlayerDTO], httpMethod = "GET", nickname = "getPlayer")
+  @ApiOperation(value = "GetPlayer", notes = "Gets player public", response = classOf[PlayerDTO],
+    httpMethod = "GET", nickname = "getPlayer")
   def getPlayer(@PathParam("id") id: String): Action[AnyContent] = Action.async {
     implicit request ⇒
       response {
@@ -76,7 +73,8 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       }
   }
 
-  @ApiOperation(value = "Register", notes = "Register", response = classOf[PlayerState], httpMethod = "POST", nickname = "register")
+  @ApiOperation(value = "Register", notes = "Register", response = classOf[PlayerState],
+    httpMethod = "POST", nickname = "register")
   def register(
                 @ApiParam(value = "login") @QueryParam("login") login: String,
                 @ApiParam(value = "password") @QueryParam("password") password: String,
@@ -94,7 +92,8 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       }
   }
 
-  @ApiOperation(value = "Login", notes = "Login", response = classOf[PlayerState], httpMethod = "POST", nickname = "login")
+  @ApiOperation(value = "Login", notes = "Login", response = classOf[PlayerState],
+    httpMethod = "POST", nickname = "login")
   def login(
              @ApiParam(value = "login") @QueryParam("login") login: String,
              @ApiParam(value = "password") @QueryParam("password") password: String
@@ -127,10 +126,13 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       }
   }
 
-  @ApiOperation(value = "Create action", response = classOf[Boolean], httpMethod = "POST", nickname = "createAction")
-  @ApiImplicitParams(Array(
-    new ApiImplicitParam(name = "Authorization", value = "authorization", required = true, dataType = "string", paramType = "header"),
-    new ApiImplicitParam(value = "The player action", required = true, dataType = "org.home.dto.PlayerActionDTO", paramType = "body")
+  @ApiOperation(value = "Create action", response = classOf[Boolean],
+    httpMethod = "POST", nickname = "createAction")
+  @ApiImplicitParams(Array (
+    new ApiImplicitParam(name = "Authorization", value = "authorization", required = true,
+      dataType = "string", paramType = "header"),
+    new ApiImplicitParam(value = "The player action", required = true,
+      dataType = "org.home.dto.PlayerActionDTO", paramType = "body")
   ))
   def createAction(): Action[AnyContent] = Action.async {
     implicit request ⇒
@@ -143,7 +145,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
                 val ev = PlayerActionEvent(
                   actionType = req.action
                   , sessionId = request.sessionId
-                  , actionData = req.data)
+                  , actionData = req.data, currentTime = 1)
                 env ? ev map {
                   case Right(_) ⇒ true
                   case _ ⇒ false

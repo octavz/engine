@@ -1,22 +1,22 @@
-package org.home.actors
+package org.home.game.world
 
 
-import messages._
+import org.home.messages._
 import akka.actor._
 
 import org.home.utils.Randomizer._
 
 object Generator{
-  def props() = Props(new Generator)
+  def props(): Props = Props(new Generator)
 }
 
 class Generator extends Actor with ActorLogging {
 
-  def newEvent(): ActionEvent = {
-    GenericEvent(eventId = nextId, newTimeSpan)
+  def newEvent(): RandomEvent = {
+    RandomEvent(eventId = nextId, newTimeSpan)
   }
 
-  def receive = {
+  def receive: Receive = {
     case GenNewEvent => sender ! newEvent()
     case x => log.info(x.toString)
   }

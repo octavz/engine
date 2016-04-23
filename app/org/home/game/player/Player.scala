@@ -1,14 +1,16 @@
-package org.home.actors
+package org.home.game.player
 
 import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
-import org.home.actors.messages._
+import org.home.messages._
+import org.home.models.universe.UniverseLocation
+import org.home.models.{ItemState, _}
 import org.home.utils.Randomizer._
 import play.api.Logger._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
-import org.home.models._
 
 object Player {
   def props(state: PlayerState): Props = Props(new Player(state))
@@ -16,7 +18,6 @@ object Player {
 
 class Player(var state: PlayerState) extends Actor with ActorLogging {
   implicit val askTimeout = Timeout(2.second)
-  var currentTime: Long = 0
   val duration = 2.second
 
   def newItem(itemType: Int, props: Map[String, String], location: UniverseLocation): Option[String] = {
@@ -51,10 +52,9 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
 
   def turn(time: Long): Unit = {
     log.info(s"${state.owner.name} received tic...$time")
-    currentTime = time
   }
 
-  def move(action: MoveInSectorAction): Unit = {
+  def performItemAction(action: PlayerItemEvent): Unit = {
     state.items.find(s ⇒ s.id == action.itemId) match {
       case Some(item) ⇒
         context.actorSelection(s"${item.id}").resolveOne(duration) flatMap { actorItem =>
@@ -73,8 +73,8 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
       sender ! rep
     case InfoEvent ⇒ sender ! state.owner
     case StateEvent ⇒ sender ! state
-    case a:MoveInSectorAction ⇒ move(a)
-    case t@TicEvent(time) ⇒ turn(time)
+    case a: PlayerItemEvent ⇒ performItemAction(a)
+    case t: TurnEvent ⇒ turn(t.currentTime)
     case x ⇒ log.info("Player received unknown message: " + x)
   }
 

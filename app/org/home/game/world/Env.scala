@@ -1,11 +1,12 @@
-package org.home.actors
+package org.home.game.world
 
 import org.home.components._
 import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
-import org.home.actors.messages._
+import org.home.messages._
 import org.home.dto.PlayerDTO
+import org.home.game.player.Player
 import org.home.models._
 import org.home.models.universe._
 import org.home.utils.{ActionType, Randomizer}
@@ -24,7 +25,8 @@ object Env {
     Props(new Env(universeService, forceRestart) with RepositoryComponentRedis)
 }
 
-class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor with ActorLogging {
+class Env(universeService: UniverseService, forceRestart: Boolean)
+  extends Actor with ActorLogging {
   this: RepositoryComponent =>
 
   val duration = 2.second
@@ -35,18 +37,19 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
   val sessions = ListBuffer.empty[UserSession]
   var players: ListBuffer[PlayerState] = ListBuffer.empty
 
-  def start(): Future[Any] = {
+  def start(): Future[String] = {
     log.info("Starting new universe.")
     context.system.scheduler.schedule(20.seconds, 10.second, generator, GenNewEvent)
-    init() map {
+    init().map {
       u =>
         universe = u
         Logger.info("Universe finished loading....")
+        "ok"
     }
   }
 
   def init(): Future[FullUniverse] = universeService.loadUniverse(forceRestart) map {
-    case res@FullUniverse(u, all, sess) =>
+    case res @ FullUniverse(u, all, sess) =>
       all foreach {
         ps =>
           val ref = context.actorOf(Player.props(ps), name = ps.owner.id)
@@ -101,11 +104,11 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
       case _ => throw new Exception(s"User with session: $sessionId not found.")
     }
 
-  def turn(time: Long): Unit = {
+  def turn(ticEvent: TicEvent): Unit = {
     Logger.info("Asking children to end turn")
     if (players.nonEmpty) {
       val all = players.map(p => context.actorSelection(s"${p.owner.id}"))
-      all.foreach(_ ! TicEvent(time))
+      all.foreach(_ ! ticEvent)
     }
   }
 
@@ -126,13 +129,13 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
       case Some(session) =>
         actionEvent.actionType match {
           case ActionType.MOVE_SECTOR =>
-            val action = Json.parse(actionEvent.actionData).as[MoveInSectorAction]
+            val action = Json.parse(actionEvent.actionData).as[MoveInSectorEvent]
             context.actorSelection(s"${session.userId}") ? action
         }
       case _ => throw new Exception(s"User with session: ${actionEvent.sessionId} not found.")
     }
 
-  def receive = {
+  def receive: Receive = {
     case StartEvent => start().pipeTo(sender())
     case LoginUserEvent(login, pass) => loginUser(login, pass).pipeTo(sender())
     case RegisterUserEvent(login, pass, scenario) => registerUser(login, pass, scenario).pipeTo(sender())
@@ -140,10 +143,11 @@ class Env(universeService: UniverseService, forceRestart: Boolean) extends Actor
     case SaveUniverseEvent => saveUniverse().pipeTo(sender())
     case GetUniverseEvent => Future.successful(universe).pipeTo(sender())
     case ShutdownEvent => shutdown()
-    case TicEvent(time) => turn(time)
+    case t@TicEvent(time) => turn(t)
     case GetPlayerEvent(id) => getPlayer(id).pipeTo(sender())
     case a: PlayerActionEvent => performAction(a).pipeTo(sender())
     case x => log.info("Env received unknown message: " + x)
   }
 
 }
+

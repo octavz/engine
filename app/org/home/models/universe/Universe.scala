@@ -7,11 +7,11 @@ import scalax.collection.GraphEdge.UnDiEdge
 import scalax.collection.generator.{NodeDegreeRange, RandomGraph}
 import scalax.collection.immutable.Graph
 import scalax.collection.io.json.descriptor.{Descriptor, NodeDescriptor}
-import scalax.collection.io.json.descriptor.predefined.UnDi
 import scalax.collection._
 import scalax.collection.GraphPredef._, scalax.collection.GraphEdge._
 import scalax.collection.edge._, scalax.collection.edge.Implicits._
 import scalax.collection.io.json._
+import scalax.collection.io.json.descriptor.predefined.UnDi
 
 case class Universe(sectors: Universe.UniverseNet, label: String)
 
@@ -47,7 +47,8 @@ class UniverseService {
     }
   }
 
-  def saveUniverse(universe: Universe) = repository.saveUniverse(universe, forceRestart = false)
+  def saveUniverse(universe: Universe): Future[Boolean] =
+    repository.saveUniverse(universe, forceRestart = false)
 
 }
 
@@ -89,10 +90,13 @@ object Universe extends Createable[Universe] {
   }
 
   def toJson(graph: UniverseNet): String = {
-    graph.toJson(desc)
+    val json = graph.toJson(desc)
+    json
   }
 
   def fromJson(json: String): UniverseNet = {
+    //    import scalax.collection.io.json.imp.Parser._
+    //    val parsed = parse(json, desc)
     Graph.fromJson[Sector, UnDiEdge](json, desc)
   }
 

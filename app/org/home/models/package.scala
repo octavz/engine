@@ -1,5 +1,7 @@
 package org.home
 
+import org.home.models.actions.PlayerAction
+
 import scala.collection.mutable.ArrayBuffer
 
 package object models {
