@@ -3,8 +3,24 @@ package org.home.utils
 import scala.reflect.ClassTag
 import scala.reflect._
 
-case class Vector3D(x: Long, y: Long, z: Long) {
+case class Vector3D(var x: Long, var y: Long, var z: Long) {
+
+  def update(newX: Long, newY: Long, newZ: Long): Vector3D = {
+    x = newX
+    y = newY
+    z = newZ
+    this
+  }
+
+  def update(newVector: Vector3D): Vector3D = {
+    x = newVector.x
+    y = newVector.y
+    z = newVector.z
+    this
+  }
+
   override def toString: String = s"$x,$y,$z"
+
 }
 
 object Vector3D {

@@ -1,5 +1,6 @@
-package org.home.components
+package org.home.repositories
 
+import com.badlogic.ashley.core.Entity
 import org.home.models._
 import org.home.models.universe._
 
@@ -14,17 +15,19 @@ trait RepositoryComponent {
 
     def loadUniverse(label: String): Future[Option[Universe]]
 
-    def loadAllPlayers(): Future[Seq[PlayerState]]
+    def loadAllPlayers(): Future[Seq[Entity]]
 
     def loadAllSessions(): Future[Seq[UserSession]]
 
-    def stateForPlayer(userId: String): Future[Option[PlayerState]]
+    def stateForPlayer(userId: String): Future[Option[Entity]]
 
-    def findByLoginAndEmail(login: String, password: String): Future[Option[PlayerState]]
+    def findByLoginAndEmail(login: String, password: String): Future[Option[Entity]]
 
     def createSession(userSession: UserSession): Future[UserSession]
 
-    def registerPlayer(playerState: PlayerState): Future[PlayerState]
+    def registerPlayer(player: Entity): Future[Entity]
+
+    def findSession(sessionId: String): Future[Option[UserSession]]
   }
 
 }

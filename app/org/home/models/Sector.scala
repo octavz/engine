@@ -1,5 +1,6 @@
-package org.home.models.universe
+package org.home.models
 
+import org.home.models.universe.{Createable, SectorObject}
 import org.home.utils.Randomizer
 
 case class Sector(id: String, name: String, objects: List[SectorObject]) {

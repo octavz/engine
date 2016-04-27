@@ -3,8 +3,8 @@ package org.home.game.player
 import akka.actor._
 import akka.pattern._
 import akka.util.Timeout
+import org.home.game.components.LocationComponent
 import org.home.messages._
-import org.home.models.universe.UniverseLocation
 import org.home.models.{ItemState, _}
 import org.home.utils.Randomizer._
 import play.api.Logger._
@@ -20,7 +20,7 @@ class Player(var state: PlayerState) extends Actor with ActorLogging {
   implicit val askTimeout = Timeout(2.second)
   val duration = 2.second
 
-  def newItem(itemType: Int, props: Map[String, String], location: UniverseLocation): Option[String] = {
+  def newItem(itemType: Int, props: Map[String, String], location: LocationComponent): Option[String] = {
     try {
       val newItemId = nextId
       val item = ItemState(

@@ -1,79 +1,84 @@
-package org.home.components
+package org.home.repositories
 
-import org.home.dto.PlayerDTO
-import org.home.models.JsonFormats._
+import com.badlogic.ashley.core.Entity
 import org.home.models._
 import org.home.models.universe.Universe
-import play.api.libs.json.Json
 import scredis._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import org.home.utils.Constants._
 import com.softwaremill.quicklens._
+import org.home.game.components.UserComponent
 import play.api.Logger
-import scala.collection.mutable.{ListBuffer, ArrayBuffer}
+import org.home.utils.AshleyScalaModule._
+import com.owlike.genson.defaultGenson._
 
 trait RepositoryComponentRedis extends RepositoryComponent {
   override val repository: Repository = new RepositoryRedis
 
-  implicit class StringOps(s: String) {
-    def withNS(ns: String) = s"$ns:$s"
+  private[this] implicit class StringOps(s: String) {
+    def withNS(ns: String): String = s"$ns:$s"
 
-    def woNS(ns: String) = if (s.startsWith(ns)) s.replace(ns, "") else s
+    def woNS(ns: String): String = if (s.startsWith(ns)) s.replace(ns, "") else s
 
-    def withUserNS = withNS(USER_NS)
+    def withUserNS: String = withNS(USER_NS)
 
-    def woUserNS = woNS(USER_NS)
+    def woUserNS: String = woNS(USER_NS)
 
     def withUniNS: String = withNS(KEY_UNIVERSE)
 
-    def woSessionNS = woNS(SESSION_NS)
+    def woSessionNS: String = woNS(SESSION_NS)
 
     def withSessionNS: String = withNS(SESSION_NS)
 
-    def toPlayerState: PlayerState = Json.parse(s).as[PlayerState].prepare
+    def toEntity: Entity = fromJson[Entity](s)
 
-    def toUserSession: UserSession = Json.parse(s).as[UserSession].modify(_.sessionId).using(_.woNS(SESSION_NS))
+    def toUserSession: UserSession = fromJson[UserSession](s).modify(_.sessionId).using(_.woNS(SESSION_NS))
   }
 
-  implicit class PlayerOps(ps: PlayerState) {
-    def prepare = ps.copy(owner = ps.owner.copy(id = ps.owner.id.woUserNS))
-  }
 
   class RepositoryRedis extends Repository {
     val redis = new Redis()
 
-    override def findByLoginAndEmail(login: String, password: String): Future[Option[PlayerState]] =
+    override def findByLoginAndEmail(login: String, password: String): Future[Option[Entity]] =
       redis.hGet[String](KEY_LOGINS, login) flatMap {
         case Some(id) => redis.get(id.withUserNS) map {
           case Some(s) =>
-            val ps = s.toPlayerState
-            if (ps.owner.password == password) Some(ps) else None
+            val ent = s.toEntity
+            val model = ent.component[UserComponent].data
+            if (model.password == password) Some(ent) else None
           case _ => None
         }
         case _ => Future.successful(None)
       }
 
     override def createSession(userSession: UserSession): Future[UserSession] = {
-      redis.set(userSession.sessionId.withSessionNS, Json.toJson(userSession).toString()) map (_ => userSession)
+      redis.set(userSession.sessionId.withSessionNS, toJson(userSession)) map (_ => userSession)
       //bucket.set[UserSession](userSession.sessionId, userSession) map (_.isSuccess)
     }
 
-    override def registerPlayer(playerState: PlayerState): Future[PlayerState] =
-      redis.hExists(KEY_LOGINS, playerState.owner.login) flatMap {
+    override def findSession(sessionId: String): Future[Option[UserSession]] = {
+      redis.get[String](sessionId).map(_.map(_.toUserSession))
+    }
+
+    override def registerPlayer(player: Entity): Future[Entity] = {
+      val model = player.component[UserComponent].data
+      redis.hExists(KEY_LOGINS, model.login) flatMap {
         exists =>
           if (exists)
-            throw new RuntimeException(s"User with login ${playerState.owner.login} already exists!")
+            throw new RuntimeException(s"User with login ${model.login} already exists!")
           redis.withTransaction {
             t =>
-              t.hSet(KEY_LOGINS, playerState.owner.login, playerState.owner.id)
-              t.set(playerState.owner.id.withUserNS, Json.toJson(playerState).toString())
-          } map (_ => playerState)
+              t.hSet(KEY_LOGINS, model.login, model.id)
+              t.set(model.id.withUserNS, toJson(player))
+          } map (_ => player)
       }
+    }
 
-    override def stateForPlayer(userId: String): Future[Option[PlayerState]] =
+    override def stateForPlayer(userId: String): Future[Option[Entity]] =
       redis.get(userId.withUserNS) map {
-        opt => opt.map(json => json.toPlayerState)
+        opt => opt.map(json => json.toEntity)
       }
 
     override def saveUniverse(universe: Universe, forceRestart: Boolean): Future[Boolean] = {
@@ -83,14 +88,9 @@ trait RepositoryComponentRedis extends RepositoryComponent {
           _ =>
             redis.set(universe.label.withUniNS, json) flatMap {
               _ =>
-                registerPlayer(PlayerState(
-                  owner = UserModel("admin-id", "admin", "Administrator", "a")
-                  , qu = emptyActionQu
-                  , startSector = ""
-                  , items = ArrayBuffer.empty
-                  , resources = List.empty)) map { _ =>
-                  true
-                }
+                val admin = new Entity()
+                admin.add(UserComponent(UserModel("admin-id", "admin", "Administrator", "a", "")))
+                registerPlayer(admin) map (_ => true)
             }
         }
       } else {
@@ -104,12 +104,12 @@ trait RepositoryComponentRedis extends RepositoryComponent {
           opt.map(js => Universe(sectors = Universe.fromJson(js), label = label))
       }
 
-    override def loadAllPlayers(): Future[Seq[PlayerState]] =
+    override def loadAllPlayers(): Future[Seq[Entity]] =
       redis.hGetAll(KEY_LOGINS) flatMap {
         case Some(all) =>
           Future.sequence(all.map {
             case (_, id) => redis.get(id.withUserNS) map {
-              case Some(u) => u.toPlayerState
+              case Some(u) => u.toEntity
               case None => throw new Exception(s"User $id found in index but not in db")
             }
           }.toSeq)

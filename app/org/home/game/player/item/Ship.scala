@@ -1,6 +1,6 @@
 package org.home.game.player.item
 
-import org.home.messages.{MoveInSectorEvent, TicEvent}
+import org.home.messages.MoveInSectorEvent
 import org.home.models.ItemState
 import org.home.utils.{ActionType, Randomizer, Vector3D}
 import com.softwaremill.quicklens._
@@ -28,7 +28,7 @@ class Ship(shipState: ItemState) extends PlayerItem(shipState) {
 
   def speed: Int = shipState.props.getOrElse("speed", throw new Exception("Ships should have speed")).toInt
 
-  override protected def updateTurnState(time: Long): ItemState = synchronized {
+  override def updateTurnState(time: Long): ItemState = synchronized {
     state.qu.filter(_.actionType == ActionType.MOVE_SECTOR).foreach(performMove)
     state
   }

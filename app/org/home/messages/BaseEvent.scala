@@ -1,6 +1,6 @@
 package org.home.messages
 
-import org.home.models.universe.UniverseLocation
+import org.home.game.components.LocationComponent
 import org.home.utils.Vector3D
 
 trait PlayerEvent extends Serializable
@@ -21,7 +21,7 @@ trait EnvEvent extends Serializable
 //player generated events
 case class MoveInSectorEvent(itemId: String, to: Vector3D, currentTime: Long) extends PlayerItemEvent with TurnEvent
 
-case class PlayerActionEvent(actionType: Int, sessionId: Option[String], actionData: String, currentTime: Long) extends PlayerEvent with TurnEvent
+case class PlayerActionEvent(actionType: Int, sessionId: String, actionData: String, currentTime: Long) extends PlayerEvent with TurnEvent
 
 //service related events
 case class LoginUserEvent(login: String, password: String) extends ServiceEvent
@@ -38,7 +38,7 @@ case class RegisterUserEvent(login: String, password: String, scenario: Int) ext
 
 case class StateEvent(sessionId: Option[String] = None) extends ServiceEvent
 
-case class NewPlayerItemEvent(itemType: Int, itemProps: Map[String, String], location: UniverseLocation) extends ServiceEvent with PlayerEvent
+case class NewPlayerItemEvent(itemType: Int, itemProps: Map[String, String], location: LocationComponent) extends ServiceEvent with PlayerEvent
 
 case object ErrorEvent extends ServiceEvent
 

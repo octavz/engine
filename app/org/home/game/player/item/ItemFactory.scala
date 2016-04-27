@@ -2,14 +2,14 @@ package org.home.game.player.item
 
 import org.home.utils.{ItemType, Randomizer, ResourceNames}
 import org.home.models._
-import org.home.models.universe.UniverseLocation
+import org.home.game.components.LocationComponent
 
 /**
   * Created by octav on 21.04.2016.
   */
 object ItemFactory {
 
-  def newBasicShip(location: UniverseLocation): ItemState = ItemState(
+  def newBasicShip(location: LocationComponent): ItemState = ItemState(
     id = Randomizer.nextId
     , name = Randomizer.newName
     , itemType = ItemType.SHIP
@@ -18,7 +18,7 @@ object ItemFactory {
     , qu = emptyActionQu
   )
 
-  def newBasicBase(location: UniverseLocation): ItemState = ItemState(
+  def newBasicBase(location: LocationComponent): ItemState = ItemState(
     id = Randomizer.nextId
     , name = Randomizer.newName
     , itemType = ItemType.BASE

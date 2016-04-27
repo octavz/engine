@@ -1,38 +1,31 @@
 package org.home.controllers
 
 import javax.ws.rs.{PathParam, QueryParam}
+
 import akka.actor._
-import akka.pattern.ask
-import akka.util.Timeout
 import com.google.inject.Inject
+import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState
 import com.wordnik.swagger.annotations._
-import org.home.messages.{LoginUserEvent, _}
-import org.home.components.RepositoryComponentRedis
+import org.home.messages._
+import org.home.repositories.RepositoryComponentRedis
 import org.home.dto.{PlayerActionDTO, PlayerDTO}
-import org.home.models._
+import org.home.game.world.World
 import org.home.models.universe._
 import play.api.Logger
-import play.api.libs.concurrent.Akka
-import play.api.libs.json.Json
 import play.api.mvc._
-import scala.concurrent.ExecutionContext.Implicits.global
+
 import scala.concurrent._
-import scala.concurrent.duration._
-import org.home.models.JsonFormats._
-import play.api.Play.current
+import ExecutionContext.Implicits.global
+import org.home.services.UniverseService
 import org.home.utils.ActionType
+import com.owlike.genson.defaultGenson._
+import org.home.game.components.PlayerComponent
+import org.home.utils.AshleyScalaModule._
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
-class MainController @Inject()(system: ActorSystem) extends Controller {
+class MainController @Inject()(system: ActorSystem, env: World) extends Controller {
   val universeService = new UniverseService with RepositoryComponentRedis
-
-  lazy val env = {
-    println("Getting environment")
-    Await.result(system.actorSelection("user/environment").resolveOne(1.second), 1.second)
-  }
-
-  implicit val askTimeout = Timeout(5.second)
 
   @ApiOperation(value = "Start", notes = "Start or reset universe", response = classOf[String],
     httpMethod = "POST", nickname = "start")
@@ -40,21 +33,16 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
     Action.async {
       implicit request ⇒
         response {
-          env ? StartEvent map {r => StringResponse(r.toString) }
+          env.start()
         }
     }
 
   @ApiOperation(value = "GetUniverse", notes = "Gets current universe", response = classOf[String],
     httpMethod = "GET", nickname = "index")
-  def index: Action[AnyContent] = Action.async {
+  def index: Action[AnyContent] = Action {
     implicit request ⇒
-      simpleResponse {
-        env ? GetUniverseEvent map {
-          case u: FullUniverse ⇒
-            val ret = Universe.toJson(u.universe.sectors)
-            Ok(ret)
-        }
-      }
+      val ret = Universe.toJson(env.universe.universe.sectors)
+      Ok(ret)
   }
 
   @ApiOperation(value = "GetPlayer", notes = "Gets player public", response = classOf[PlayerDTO],
@@ -62,7 +50,7 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
   def getPlayer(@PathParam("id") id: String): Action[AnyContent] = Action.async {
     implicit request ⇒
       response {
-        env ? GetPlayerEvent(id) map {
+        env.getPlayer(id) map {
           case Some(a) ⇒ a match {
             case d: PlayerDTO ⇒ a.asInstanceOf[PlayerDTO]
             case _ ⇒ throw new Exception("No idea what i got")
@@ -82,12 +70,10 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
               ): Action[AnyContent] = Action.async {
     implicit request ⇒
       simpleResponse {
-        env ? RegisterUserEvent(login, password, scenario) map {
-          case (session: String, ps: PlayerState) ⇒
-            val ret = Json.toJson(ps)
-            Logger.info(ret.toString())
-            Ok(ret).withHeaders("Authorization" → session)
-          case x ⇒ throw new RuntimeException(s"Unknown message: ${x.toString}")
+        env.registerUser(login, password, scenario) map { ps =>
+          val ret = toJson(ps)
+          Logger.info(ret)
+          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
         }
       }
   }
@@ -100,13 +86,10 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
            ): Action[AnyContent] = Action.async {
     implicit request ⇒
       simpleResponse {
-
-        env ? LoginUserEvent(login, password) map {
-          case (session: String, ps: PlayerState) ⇒
-            val ret = Json.toJson(ps)
-            Logger.info(ret.toString())
-            Ok(ret).withHeaders("Authorization" → session)
-          case x ⇒ throw new RuntimeException(s"Unknown message: ${x.toString}")
+        env.loginUser(login, password) map { ps =>
+          val ret = toJson(ps)
+          Logger.info(ret)
+          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
         }
       }
   }
@@ -116,19 +99,14 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
     new ApiImplicitParam(name = "Authorization", value = "authorization", defaultValue = "",
       required = true, dataType = "string", paramType = "header")
   ))
-  def stateForSession: Action[AnyContent] = Action.async {
+  def stateForSession: Action[AnyContent] = Action {
     implicit request ⇒
-      response {
-        env ? StateEvent(request.sessionId) map {
-          case s: PlayerState ⇒ s
-          case x ⇒ throw new RuntimeException(s"Unknown message when expecting state: ${x.toString}")
-        }
-      }
+      Ok(toJson(env.stateForSession(request.sessionId.get)))
   }
 
   @ApiOperation(value = "Create action", response = classOf[Boolean],
     httpMethod = "POST", nickname = "createAction")
-  @ApiImplicitParams(Array (
+  @ApiImplicitParams(Array(
     new ApiImplicitParam(name = "Authorization", value = "authorization", required = true,
       dataType = "string", paramType = "header"),
     new ApiImplicitParam(value = "The player action", required = true,
@@ -139,14 +117,14 @@ class MainController @Inject()(system: ActorSystem) extends Controller {
       request.body.asJson.map {
         json ⇒
           response {
-            val req = json.as[PlayerActionDTO]
+            val req = fromJson[PlayerActionDTO](json.toString())
             req.action match {
               case ActionType.MOVE_SECTOR ⇒
                 val ev = PlayerActionEvent(
                   actionType = req.action
-                  , sessionId = request.sessionId
+                  , sessionId = request.sessionId.getOrElse(throw new Exception("You must be authorized"))
                   , actionData = req.data, currentTime = 1)
-                env ? ev map {
+                env.performAction(ev) map {
                   case Right(_) ⇒ true
                   case _ ⇒ false
                 }

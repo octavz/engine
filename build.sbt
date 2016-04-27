@@ -34,7 +34,9 @@ libraryDependencies ++= Seq(
   "com.livestream" %% "scredis" % "2.0.6",
   "com.assembla.scala-incubator" %% "graph-json" % "1.11.0",
   "com.assembla.scala-incubator" %% "graph-core" % "1.11.0",
-  "com.softwaremill.quicklens" %% "quicklens" % "1.4.2"
+  "com.softwaremill.quicklens" %% "quicklens" % "1.4.2",
+  "com.owlike" %% "genson-scala" % "1.4",
+  "com.badlogicgames.ashley" % "ashley" % "1.7.0"
   //"org.netbeans.api" % "org-netbeans-api-java" % "RELEASE731",
   //"org.netbeans.api" % "org-netbeans-modules-java-source" % "RELEASE731"
 )

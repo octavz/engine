@@ -1,6 +1,7 @@
 package org.home.utils
 
-import org.home.models.universe.{Sector, Universe}
+import org.home.models.Sector
+import org.home.models.universe.Universe
 
 import scala.reflect.ClassTag
 import scala.util.Random
