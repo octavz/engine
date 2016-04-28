@@ -2,7 +2,6 @@ package org.home.game.world
 
 import javax.inject.Inject
 
-import akka.actor._
 import com.badlogic.ashley.core.{Entity, Family, PooledEngine}
 import org.home.messages._
 import org.home.dto.PlayerDTO
@@ -10,7 +9,7 @@ import org.home.game.components._
 import org.home.game.systems.{SectorMovementSystem, StateSystem}
 import org.home.models._
 import org.home.models.universe._
-import org.home.utils.{ActionType, Randomizer, Vector3D}
+import org.home.utils.{ Randomizer, Vector3D}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import play.api.Logger
@@ -24,7 +23,7 @@ class World @Inject()(universeService: UniverseService) {
   engine.addSystem(new SectorMovementSystem)
   engine.addSystem(new StateSystem(universeService))
   var universe: FullUniverse = _
-  val forceRestart = false
+  val forceRestart = true
   //  val generator = actorSystem.actorOf(Generator.props(), name = "generator")
 
   def start(): Future[String] = {
@@ -72,7 +71,7 @@ class World @Inject()(universeService: UniverseService) {
   }
 
   def turn(ticEvent: TicEvent): Unit = {
-    engine.update(ticEvent.currentTime)
+    //engine.update(ticEvent.currentTime)
   }
 
   def saveUniverse(): Future[Boolean] = universeService.saveUniverse(universe.universe)

@@ -16,10 +16,10 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 import org.home.services.UniverseService
 import org.home.utils.Randomizer
-import com.owlike.genson.defaultGenson._
 import org.home.game.components.PlayerComponent
 import org.home.models.actions.PlayerAction
 import org.home.utils.AshleyScalaModule._
+import org.home.utils._
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
@@ -69,7 +69,7 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
     implicit request ⇒
       simpleResponse {
         world.registerUser(login, password, scenario) map { ps =>
-          val ret = toJson(ps)
+          val ret = ps.asJson
           Logger.info(ret)
           Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
         }
@@ -85,7 +85,7 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
     implicit request ⇒
       simpleResponse {
         world.loginUser(login, password) map { ps =>
-          val ret = toJson(ps)
+          val ret = ps.asJson
           Logger.info(ret)
           Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
         }
@@ -99,7 +99,7 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
   ))
   def stateForSession: Action[AnyContent] = Action {
     implicit request ⇒
-      Ok(toJson(world.stateForSession(request.sessionId)))
+      Ok(world.stateForSession(request.sessionId).toJson)
   }
 
   @ApiOperation(value = "Create action", response = classOf[Boolean],

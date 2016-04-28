@@ -13,7 +13,7 @@ import org.home.utils.AshleyScalaModule._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UniverseService @Inject()(repository: Repository){
+class UniverseService @Inject()(repository: Repository) {
 
   def loadUniverse(forceRestart: Boolean = false): Future[FullUniverse] = {
 

@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.mvc.{Results, AnyContent, Request}
 import play.api.mvc.Result
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.owlike.genson.defaultGenson._
+import org.home.utils._
 
 import scala.concurrent.Future
 
@@ -17,18 +17,18 @@ package object controllers extends Results {
   def response[T: Manifest](call: ⇒ Future[T])(implicit request: Request[AnyContent]): Future[Result] = {
     val ret = try {
       call.map { r ⇒
-        val json = toJson(r)
+        val json = r.toJson
         Logger.info(json)
         Ok(json)
       }.recover {
         case e: Throwable ⇒
           Logger.error("", e)
-          BadRequest(toJson(ErrorMessage(e.getMessage)))
+          BadRequest(ErrorMessage(e.getMessage).toJson)
       }
     }
     catch {
       case e: Throwable ⇒
-        Future.successful(BadRequest(toJson(ErrorMessage(e.getMessage))))
+        Future.successful(BadRequest(ErrorMessage(e.getMessage).toJson))
     }
     ret map {
       r ⇒
@@ -42,12 +42,13 @@ package object controllers extends Results {
       call.recover {
         case e: Throwable ⇒
           Logger.error("", e)
-          BadRequest(toJson(ErrorMessage(e.getMessage)))
+          BadRequest(ErrorMessage(e.getMessage).toJson)
       }
     }
     catch {
       case e: Throwable ⇒
-        Future.successful(BadRequest(toJson(ErrorMessage(e.getMessage))))
+        e.printStackTrace()
+        Future.successful(BadRequest(ErrorMessage(e.getMessage).toJson))
     }
     ret map {
       r ⇒

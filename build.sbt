@@ -35,8 +35,11 @@ libraryDependencies ++= Seq(
   "com.assembla.scala-incubator" %% "graph-json" % "1.11.0",
   "com.assembla.scala-incubator" %% "graph-core" % "1.11.0",
   "com.softwaremill.quicklens" %% "quicklens" % "1.4.2",
-  "com.owlike" %% "genson-scala" % "1.4",
-  "com.badlogicgames.ashley" % "ashley" % "1.7.0"
+  "com.badlogicgames.ashley" % "ashley" % "1.7.0",
+  "com.fasterxml.jackson.core" % "jackson-annotations" % "2.6.5",
+  "com.fasterxml.jackson.core" % "jackson-databind" % "2.6.5",
+  "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.6.5"
+  
   //"org.netbeans.api" % "org-netbeans-api-java" % "RELEASE731",
   //"org.netbeans.api" % "org-netbeans-modules-java-source" % "RELEASE731"
 )

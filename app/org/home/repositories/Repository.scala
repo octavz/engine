@@ -7,26 +7,26 @@ import org.home.models.universe._
 import scala.concurrent._
 
 
-  trait Repository {
+trait Repository {
 
-    def updateEntity(entity: Entity): Future[Boolean]
+  def updateEntity(entity: Entity): Future[Boolean]
 
-    def saveUniverse(universe: Universe, forceRestart: Boolean): Future[Boolean]
+  def saveUniverse(universe: Universe, forceRestart: Boolean): Future[Boolean]
 
-    def loadUniverse(label: String): Future[Option[Universe]]
+  def loadUniverse(label: String): Future[Option[Universe]]
 
-    def loadAllPlayers(): Future[Seq[Entity]]
+  def loadAllPlayers(): Future[Seq[Entity]]
 
-    def loadAllSessions(): Future[Seq[UserSession]]
+  def loadAllSessions(): Future[Seq[UserSession]]
 
-    def stateForPlayer(userId: String): Future[Option[Entity]]
+  def stateForPlayer(userId: String): Future[Option[Entity]]
 
-    def findByLoginAndEmail(login: String, password: String): Future[Option[Entity]]
+  def findByLoginAndEmail(login: String, password: String): Future[Option[Entity]]
 
-    def createSession(userSession: UserSession): Future[UserSession]
+  def createSession(userSession: UserSession): Future[UserSession]
 
-    def registerPlayer(player: Entity): Future[Entity]
+  def registerPlayer(player: Entity): Future[Entity]
 
-    def findSession(sessionId: String): Future[Option[UserSession]]
-  }
+  def findSession(sessionId: String): Future[Option[UserSession]]
+}
 
