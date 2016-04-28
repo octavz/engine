@@ -1,7 +1,7 @@
 package org.home.models
 
 import org.home.game.components.LocationComponent
-import org.home.game.player.item.ItemFactory
+import org.home.game.world.ItemFactory
 import org.home.models.universe.Universe
 import org.home.utils.{ItemType, Randomizer, ScenarioType, Vector3D}
 

@@ -3,8 +3,6 @@ package org.home.game.world
 import javax.inject.Inject
 
 import akka.actor._
-import akka.pattern._
-import akka.util.Timeout
 import com.badlogic.ashley.core.{Entity, Family, PooledEngine}
 import org.home.messages._
 import org.home.dto.PlayerDTO
@@ -13,21 +11,20 @@ import org.home.game.systems.{SectorMovementSystem, StateSystem}
 import org.home.models._
 import org.home.models.universe._
 import org.home.utils.{ActionType, Randomizer, Vector3D}
-import play.api.libs.json.Json
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
-import scala.concurrent.duration._
 import play.api.Logger
-import org.home.models.JsonFormats._
+import org.home.models.actions.PlayerAction
 import org.home.services.UniverseService
 import org.home.utils.AshleyScalaModule._
 
-class World @Inject()(actorSystem: ActorSystem, universeService: UniverseService, forceRestart: Boolean) {
+class World @Inject()(universeService: UniverseService) {
 
   val engine = new PooledEngine()
   engine.addSystem(new SectorMovementSystem)
-  engine.addSystem(new StateSystem)
+  engine.addSystem(new StateSystem(universeService))
   var universe: FullUniverse = _
+  val forceRestart = false
   //  val generator = actorSystem.actorOf(Generator.props(), name = "generator")
 
   def start(): Future[String] = {
@@ -36,10 +33,7 @@ class World @Inject()(actorSystem: ActorSystem, universeService: UniverseService
     universeService.loadUniverse(forceRestart) map {
       case res@FullUniverse(u, all) =>
         universe = res
-        all foreach {
-          player =>
-            createPlayer(player)
-        }
+        all foreach engine.addEntity
         Logger.info("Universe finished loading....")
         "ok"
     }
@@ -54,7 +48,7 @@ class World @Inject()(actorSystem: ActorSystem, universeService: UniverseService
     universeService.loginUser(login, password) map createPlayer
   }
 
-  def randomSector() = Randomizer.someSector(universe.universe).id
+  private def randomSector() = Randomizer.someSector(universe.universe).id
 
   def registerUser(login: String, password: String, scenario: Int): Future[Entity] = {
     val newUser = UserModel(id = Randomizer.nextId, login = login, password = password, name = login, startSector = randomSector())
@@ -66,8 +60,12 @@ class World @Inject()(actorSystem: ActorSystem, universeService: UniverseService
 
   import scala.collection.JavaConversions._
 
+  private def playerBySession(sessionId: String): Option[Entity] = {
+    engine.getEntitiesFor(Family.one(classOf[PlayerComponent]).get()).find(_.component[PlayerComponent].sessionId == sessionId)
+  }
+
   def stateForSession(sessionId: String): Entity = {
-    engine.getEntitiesFor(Family.one(classOf[PlayerComponent]).get()).find(_.component[PlayerComponent].sessionId == sessionId) match {
+    playerBySession(sessionId) match {
       case Some(ent) => ent
       case _ => throw new Exception(s"User with session: $sessionId not found.")
     }
@@ -87,31 +85,17 @@ class World @Inject()(actorSystem: ActorSystem, universeService: UniverseService
       }
     }
 
-  def performAction(actionEvent: PlayerActionEvent): Future[Any] =
-    universeService.findSession(actionEvent.sessionId) flatMap {
+  def performAction(sessionId: String, action: PlayerAction): Future[Any] =
+    universeService.findSession(sessionId) map {
       case Some(session) =>
-        actionEvent.actionType match {
-          case ActionType.MOVE_SECTOR =>
-            val action = Json.parse(actionEvent.actionData).as[MoveInSectorEvent]
-            //            actorSystem.actorSelection(s"${session.userId}") ? action
-            Future.successful(())
+        playerBySession(sessionId) match {
+          case Some(e) =>
+            e.component[QueueComponent].content += action
+          case _ => throw new Exception(s"Found session $sessionId but could not find the entity.")
         }
-      case _ => throw new Exception(s"User with session: ${actionEvent.sessionId} not found.")
+      case _ => throw new Exception(s"User with session: ${sessionId} not found.")
     }
 
-  //  def receive: Receive = {
-  //    case StartEvent => start().pipeTo(sender())
-  //    case LoginUserEvent(login, pass) => loginUser(login, pass).pipeTo(sender())
-  //    case RegisterUserEvent(login, pass, scenario) => registerUser(login, pass, scenario).pipeTo(sender())
-  //    case StateEvent(session) => stateForSession(session.getOrElse("No session sent")).pipeTo(sender())
-  //    case SaveUniverseEvent => saveUniverse().pipeTo(sender())
-  //    case GetUniverseEvent => Future.successful(universe).pipeTo(sender())
-  //    case ShutdownEvent => shutdown()
-  //    case t@TicEvent(time) => turn(t)
-  //    case GetPlayerEvent(id) => getPlayer(id).pipeTo(sender())
-  //    case a: PlayerActionEvent => performAction(a).pipeTo(sender())
-  //    case x => log.info("Env received unknown message: " + x)
-  //  }
 
 }
 

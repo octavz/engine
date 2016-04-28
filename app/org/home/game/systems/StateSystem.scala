@@ -1,18 +1,16 @@
 package org.home.game.systems
 
+import javax.inject.Inject
+
 import com.badlogic.ashley.core.{Entity, Family}
 import com.badlogic.ashley.systems.IteratingSystem
 import org.home.game.components.StateComponent
+import org.home.services.UniverseService
 
-import scala.concurrent.Future
-import  scala.concurrent.ExecutionContext.Implicits.global
-
-class StateSystem extends IteratingSystem(Family.all(classOf[StateComponent]).get()) {
+class StateSystem (service: UniverseService) extends IteratingSystem(Family.all(classOf[StateComponent]).get()) {
 
 
-  override def processEntity(entity: Entity, deltaTime: Float): Unit = Future {
-    //save
-  }
+  override def processEntity(entity: Entity, deltaTime: Float): Unit = service.persistEntity(entity)
 
 
 }

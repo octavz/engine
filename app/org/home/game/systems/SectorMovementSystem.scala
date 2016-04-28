@@ -11,6 +11,7 @@ import  scala.concurrent.ExecutionContext.Implicits.global
 
 class SectorMovementSystem
   extends IteratingSystem(Family.all(classOf[LocationComponent], classOf[VelocityComponent], classOf[QueueComponent]).get()) {
+  val DESTINATION = "destination"
 
   private val mapperLocation = ComponentMapper.getFor(classOf[LocationComponent])
   private val mapperVelocity = ComponentMapper.getFor(classOf[VelocityComponent])
@@ -22,7 +23,7 @@ class SectorMovementSystem
     val qu = mapperQueue.get(entity)
     def performMove(action: PlayerAction) = {
       val speed = velocity.magnitude
-      val serFinalPosition = action.data.getOrElse(throw new RuntimeException("No final position for move action"))
+      val serFinalPosition = action.data.getOrElse(DESTINATION, throw new RuntimeException("No final position for move action"))
       val finalPosition = Vector3D.fromString(serFinalPosition)
       val newPos = Vector3D.getNextPoint(location.sectorPosition, finalPosition, 1, speed)
       if (Vector3D.dist(newPos, finalPosition) > speed) {

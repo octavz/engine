@@ -1,5 +1,7 @@
 package org.home.utils
 
+import java.util.UUID
+
 import org.home.models.Sector
 import org.home.models.universe.Universe
 
@@ -72,7 +74,7 @@ object Randomizer {
   /**
     * @return random string id
     */
-  //  def newId = UUID.randomUUID().toString
+  def newId = UUID.randomUUID().toString
 
   def nextId = newString(12).toLowerCase
 

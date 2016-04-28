@@ -33,7 +33,7 @@ package object controllers extends Results {
     ret map {
       r ⇒
         if (r.header.headers.contains("Authorization")) r
-        else r.withHeaders("Authorization" → request.sessionId.getOrElse(""))
+        else r.withHeaders("Authorization" → request.optSessionId.getOrElse(""))
     }
   }
 
@@ -52,13 +52,15 @@ package object controllers extends Results {
     ret map {
       r ⇒
         (if (r.header.headers.contains("Authorization")) r
-        else r.withHeaders("Authorization" → request.sessionId.getOrElse(""))).withHeaders("Content-Type" → "application/json")
+        else r.withHeaders("Authorization" → request.optSessionId.getOrElse(""))).withHeaders("Content-Type" → "application/json")
     }
   }
 
   implicit class HeaderExtractor(request: Request[AnyContent]) {
 
-    def sessionId: Option[String] = request.headers.toSimpleMap.get("Authorization")
+    def optSessionId: Option[String] = request.headers.toSimpleMap.get("Authorization")
+
+    def sessionId: String = request.headers.toSimpleMap.getOrElse("Authorization", throw new Exception("Not authorized"))
 
   }
 

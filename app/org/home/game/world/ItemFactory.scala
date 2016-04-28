@@ -1,8 +1,8 @@
-package org.home.game.player.item
+package org.home.game.world
 
-import org.home.utils.{ItemType, Randomizer, ResourceNames}
-import org.home.models._
 import org.home.game.components.LocationComponent
+import org.home.models._
+import org.home.utils.{ItemType, Randomizer, ResourceNames}
 
 /**
   * Created by octav on 21.04.2016.

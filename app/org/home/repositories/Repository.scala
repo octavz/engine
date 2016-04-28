@@ -6,10 +6,10 @@ import org.home.models.universe._
 
 import scala.concurrent._
 
-trait RepositoryComponent {
-  val repository: Repository
 
   trait Repository {
+
+    def updateEntity(entity: Entity): Future[Boolean]
 
     def saveUniverse(universe: Universe, forceRestart: Boolean): Future[Boolean]
 
@@ -30,4 +30,3 @@ trait RepositoryComponent {
     def findSession(sessionId: String): Future[Option[UserSession]]
   }
 
-}

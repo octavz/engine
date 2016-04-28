@@ -6,8 +6,6 @@ import akka.actor._
 import com.google.inject.Inject
 import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState
 import com.wordnik.swagger.annotations._
-import org.home.messages._
-import org.home.repositories.RepositoryComponentRedis
 import org.home.dto.{PlayerActionDTO, PlayerDTO}
 import org.home.game.world.World
 import org.home.models.universe._
@@ -17,15 +15,15 @@ import play.api.mvc._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import org.home.services.UniverseService
-import org.home.utils.ActionType
+import org.home.utils.Randomizer
 import com.owlike.genson.defaultGenson._
 import org.home.game.components.PlayerComponent
+import org.home.models.actions.PlayerAction
 import org.home.utils.AshleyScalaModule._
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
-class MainController @Inject()(system: ActorSystem, env: World) extends Controller {
-  val universeService = new UniverseService with RepositoryComponentRedis
+class MainController @Inject()(system: ActorSystem, world: World, service: UniverseService) extends Controller {
 
   @ApiOperation(value = "Start", notes = "Start or reset universe", response = classOf[String],
     httpMethod = "POST", nickname = "start")
@@ -33,7 +31,7 @@ class MainController @Inject()(system: ActorSystem, env: World) extends Controll
     Action.async {
       implicit request ⇒
         response {
-          env.start()
+          world.start()
         }
     }
 
@@ -41,7 +39,7 @@ class MainController @Inject()(system: ActorSystem, env: World) extends Controll
     httpMethod = "GET", nickname = "index")
   def index: Action[AnyContent] = Action {
     implicit request ⇒
-      val ret = Universe.toJson(env.universe.universe.sectors)
+      val ret = Universe.toJson(world.universe.universe.sectors)
       Ok(ret)
   }
 
@@ -50,7 +48,7 @@ class MainController @Inject()(system: ActorSystem, env: World) extends Controll
   def getPlayer(@PathParam("id") id: String): Action[AnyContent] = Action.async {
     implicit request ⇒
       response {
-        env.getPlayer(id) map {
+        world.getPlayer(id) map {
           case Some(a) ⇒ a match {
             case d: PlayerDTO ⇒ a.asInstanceOf[PlayerDTO]
             case _ ⇒ throw new Exception("No idea what i got")
@@ -70,7 +68,7 @@ class MainController @Inject()(system: ActorSystem, env: World) extends Controll
               ): Action[AnyContent] = Action.async {
     implicit request ⇒
       simpleResponse {
-        env.registerUser(login, password, scenario) map { ps =>
+        world.registerUser(login, password, scenario) map { ps =>
           val ret = toJson(ps)
           Logger.info(ret)
           Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
@@ -86,7 +84,7 @@ class MainController @Inject()(system: ActorSystem, env: World) extends Controll
            ): Action[AnyContent] = Action.async {
     implicit request ⇒
       simpleResponse {
-        env.loginUser(login, password) map { ps =>
+        world.loginUser(login, password) map { ps =>
           val ret = toJson(ps)
           Logger.info(ret)
           Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
@@ -101,7 +99,7 @@ class MainController @Inject()(system: ActorSystem, env: World) extends Controll
   ))
   def stateForSession: Action[AnyContent] = Action {
     implicit request ⇒
-      Ok(toJson(env.stateForSession(request.sessionId.get)))
+      Ok(toJson(world.stateForSession(request.sessionId)))
   }
 
   @ApiOperation(value = "Create action", response = classOf[Boolean],
@@ -117,17 +115,17 @@ class MainController @Inject()(system: ActorSystem, env: World) extends Controll
       request.body.asJson.map {
         json ⇒
           response {
+            val now = System.currentTimeMillis()
             val req = fromJson[PlayerActionDTO](json.toString())
-            req.action match {
-              case ActionType.MOVE_SECTOR ⇒
-                val ev = PlayerActionEvent(
-                  actionType = req.action
-                  , sessionId = request.sessionId.getOrElse(throw new Exception("You must be authorized"))
-                  , actionData = req.data, currentTime = 1)
-                env.performAction(ev) map {
-                  case Right(_) ⇒ true
-                  case _ ⇒ false
-                }
+            val action = PlayerAction(
+              actionType = req.action
+              , createdOn = now
+              , lastModified = now
+              , data = req.data
+              , id = Randomizer.newId)
+            world.performAction(request.sessionId, action) map {
+              case Right(_) ⇒ true
+              case _ ⇒ false
             }
 
           }

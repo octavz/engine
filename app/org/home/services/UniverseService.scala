@@ -1,18 +1,19 @@
 package org.home.services
 
+import javax.inject.Inject
+
 import com.badlogic.ashley.core.Entity
 import org.home.game.components.{PlayerComponent, UserComponent}
 import org.home.models.UserSession
 import org.home.models.universe.{FullUniverse, Universe}
-import org.home.repositories.RepositoryComponent
+import org.home.repositories.Repository
 import org.home.utils.Randomizer._
 import org.home.utils.AshleyScalaModule._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UniverseService {
-  this: RepositoryComponent =>
+class UniverseService @Inject()(repository: Repository){
 
   def loadUniverse(forceRestart: Boolean = false): Future[FullUniverse] = {
 
@@ -65,5 +66,9 @@ class UniverseService {
   def stateForPlayer(id: String): Future[Option[Entity]] = repository.stateForPlayer(id)
 
   def findSession(sessionId: String): Future[Option[UserSession]] = repository.findSession(sessionId)
+
+  def persistEntity(entity: Entity): Future[Boolean] = {
+    repository.updateEntity(entity)
+  }
 
 }

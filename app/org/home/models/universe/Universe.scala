@@ -1,7 +1,6 @@
 package org.home.models.universe
 
 import com.badlogic.ashley.core.Entity
-import org.home.repositories.RepositoryComponent
 import org.home.models.{Sector, UserSession}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -20,8 +19,6 @@ import scalax.collection.io.json.descriptor.predefined.UnDi
 case class Universe(sectors: Universe.UniverseNet, label: String)
 
 case class FullUniverse(universe: Universe, players: Seq[Entity])
-
-
 
 object Universe extends Createable[Universe] {
 
