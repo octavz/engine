@@ -5,11 +5,12 @@ import com.badlogic.ashley.core.{Component, Entity, PooledEngine}
 import scala.reflect.{ClassTag, _}
 import org.home.game.components._
 import org.home.utils._
+import play.api.libs.json._
+import scala.collection.JavaConversions._
 
 object AshleyScalaModule {
 
   case class JsonComponent(compType: Int, comp: Component)
-
 
   implicit class EntityOps(e: Entity) {
 
@@ -18,25 +19,27 @@ object AshleyScalaModule {
     }
 
     //TODO make valid json
-    def asJson: String = {
-      val lst = e.getComponents.toArray().map {
-        case x: ChildComponent => s"1:${x.toJson}"
-        case x: ItemTypeComponent => s"2:${x.toJson}"
-        case x: LocationComponent => s"3:${x.toJson}"
-        case x: PlayerComponent => s"4:${x.toJson}"
-        case x: QueueComponent => s"5:${x.toJson}"
-        case x: ResourcesComponent => s"6:${x.toJson}"
-        case x: SizeComponent => s"7:${x.toJson}"
-        case x: StateComponent => s"8:${x.toJson}"
-        case x: UserComponent => s"9:${x.toJson}"
-        case x: VelocityComponent => s"10:${x.toJson}"
-      }
-      s"${lst.mkString("__")}"
+    def asJson()(implicit excludedComponents: Seq[Class[_]] = Seq.empty): String = {
+      val lst = e.getComponents
+        .filter(x => !excludedComponents.contains(x.getClass))
+        .map(x => s"""{"${x.getClass.getSimpleName}":${x.toJson}}""")
+      s"[${lst.mkString(",")}]"
     }
 
   }
 
   implicit class StringEntityOps(s: String) {
+    private val COMPONENT_MAPPER: Seq[Class[_]] = Seq(
+      classOf[ChildComponent]
+      , classOf[ItemTypeComponent]
+      , classOf[LocationComponent]
+      , classOf[PlayerComponent]
+      , classOf[QueueComponent]
+      , classOf[ResourcesComponent]
+      , classOf[SizeComponent]
+      , classOf[StateComponent]
+      , classOf[UserComponent]
+      , classOf[VelocityComponent])
 
     def toEntity(pooledEngine: Option[PooledEngine] = None): Entity = {
       val entity = pooledEngine match {
@@ -44,22 +47,15 @@ object AshleyScalaModule {
           engine.createEntity()
         case _ => new Entity
       }
-      s.split("__").foreach { str =>
-        val sep = str.indexOf(":")
-        val tp = str.substring(0, sep)
-        val data = str.substring(sep + 1)
-        tp match {
-          case "1" => entity.add(fromJson[ChildComponent](data))
-          case "2" => entity.add(fromJson[ItemTypeComponent](data))
-          case "3" => entity.add(fromJson[LocationComponent](data))
-          case "4" => entity.add(fromJson[PlayerComponent](data))
-          case "5" => entity.add(fromJson[QueueComponent](data))
-          case "6" => entity.add(fromJson[ResourcesComponent](data))
-          case "7" => entity.add(fromJson[SizeComponent](data))
-          case "8" => entity.add(fromJson[StateComponent](data))
-          case "9" => entity.add(fromJson[UserComponent](data))
-          case "10" => entity.add(fromJson[VelocityComponent](data))
-        }
+      val json = Json.parse(s).as[JsArray]
+      val types: Map[String, Class[_]] = COMPONENT_MAPPER.map(_.getSimpleName).zip(COMPONENT_MAPPER).toMap
+
+      json.value.foreach { js =>
+        val jsObject = js.as[JsObject]
+        val componentType = jsObject.value.keys.head
+        val componentData = jsObject.value.values.head.as[JsObject].toString
+        val clazz = types.getOrElse(componentType, throw new Exception(s"Type $componentType not found in component type mapper"))
+        entity.add(fromJsonWithClass(componentData, clazz).asInstanceOf[Component])
       }
       entity
     }

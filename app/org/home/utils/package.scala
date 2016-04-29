@@ -2,8 +2,11 @@ package org.home
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import java.lang.reflect.{Type, ParameterizedType}
+import java.lang.reflect.{ParameterizedType, Type}
+
 import com.fasterxml.jackson.core.`type`.TypeReference
+
+import scala.reflect.ClassTag
 
 package object utils {
 
@@ -12,6 +15,9 @@ package object utils {
 
   def fromJson[T: Manifest](value: String): T =
     mapper.readValue(value, typeReference[T])
+
+  def fromJsonWithClass[T](value: String, clazz: Class[T]): T =
+    mapper.readValue(value, clazz)
 
   private[this] def typeReference[T: Manifest] = new TypeReference[T] {
     override def getType = typeFromManifest(manifest[T])

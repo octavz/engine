@@ -4,7 +4,6 @@ import javax.ws.rs.{PathParam, QueryParam}
 
 import akka.actor._
 import com.google.inject.Inject
-import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState
 import com.wordnik.swagger.annotations._
 import org.home.dto.{PlayerActionDTO, PlayerDTO}
 import org.home.game.world.World
@@ -24,6 +23,7 @@ import org.home.utils._
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
 class MainController @Inject()(system: ActorSystem, world: World, service: UniverseService) extends Controller {
+  implicit private val excludedComponents = Seq(classOf[PlayerComponent])
 
   @ApiOperation(value = "Start", notes = "Start or reset universe", response = classOf[String],
     httpMethod = "POST", nickname = "start")
@@ -59,7 +59,7 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
       }
   }
 
-  @ApiOperation(value = "Register", notes = "Register", response = classOf[PlayerState],
+  @ApiOperation(value = "Register", notes = "Register",
     httpMethod = "POST", nickname = "register")
   def register(
                 @ApiParam(value = "login") @QueryParam("login") login: String,
@@ -69,14 +69,14 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
     implicit request ⇒
       simpleResponse {
         world.registerUser(login, password, scenario) map { ps =>
-          val ret = ps.asJson
+          val ret = ps.asJson()
           Logger.info(ret)
-          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
+          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].session.sessionId)
         }
       }
   }
 
-  @ApiOperation(value = "Login", notes = "Login", response = classOf[PlayerState],
+  @ApiOperation(value = "Login", notes = "Login",
     httpMethod = "POST", nickname = "login")
   def login(
              @ApiParam(value = "login") @QueryParam("login") login: String,
@@ -85,9 +85,9 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
     implicit request ⇒
       simpleResponse {
         world.loginUser(login, password) map { ps =>
-          val ret = ps.asJson
+          val ret = ps.asJson()
           Logger.info(ret)
-          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].sessionId.sessionId)
+          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].session.sessionId)
         }
       }
   }
@@ -97,9 +97,13 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
     new ApiImplicitParam(name = "Authorization", value = "authorization", defaultValue = "",
       required = true, dataType = "string", paramType = "header")
   ))
-  def stateForSession: Action[AnyContent] = Action {
+  def stateForSession: Action[AnyContent] = Action.async {
     implicit request ⇒
-      Ok(world.stateForSession(request.sessionId).toJson)
+      simpleResponse {
+        world.stateForSession(request.sessionId) map { entity =>
+          Ok(entity.asJson())
+        }
+      }
   }
 
   @ApiOperation(value = "Create action", response = classOf[Boolean],

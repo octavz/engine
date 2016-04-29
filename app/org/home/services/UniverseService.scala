@@ -52,6 +52,7 @@ class UniverseService @Inject()(repository: Repository) {
       session <- repository.createSession(UserSession(player.component[UserComponent].data.id, nextId))
     } yield {
       player.add(PlayerComponent(session))
+      player.component[UserComponent].data.password = "******"
       player
     }
   }

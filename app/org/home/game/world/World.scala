@@ -9,7 +9,7 @@ import org.home.game.components._
 import org.home.game.systems.{SectorMovementSystem, StateSystem}
 import org.home.models._
 import org.home.models.universe._
-import org.home.utils.{ Randomizer, Vector3D}
+import org.home.utils.{Randomizer, Vector3D}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
 import play.api.Logger
@@ -23,7 +23,7 @@ class World @Inject()(universeService: UniverseService) {
   engine.addSystem(new SectorMovementSystem)
   engine.addSystem(new StateSystem(universeService))
   var universe: FullUniverse = _
-  val forceRestart = true
+  val forceRestart = false
   //  val generator = actorSystem.actorOf(Generator.props(), name = "generator")
 
   def start(): Future[String] = {
@@ -60,10 +60,11 @@ class World @Inject()(universeService: UniverseService) {
   import scala.collection.JavaConversions._
 
   private def playerBySession(sessionId: String): Option[Entity] = {
-    engine.getEntitiesFor(Family.one(classOf[PlayerComponent]).get()).find(_.component[PlayerComponent].sessionId == sessionId)
+    val all = engine.getEntitiesFor(Family.one(classOf[PlayerComponent]).get())
+    all.find(_.component[PlayerComponent].session.sessionId == sessionId)
   }
 
-  def stateForSession(sessionId: String): Entity = {
+  def stateForSession(sessionId: String): Future[Entity] = Future {
     playerBySession(sessionId) match {
       case Some(ent) => ent
       case _ => throw new Exception(s"User with session: $sessionId not found.")

@@ -62,7 +62,7 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
 
   override def registerPlayer(player: Entity): Future[Entity] = {
     val model = player.component[UserComponent].data
-    val json = player.asJson
+    val json = player.asJson()
     redis.hExists(KEY_LOGINS, model.login) flatMap {
       exists =>
         if (exists)
@@ -130,7 +130,7 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
 
   override def updateEntity(entity: Entity): Future[Boolean] = {
     val key = entity.component[StateComponent].entityKey
-    redis.set(key, entity.asJson)
+    redis.set(key, entity.asJson())
   }
 
 }
