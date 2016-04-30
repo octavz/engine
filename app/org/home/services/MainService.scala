@@ -1,9 +1,9 @@
 package org.home.services
 
-import javax.inject.Inject
+import javax.inject._
 
 import com.badlogic.ashley.core.Entity
-import org.home.game.components.{PlayerComponent, UserComponent}
+import org.home.game.components.{SessionComponent, UserComponent}
 import org.home.models.UserSession
 import org.home.models.universe.{FullUniverse, Universe}
 import org.home.repositories.Repository
@@ -13,7 +13,8 @@ import org.home.utils.AshleyScalaModule._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class UniverseService @Inject()(repository: Repository) {
+@Singleton
+class MainService @Inject()(repository: Repository) {
 
   def loadUniverse(forceRestart: Boolean = false): Future[FullUniverse] = {
 
@@ -44,25 +45,18 @@ class UniverseService @Inject()(repository: Repository) {
   def saveUniverse(universe: Universe): Future[Boolean] =
     repository.saveUniverse(universe, forceRestart = false)
 
-  def loginUser(login: String, password: String): Future[Entity] = {
+  def loginUser(login: String, password: String): Future[SessionComponent] = {
     for {
       player <- repository
         .findByLoginAndEmail(login, password)
-        .map(_.getOrElse(throw new Exception("User not found")))
-      session <- repository.createSession(UserSession(player.component[UserComponent].data.id, nextId))
+        .map(_.getOrElse(throw new Exception(s"User $login not found")))
+      session <- repository.createSession(UserSession(player.component[UserComponent].id, nextId))
     } yield {
-      player.add(PlayerComponent(session))
-      player.component[UserComponent].data.password = "******"
-      player
+      SessionComponent(session)
     }
   }
 
-  def registerUser(player: Entity): Future[Entity] =
-    repository.registerPlayer(player) flatMap {
-      _ =>
-        val model = player.component[UserComponent].data
-        loginUser(model.login, model.password)
-    }
+  def registerUser(model: UserComponent): Future[Boolean] = repository.registerPlayer(model)
 
   def stateForPlayer(id: String): Future[Option[Entity]] = repository.stateForPlayer(id)
 

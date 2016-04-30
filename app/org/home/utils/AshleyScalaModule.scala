@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.{Component, Entity, PooledEngine}
 
 import scala.reflect.{ClassTag, _}
 import org.home.game.components._
-import org.home.utils._
 import play.api.libs.json._
 import scala.collection.JavaConversions._
 
@@ -32,14 +31,16 @@ object AshleyScalaModule {
     private val COMPONENT_MAPPER: Seq[Class[_]] = Seq(
       classOf[ChildComponent]
       , classOf[ItemTypeComponent]
+      , classOf[NamedComponent]
+      , classOf[HullComponent]
       , classOf[LocationComponent]
-      , classOf[PlayerComponent]
+      , classOf[SessionComponent]
       , classOf[QueueComponent]
       , classOf[ResourcesComponent]
       , classOf[SizeComponent]
       , classOf[StateComponent]
       , classOf[UserComponent]
-      , classOf[VelocityComponent])
+      , classOf[SpeedComponent])
 
     def toEntity(pooledEngine: Option[PooledEngine] = None): Entity = {
       val entity = pooledEngine match {

@@ -15,7 +15,7 @@ package object controllers extends Results {
   case class StringResponse(value: String)
 
   def response[T: Manifest](call: ⇒ Future[T])(implicit request: Request[AnyContent]): Future[Result] = {
-    val ret = try {
+    val fRet = try {
       call.map { r ⇒
         val json = r.toJson
         Logger.info(json)
@@ -25,19 +25,31 @@ package object controllers extends Results {
           Logger.error("", e)
           BadRequest(ErrorMessage(e.getMessage).toJson)
       }
-    }
-    catch {
+    } catch {
       case e: Throwable ⇒
         Future.successful(BadRequest(ErrorMessage(e.getMessage).toJson))
     }
-    ret map {
+    fRet map {
       r ⇒
         if (r.header.headers.contains("Authorization")) r
         else r.withHeaders("Authorization" → request.optSessionId.getOrElse(""))
     }
   }
 
-  def simpleResponse(call: ⇒ Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+  val jsonHeader: (String, String) = "Content-Type" → "application/json"
+
+  def call(call: ⇒ Result)(implicit request: Request[AnyContent]): Result =
+    try {
+      val r = call
+      (if (r.header.headers.contains("Authorization")) r
+      else r.withHeaders("Authorization" → request.optSessionId.getOrElse(""))).withHeaders(jsonHeader)
+    } catch {
+      case e: Throwable ⇒
+        e.printStackTrace()
+        BadRequest(ErrorMessage(e.getMessage).toJson)
+    }
+
+  def asyncCall(call: ⇒ Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
     val ret = try {
       call.recover {
         case e: Throwable ⇒
@@ -53,7 +65,7 @@ package object controllers extends Results {
     ret map {
       r ⇒
         (if (r.header.headers.contains("Authorization")) r
-        else r.withHeaders("Authorization" → request.optSessionId.getOrElse(""))).withHeaders("Content-Type" → "application/json")
+        else r.withHeaders("Authorization" → request.optSessionId.getOrElse(""))).withHeaders(jsonHeader)
     }
   }
 

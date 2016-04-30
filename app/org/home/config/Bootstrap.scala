@@ -1,6 +1,6 @@
 package org.home.config
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
@@ -8,11 +8,11 @@ import org.home.game.world.World
 import org.home.messages.TicEvent
 import play.api.Logger
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Bootstrap @Inject() ( system: ActorSystem, environment: World) {
+@Singleton
+class Bootstrap @Inject()(system: ActorSystem, environment: World) {
 
   implicit val askTimeout = Timeout(5.second)
 
@@ -23,11 +23,10 @@ class Bootstrap @Inject() ( system: ActorSystem, environment: World) {
     TicEvent(time)
   }
 
-  environment.start() map { _ =>
-    system.scheduler.schedule(1.seconds, 5.second)(environment.turn(newTic()))
-    Logger.info("Environment loaded.")
-  }
-
+  system.scheduler.schedule(5.seconds, 5.second)(environment.turn(newTic()))
+//  environment.start() map { _ =>
+//    Logger.info("Environment loaded.")
+//  }
 
 
 }

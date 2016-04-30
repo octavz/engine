@@ -1,11 +1,11 @@
 package org.home.repositories
 
 import com.badlogic.ashley.core.Entity
+import org.home.game.components.UserComponent
 import org.home.models._
 import org.home.models.universe._
 
 import scala.concurrent._
-
 
 trait Repository {
 
@@ -25,7 +25,7 @@ trait Repository {
 
   def createSession(userSession: UserSession): Future[UserSession]
 
-  def registerPlayer(player: Entity): Future[Entity]
+  def registerPlayer(player: UserComponent): Future[Boolean]
 
   def findSession(sessionId: String): Future[Option[UserSession]]
 }

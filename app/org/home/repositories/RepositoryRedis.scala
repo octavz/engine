@@ -1,6 +1,6 @@
 package org.home.repositories
 
-import javax.inject.Inject
+import javax.inject._
 
 import akka.actor.ActorSystem
 import com.badlogic.ashley.core.Entity
@@ -17,6 +17,7 @@ import play.api.Logger
 import org.home.utils.AshleyScalaModule._
 import org.home.utils._
 
+@Singleton
 class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
 
   private[this] implicit class StringOps(s: String) {
@@ -44,7 +45,7 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
       case Some(id) => redis.get(id) map {
         case Some(s) =>
           val ent = s.toEntity()
-          val model = ent.component[UserComponent].data
+          val model = ent.component[UserComponent]
           if (model.password == password) Some(ent) else None
         case _ => None
       }
@@ -60,9 +61,7 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
     redis.get[String](sessionId).map(_.map(_.toUserSession))
   }
 
-  override def registerPlayer(player: Entity): Future[Entity] = {
-    val model = player.component[UserComponent].data
-    val json = player.asJson()
+  override def registerPlayer(model: UserComponent): Future[Boolean] = {
     redis.hExists(KEY_LOGINS, model.login) flatMap {
       exists =>
         if (exists)
@@ -70,8 +69,7 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
         redis.withTransaction {
           t =>
             t.hSet(KEY_LOGINS, model.login, model.id)
-            t.set(model.id, json)
-        } map (_ => player)
+        } map (_ => true)
     }
   }
 
@@ -83,15 +81,8 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
   override def saveUniverse(universe: Universe, forceRestart: Boolean): Future[Boolean] = {
     val json = Universe.toJson(universe.sectors)
     if (forceRestart) {
-      redis.flushDB() flatMap {
-        _ =>
-          redis.set(universe.label.withUniNS, json) flatMap {
-            _ =>
-              val admin = new Entity()
-              admin.add(UserComponent(UserModel("admin-id", "admin", "Administrator", "a", "")))
-              registerPlayer(admin) map (_ => true)
-          }
-      }
+      Logger.info("Restarting everything...............................................")
+      redis.flushDB() flatMap (_ => redis.set(universe.label.withUniNS, json))
     } else {
       redis.set(universe.label.withUniNS, json) map (_ => true)
     }

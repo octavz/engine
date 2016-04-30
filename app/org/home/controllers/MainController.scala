@@ -13,34 +13,43 @@ import play.api.mvc._
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
-import org.home.services.UniverseService
+import org.home.services.MainService
 import org.home.utils.Randomizer
-import org.home.game.components.PlayerComponent
+import org.home.game.components.SessionComponent
 import org.home.models.actions.PlayerAction
 import org.home.utils.AshleyScalaModule._
 import org.home.utils._
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
-class MainController @Inject()(system: ActorSystem, world: World, service: UniverseService) extends Controller {
-  implicit private val excludedComponents = Seq(classOf[PlayerComponent])
+class MainController @Inject()(system: ActorSystem, world: World, service: MainService) extends Controller {
+  implicit private val excludedComponents = Seq(classOf[SessionComponent])
 
   @ApiOperation(value = "Start", notes = "Start or reset universe", response = classOf[String],
     httpMethod = "POST", nickname = "start")
-  def start(): Action[AnyContent] =
-    Action.async {
-      implicit request ⇒
-        response {
-          world.start()
+  def start(): Action[AnyContent] = Action.async {
+    implicit request ⇒
+      asyncCall {
+        world.start() map { r =>
+          val comp = r.player.component[SessionComponent]
+          Ok(r.asJson()).withHeaders("Authorization" → comp.session.sessionId)
         }
-    }
+      }
+  }
 
-  @ApiOperation(value = "GetUniverse", notes = "Gets current universe", response = classOf[String],
+  @ApiOperation(value = "getUniverse", notes = "Gets current universe", response = classOf[String],
     httpMethod = "GET", nickname = "index")
   def index: Action[AnyContent] = Action {
     implicit request ⇒
-      val ret = Universe.toJson(world.universe.universe.sectors)
+      val ret = Universe.toJson(world.data.get.universe.sectors)
       Ok(ret)
+  }
+
+  @ApiOperation(value = "getAllUsers", notes = "Gets current users", httpMethod = "GET", nickname = "getAllUsers")
+  def users: Action[AnyContent] = Action {
+    implicit request ⇒
+      val all = world.users.map(_.asJson()(Seq.empty)).mkString(",")
+      Ok(s"[$all]").withHeaders(jsonHeader)
   }
 
   @ApiOperation(value = "GetPlayer", notes = "Gets player public", response = classOf[PlayerDTO],
@@ -67,11 +76,9 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
                 @ApiParam(value = "scenario", defaultValue = "0") @QueryParam("scenario") scenario: Int
               ): Action[AnyContent] = Action.async {
     implicit request ⇒
-      simpleResponse {
-        world.registerUser(login, password, scenario) map { ps =>
-          val ret = ps.asJson()
-          Logger.info(ret)
-          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].session.sessionId)
+      asyncCall {
+        world.registerUser(login, password, scenario) map { player =>
+          Ok(player.asJson())
         }
       }
   }
@@ -79,15 +86,16 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
   @ApiOperation(value = "Login", notes = "Login",
     httpMethod = "POST", nickname = "login")
   def login(
-             @ApiParam(value = "login") @QueryParam("login") login: String,
-             @ApiParam(value = "password") @QueryParam("password") password: String
+             @ApiParam(value = "login", defaultValue = "test") @QueryParam("login") login: String,
+             @ApiParam(value = "password", defaultValue = "test") @QueryParam("password") password: String
            ): Action[AnyContent] = Action.async {
     implicit request ⇒
-      simpleResponse {
-        world.loginUser(login, password) map { ps =>
-          val ret = ps.asJson()
-          Logger.info(ret)
-          Ok(ret).withHeaders("Authorization" → ps.component[PlayerComponent].session.sessionId)
+      asyncCall {
+        world.loginUser(login, password) map {
+          ps =>
+            val ret = ps.asJson()
+            Logger.info(ret)
+            Ok(ret).withHeaders("Authorization" → ps.player.component[SessionComponent].session.sessionId)
         }
       }
   }
@@ -99,9 +107,10 @@ class MainController @Inject()(system: ActorSystem, world: World, service: Unive
   ))
   def stateForSession: Action[AnyContent] = Action.async {
     implicit request ⇒
-      simpleResponse {
-        world.stateForSession(request.sessionId) map { entity =>
-          Ok(entity.asJson())
+      asyncCall {
+        world.stateForSession(request.sessionId) map {
+          entity =>
+            Ok(entity.asJson())
         }
       }
   }
