@@ -54,16 +54,12 @@ class MainController @Inject()(system: ActorSystem, world: World, service: MainS
 
   @ApiOperation(value = "GetPlayer", notes = "Gets player public", response = classOf[PlayerDTO],
     httpMethod = "GET", nickname = "getPlayer")
-  def getPlayer(@PathParam("id") id: String): Action[AnyContent] = Action.async {
+  def getPlayer(@PathParam("id") id: String): Action[AnyContent] = Action {
     implicit request ⇒
-      response {
-        world.getPlayer(id) map {
-          case Some(a) ⇒ a match {
-            case d: PlayerDTO ⇒ a.asInstanceOf[PlayerDTO]
-            case _ ⇒ throw new Exception("No idea what i got")
-          }
+      call {
+        world.getPlayer(id) match {
+          case Some(a) ⇒ Ok(a.toJson)
           case None ⇒ throw new Exception("User not found.")
-          case _ ⇒ throw new Exception("No idea what i got")
         }
       }
   }

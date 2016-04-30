@@ -56,21 +56,12 @@ class World @Inject()(service: MainService, stateSystem: StateSystem) {
       .getOrElse(throw new Exception(s"No default user: $defaultLogin found"))
   }
 
-  private def playerById(id: String): Option[Entity] = {
-    val ents = engine.getEntitiesFor(Family.all(classOf[UserComponent]).get())
-    ents.find(_.component[UserComponent].id == id)
-  }
+  private def playerById(id: String): Option[Entity] =
+    engine
+      .getEntitiesFor(Family.all(classOf[UserComponent]).get())
+      .find(_.component[UserComponent].id == id)
 
   private def fullPlayer(id: String): Option[Player] = playerById(id) map (Player(_, playerItems(id).toSeq))
-
-  private def addPlayer(player: Entity): Entity = {
-    playerById(player.component[UserComponent].id) match {
-      case Some(e) => engine.removeEntity(e)
-      case _ =>
-    }
-    engine.addEntity(player)
-    player
-  }
 
   def users: Seq[Entity] = engine.getEntitiesFor(Family.all(classOf[UserComponent]).get()).toSeq
 
@@ -125,14 +116,10 @@ class World @Inject()(service: MainService, stateSystem: StateSystem) {
     engine.update(ticEvent.currentTime)
   }
 
-  def saveUniverse(): Future[Boolean] = service.saveUniverse(data.get.universe)
-
-  def getPlayer(id: String): Future[Option[PlayerDTO]] =
-    service.stateForPlayer(id) map {
-      _.map { ps =>
-        val model = ps.component[UserComponent]
-        PlayerDTO(id = model.id, name = model.name)
-      }
+  def getPlayer(id: String): Option[PlayerDTO] =
+    playerById(id) map { ps =>
+      val model = ps.component[UserComponent]
+      PlayerDTO(id = model.id, name = model.name)
     }
 
   def performAction(sessionId: String, action: PlayerAction): Future[Any] =
