@@ -15,7 +15,7 @@ import scala.concurrent._
 import ExecutionContext.Implicits.global
 import org.home.services.MainService
 import org.home.utils.Randomizer
-import org.home.game.components.SessionComponent
+import org.home.game.components.{SessionComponent, StateComponent}
 import org.home.models.actions.PlayerAction
 import org.home.utils.AshleyScalaModule._
 import org.home.utils._
@@ -23,7 +23,7 @@ import org.home.utils._
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
 class MainController @Inject()(system: ActorSystem, world: World, service: MainService) extends Controller {
-  implicit private val excludedComponents = Seq(classOf[SessionComponent])
+  implicit private val excludedComponents = Seq(classOf[SessionComponent], classOf[StateComponent])
 
   @ApiOperation(value = "Start", notes = "Start or reset universe", response = classOf[String],
     httpMethod = "POST", nickname = "start")
@@ -32,7 +32,7 @@ class MainController @Inject()(system: ActorSystem, world: World, service: MainS
       asyncCall {
         world.start() map { r =>
           val comp = r.player.component[SessionComponent]
-          Ok(r.asJson()).withHeaders("Authorization" → comp.session.sessionId)
+          Ok(r.asJson()).withHeaders("Authorization" → comp.sessionId)
         }
       }
   }
@@ -91,7 +91,7 @@ class MainController @Inject()(system: ActorSystem, world: World, service: MainS
           ps =>
             val ret = ps.asJson()
             Logger.info(ret)
-            Ok(ret).withHeaders("Authorization" → ps.player.component[SessionComponent].session.sessionId)
+            Ok(ret).withHeaders("Authorization" → ps.player.component[SessionComponent].sessionId)
         }
       }
   }

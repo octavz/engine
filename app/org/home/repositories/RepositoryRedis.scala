@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import org.home.utils.Constants._
 import com.softwaremill.quicklens._
-import org.home.game.components.{StateComponent, UserComponent}
+import org.home.game.components.{SessionComponent, StateComponent, UserComponent}
 import play.api.Logger
 import org.home.utils.AshleyScalaModule._
 import org.home.utils._
@@ -35,7 +35,7 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
 
     def withSessionNS: String = withNS(SESSION_NS)
 
-    def toUserSession: UserSession = fromJson[UserSession](s).modify(_.sessionId).using(_.woNS(SESSION_NS))
+    def toSessionComponent: SessionComponent = fromJson[SessionComponent](s).modify(_.sessionId).using(_.woNS(SESSION_NS))
   }
 
   val redis = Redis.withActorSystem()(actorSystem)
@@ -52,13 +52,13 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
       case _ => Future.successful(None)
     }
 
-  override def createSession(userSession: UserSession): Future[UserSession] = {
+  override def createSession(userSession: SessionComponent): Future[SessionComponent] = {
     redis.set(userSession.sessionId.withSessionNS, userSession.toJson) map (_ => userSession)
-    //bucket.set[UserSession](userSession.sessionId, userSession) map (_.isSuccess)
+    //bucket.set[SessionComponent](userSession.sessionId, userSession) map (_.isSuccess)
   }
 
-  override def findSession(sessionId: String): Future[Option[UserSession]] = {
-    redis.get[String](sessionId).map(_.map(_.toUserSession))
+  override def findSession(sessionId: String): Future[Option[SessionComponent]] = {
+    redis.get[String](sessionId).map(_.map(_.toSessionComponent))
   }
 
   override def registerPlayer(model: UserComponent): Future[Boolean] = {
@@ -106,9 +106,9 @@ class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {
       case _ => Future.successful(Seq.empty[Entity])
     }
 
-  private def loadSession(k: String): Future[UserSession] = redis.get(k) map (_.get.toUserSession)
+  private def loadSession(k: String): Future[SessionComponent] = redis.get(k) map (_.get.toSessionComponent)
 
-  override def loadAllSessions(): Future[Seq[UserSession]] = {
+  override def loadAllSessions(): Future[Seq[SessionComponent]] = {
     redis.keys(s"$SESSION_NS:*") flatMap {
       keys =>
         Future.sequence(keys.toSeq.map(loadSession)) map {

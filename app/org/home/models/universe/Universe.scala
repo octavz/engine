@@ -1,18 +1,16 @@
 package org.home.models.universe
 
 import com.badlogic.ashley.core.Entity
-import org.home.models.{Sector, UserSession}
-
-import scala.concurrent.{ExecutionContext, Future}
+import org.home.models.Sector
 import scalax.collection.GraphEdge.UnDiEdge
 import scalax.collection.generator.{NodeDegreeRange, RandomGraph}
 import scalax.collection.immutable.Graph
 import scalax.collection.io.json.descriptor.{Descriptor, NodeDescriptor}
-import scalax.collection._
-import scalax.collection.GraphPredef._
-import scalax.collection.GraphEdge._
-import scalax.collection.edge._
-import scalax.collection.edge.Implicits._
+//import scalax.collection._
+//import scalax.collection.GraphPredef._
+//import scalax.collection.GraphEdge._
+//import scalax.collection.edge._
+//import scalax.collection.edge.Implicits._
 import scalax.collection.io.json._
 import scalax.collection.io.json.descriptor.predefined.UnDi
 

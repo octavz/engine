@@ -4,7 +4,6 @@ import javax.inject._
 
 import com.badlogic.ashley.core.Entity
 import org.home.game.components.{SessionComponent, UserComponent}
-import org.home.models.UserSession
 import org.home.models.universe.{FullUniverse, Universe}
 import org.home.repositories.Repository
 import org.home.utils.Randomizer._
@@ -50,9 +49,9 @@ class MainService @Inject()(repository: Repository) {
       player <- repository
         .findByLoginAndEmail(login, password)
         .map(_.getOrElse(throw new Exception(s"User $login not found")))
-      session <- repository.createSession(UserSession(player.component[UserComponent].id, nextId))
+      session <- repository.createSession(SessionComponent(player.component[UserComponent].id, nextId))
     } yield {
-      SessionComponent(session)
+      session
     }
   }
 
@@ -60,7 +59,7 @@ class MainService @Inject()(repository: Repository) {
 
   def stateForPlayer(id: String): Future[Option[Entity]] = repository.stateForPlayer(id)
 
-  def findSession(sessionId: String): Future[Option[UserSession]] = repository.findSession(sessionId)
+  def findSession(sessionId: String): Future[Option[SessionComponent]] = repository.findSession(sessionId)
 
   def persistEntity(entity: Entity): Future[Boolean] = {
     repository.updateEntity(entity)

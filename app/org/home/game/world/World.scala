@@ -67,11 +67,11 @@ class World @Inject()(service: MainService, stateSystem: StateSystem) {
 
   def loginUser(login: String, password: String): Future[Player] =
     service.loginUser(login, password) map { sessionComponent =>
-      playerById(sessionComponent.session.userId) match {
+      playerById(sessionComponent.userId) match {
         case Some(entity) =>
           entity.add(sessionComponent) //attach a session to this guy
-          Player(entity, playerItems(sessionComponent.session.userId).toSeq)
-        case _ => throw new Exception(s"Engine doesn't contain ${sessionComponent.session.userId}")
+          Player(entity, playerItems(sessionComponent.userId).toSeq)
+        case _ => throw new Exception(s"Engine doesn't contain ${sessionComponent.userId}")
       }
     }
 
@@ -101,7 +101,7 @@ class World @Inject()(service: MainService, stateSystem: StateSystem) {
 
   private def playerBySession(sessionId: String): Option[Entity] = {
     val all = engine.getEntitiesFor(Family.one(classOf[SessionComponent]).get())
-    all.find(_.component[SessionComponent].session.sessionId == sessionId)
+    all.find(_.component[SessionComponent].sessionId == sessionId)
   }
 
   def stateForSession(sessionId: String): Future[Player] = Future {
