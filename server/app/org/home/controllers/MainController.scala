@@ -5,7 +5,7 @@ import javax.ws.rs.{PathParam, QueryParam}
 import akka.actor._
 import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
-import org.home.dto.{PlayerActionDTO, PlayerDTO}
+import org.home.dto.{LoginDTO, PlayerActionDTO, PlayerDTO}
 import org.home.game.world.World
 import org.home.models.universe._
 import play.api.Logger
@@ -19,11 +19,13 @@ import org.home.game.components.{SessionComponent, StateComponent}
 import org.home.models.actions.PlayerAction
 import org.home.utils.AshleyScalaModule._
 import org.home.utils._
+import play.api.libs.json.Json
 
 @Api(value = "/main", description = "Operations")
 @javax.inject.Singleton
 class MainController @Inject()(system: ActorSystem, world: World, service: MainService) extends Controller {
   implicit private val excludedComponents = Seq(classOf[SessionComponent], classOf[StateComponent])
+  implicit val fmtLogin = Json.reads[LoginDTO]
 
   @ApiOperation(value = "Start", notes = "Start or reset universe", response = classOf[String],
     httpMethod = "POST", nickname = "start")
@@ -79,15 +81,16 @@ class MainController @Inject()(system: ActorSystem, world: World, service: MainS
       }
   }
 
-  @ApiOperation(value = "Login", notes = "Login",
+  @ApiOperation(value = "Login", notes = "Login", response = classOf[world.Player],
     httpMethod = "POST", nickname = "login")
-  def login(
-             @ApiParam(value = "login", defaultValue = "test") @QueryParam("login") login: String,
-             @ApiParam(value = "password", defaultValue = "test") @QueryParam("password") password: String
-           ): Action[AnyContent] = Action.async {
+  @ApiImplicitParams(Array(
+    new ApiImplicitParam(value = "login request", required = true,
+      paramType = "body", dataType = "org.home.dto.LoginDTO")))
+  def login(): Action[AnyContent] = Action.async {
     implicit request ⇒
       asyncCall {
-        world.loginUser(login, password) map {
+        val dto = request.body.asJson.getOrElse(throw new Exception("Wrong json body for login")).as[LoginDTO]
+        world.loginUser(dto.login, dto.password) map {
           ps =>
             val ret = ps.asJson()
             Logger.info(ret)
