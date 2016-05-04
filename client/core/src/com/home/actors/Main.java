@@ -1,5 +1,6 @@
 package com.home.actors;
 
+import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -20,7 +21,8 @@ public class Main extends ApplicationAdapter {
     private Stage stage;
     private Skin skin;
     private Dialog dlgLogin;
-    private final Service service = new ServiceImpl();
+    private final PooledEngine engine = new PooledEngine();
+    private final Service service = new ServiceImpl(engine);
 
     @Override
     public void create() {

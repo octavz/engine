@@ -17,8 +17,8 @@ public class LoginDialog extends Dialog {
         super("Login", skin);
         this.stage = stage;
         this.service = service;
-        textLogin = new TextField("", skin);
-        textPass = new TextField("", skin);
+        textLogin = new TextField("test", skin);
+        textPass = new TextField("test", skin);
         textPass.setPasswordMode(true);
         textPass.setPasswordCharacter('*');
         lblMessage = new Label("", skin);
