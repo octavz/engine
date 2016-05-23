@@ -33,9 +33,9 @@ public class Main extends ApplicationAdapter {
         img = new Texture("badlogic.jpg");
         skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
+//        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+//        pixmap.setColor(Color.WHITE);
+//        pixmap.fill();
         Dialog loginDialog = createLoginDialog();
         loginDialog.show(stage);
     }
