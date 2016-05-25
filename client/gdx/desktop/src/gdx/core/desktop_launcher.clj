@@ -6,6 +6,6 @@
 
 (defn -main
   []
-  (LwjglApplication. gdx-game "gdx" 1024 768)
+  (LwjglApplication. gdx-game "gdx" 800 600)
   (Keyboard/enableRepeatEvents true)
   )
