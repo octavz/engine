@@ -24,6 +24,7 @@ public class SplashActivity extends Activity {
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        setRequestedOrientation(android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         if (firstLaunch) {
             firstLaunch = false;
