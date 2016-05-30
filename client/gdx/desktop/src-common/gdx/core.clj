@@ -1,7 +1,9 @@
 (ns gdx.core
   (:require [play-clj.core :refer :all]
             [play-clj.ui :refer :all]
-            [cheshire.core :refer :all]))
+            [cheshire.core :refer :all]
+            [clojure.walk :refer :all]
+            ))
 
 (require '[clojure.string :as str])
 (import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
@@ -25,6 +27,21 @@
                        (prn ret1)
                        ret))
 
+(defn request [url method body ] 
+  (let [request (com.badlogic.gdx.Net$HttpRequest. method)]
+    (.setUrl request url)
+    (.setHeader request "Content-Type" "application/json")
+    (.setHeader request "Accept" "application/json")
+    (.setHeader request "Accept" "application/json")
+    (when-not (nil? body)
+      (.setContent request body))
+    request))
+
+(defn after-login [player] 
+  (prn (player :player))
+  (prn (player :items))
+  )
+
 (defn do-login [ctrl email pass]
   (do
     (dialog! ctrl :cancel)
@@ -32,15 +49,14 @@
       "Email or password is empty"
       (let [listener (proxy [com.badlogic.gdx.Net$HttpResponseListener][]
                       (handleHttpResponse [response]
-                        (println (parse-string (.getResultAsString response)))
-                        (dialog! ctrl :hide)))
-            request (com.badlogic.gdx.Net$HttpRequest. "POST")]
-        (.setUrl request (str server-url "login"))
-        (.setHeader request "Content-Type" "application/json")
-        (.setHeader request "Accept" "application/json")
-        (.setContent request (generate-string {:login email :password pass}))
+                        (dialog! ctrl :hide);validate that response is ok
+                        (after-login (keywordize-keys (parse-string (.getResultAsString response))))))
+            request (request (str server-url "login") 
+                             "POST"
+                             (generate-string {:login email :password pass}))]
         (net! :send-http-request request listener)
         ""))))
+
 
 (defscreen ui-screen
   :on-show
