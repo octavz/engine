@@ -58,6 +58,31 @@
         ""))))
 
 
+(defn login-dialog [ui-skin] 
+  (let  [txtEmail (text-field "test" ui-skin)
+         txtPass (text-field "test" ui-skin :set-password-mode true :set-password-character \*)
+         lblError (label "" ui-skin)
+         ret-dialog (ActorEntity. (proxy [Dialog] ["Login" ui-skin]
+             (result [stuff] 
+               (let [result (do-login this
+                                      (text-field! txtEmail :get-text)
+                                      (text-field! txtPass :get-text))]
+                 (when-not (str/blank? result)
+                   (label! lblError :set-text result))))))
+         content-table (dialog! ret-dialog :get-content-table)]
+    (cell! (table! content-table :add (:object (label "Enter login/password" ui-skin))) :colspan 2)
+    (table! content-table :row)
+    (dialog! ret-dialog :key 66 true)
+    (dialog! ret-dialog :button "Login")
+    (cell! (table! content-table :add "Login:") :align (align :right))
+    (cell! (table! content-table :add (:object txtEmail)) :width 300 :height 30)
+    (table! content-table :row)
+    (cell! (table! content-table :add "Password:") :align (align :right))
+    (cell! (table! content-table :add (:object txtPass)) :width 300 :height 30)
+    (table! content-table :row)
+    (cell! (table! content-table :add (:object lblError)) :colspan 2)
+    ret-dialog))
+
 (defscreen ui-screen
   :on-show
   (fn [screen entities]
@@ -65,33 +90,10 @@
              :renderer (stage)
              :camera (orthographic))
     (let [ui-skin (skin skin-path)
-          secCamera (orthographic)
-          lblHeader (label "Enter login/password" ui-skin)
-          txtEmail (text-field "test" ui-skin)
-          txtPass (text-field "test" ui-skin :set-password-mode true :set-password-character \*)
-          lblError (label "" ui-skin)
-          d (proxy [Dialog] ["Login" ui-skin]
-              (result [stuff] (let [result (do-login this
-                                                     (text-field! txtEmail :get-text)
-                                                     (text-field! txtPass :get-text))]
-                                (when-not (str/blank? result)
-                                  (label! lblError :set-text result)))))
-          login-dialog (ActorEntity. d)
-          content-table (dialog! login-dialog :get-content-table)]
-      (cell! (table! content-table :add (:object lblHeader)) :colspan 2)
-      (table! content-table :row)
-      (dialog! login-dialog :key 66 true)
-      (dialog! login-dialog :button "Login")
-      (cell! (table! content-table :add "Login:") :align (align :right))
-      (cell! (table! content-table :add (:object txtEmail)) :width 300 :height 30)
-      (table! content-table :row)
-      (cell! (table! content-table :add "Password:") :align (align :right))
-      (cell! (table! content-table :add (:object txtPass)) :width 300 :height 30)
-      (table! content-table :row)
-      (cell! (table! content-table :add (:object lblError)) :colspan 2)
-      (dialog! login-dialog :show (stage))
-      (dialog! login-dialog :pack)
-      login-dialog))
+          dlg (login-dialog ui-skin)]
+      (dialog! dlg :pack)
+      (dialog! dlg :show (stage))
+      dlg))
     
   :on-resize
   (fn [screen entities]
