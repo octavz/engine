@@ -5,6 +5,6 @@ project/target
 target
 /bin/
 .*
-logs/*
+server/logs/*
 build
 war
