@@ -1,7 +1,8 @@
 package org.home.utils
 
-import com.badlogic.ashley.core.{ Entity, PooledEngine}
-import org.home.game.components._
+import com.badlogic.ashley.core.{Entity, PooledEngine}
+import org.home.commons.utils.{Randomizer, Vector3D}
+import org.home.commons.game.components._
 
 object Builders {
   private def defaultShip(parentId: String, locationComponent: LocationComponent)(implicit engine: PooledEngine): Entity = {

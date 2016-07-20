@@ -3,11 +3,11 @@ package org.home.services
 import javax.inject._
 
 import com.badlogic.ashley.core.Entity
-import org.home.game.components.{SessionComponent, UserComponent}
-import org.home.models.universe.{FullUniverse, Universe}
+import org.home.commons.game.components.{SessionComponent, UserComponent}
+import org.home.commons.models.universe.{FullUniverse, Universe}
 import org.home.repositories.Repository
-import org.home.utils.Randomizer._
-import org.home.utils.AshleyScalaModule._
+import org.home.commons.utils.Randomizer._
+import org.home.commons.utils.AshleyScalaModule._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

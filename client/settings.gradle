@@ -1,1 +1,2 @@
-include 'desktop', 'android', 'html', 'core'
+project("commons").projectDir = file("../commons")
+include 'desktop', 'android', 'html', 'core', 'commons'

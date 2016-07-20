@@ -7,9 +7,7 @@ object Constants {
   val SESSION_NS = "s"
 }
 
-object ScenarioType {
-  val NORMAL = 0
-}
+
 
 object SectorObjectTypes {
   val RESOURCE = 0

@@ -1,9 +1,10 @@
 package org.home.game.systems
 
 import com.badlogic.ashley.core.{ComponentMapper, Entity, Family}
-import org.home.game.components.{LocationComponent, QueueComponent, SpeedComponent}
-import org.home.models.actions.PlayerAction
-import org.home.utils.{ActionType, Vector3D}
+import org.home.commons.game.components.{LocationComponent, QueueComponent, SpeedComponent}
+import org.home.commons.utils.Vector3D
+import org.home.commons.models.actions.PlayerAction
+import org.home.utils.ActionType
 
 class SectorMovementSystem
   extends ParallelIteratingSystem(Family.all(classOf[LocationComponent], classOf[SpeedComponent], classOf[QueueComponent]).get()) {

@@ -1,0 +1,3 @@
+include 'desktop', 'android', 'ios', 'commons', 'core'
+project(':commons').projectDir = file("../commons")
+

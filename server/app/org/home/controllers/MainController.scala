@@ -5,20 +5,21 @@ import javax.ws.rs.{PathParam, QueryParam}
 import akka.actor._
 import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
+import org.home.commons.game.components.{SessionComponent, StateComponent}
+import org.home.commons.utils.Randomizer
 import org.home.dto.{LoginDTO, PlayerActionDTO, PlayerDTO}
 import org.home.game.world.World
-import org.home.models.universe._
+import org.home.commons.models.universe._
 import play.api.Logger
 import play.api.mvc._
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 import org.home.services.MainService
-import org.home.utils.Randomizer
-import org.home.game.components.{SessionComponent, StateComponent}
-import org.home.models.actions.PlayerAction
-import org.home.utils.AshleyScalaModule._
-import org.home.utils._
+import org.home.commons.game.components.StateComponent
+import org.home.commons.models.actions.PlayerAction
+import org.home.commons.utils.AshleyScalaModule._
+import org.home.commons.utils._
 import play.api.libs.json.Json
 
 @Api(value = "/main", description = "Operations")

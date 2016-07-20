@@ -4,7 +4,7 @@ package org.home.game.world
 import org.home.messages._
 import akka.actor._
 
-import org.home.utils.Randomizer._
+import org.home.commons.utils.Randomizer._
 
 object Generator{
   def props(): Props = Props(new Generator)
