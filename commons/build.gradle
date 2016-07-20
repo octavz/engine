@@ -2,7 +2,6 @@ apply plugin: "scala"
 
 sourceSets.main.scala.srcDirs = [ "src/main/scala" ]
 scalaVersion = '2.11.8'
-gdxVersion = '1.7.2'
 
 repositories {
   maven {
@@ -13,9 +12,7 @@ repositories {
 dependencies {
     compile "com.typesafe.play:play-json_2.11:2.4.6"
     compile "org.scala-lang:scala-library:$scalaVersion"
-    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-    compile "com.badlogicgames.ashley:ashley:$gdxVersion"
+    compile "com.badlogicgames.ashley:ashley:1.7.0"
     compile "com.assembla.scala-incubator:graph-json_2.11:1.11.0"
     compile "com.assembla.scala-incubator:graph-core_2.11:1.11.0"
     compile "com.fasterxml.jackson.module:jackson-module-scala_2.11:2.7.2"

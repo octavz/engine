@@ -6,7 +6,7 @@ import com.badlogic.ashley.core.{Entity, Family, PooledEngine}
 import org.home.commons.game.components.{ChildComponent, QueueComponent, SessionComponent}
 import org.home.commons.utils.{Randomizer, ScenarioType}
 import org.home.messages._
-import org.home.dto.PlayerDTO
+import org.home.commons.dto.PlayerDTO
 import org.home.commons.game.components._
 import org.home.game.systems.{SectorMovementSystem, StateSystem}
 import org.home.commons.models.universe._

@@ -7,7 +7,7 @@ import com.google.inject.Inject
 import com.wordnik.swagger.annotations._
 import org.home.commons.game.components.{SessionComponent, StateComponent}
 import org.home.commons.utils.Randomizer
-import org.home.dto.{LoginDTO, PlayerActionDTO, PlayerDTO}
+import org.home.commons.dto.{LoginDTO, PlayerActionDTO, PlayerDTO}
 import org.home.game.world.World
 import org.home.commons.models.universe._
 import play.api.Logger

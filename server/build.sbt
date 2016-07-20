@@ -1,5 +1,5 @@
 
-name := "actors"
+name := "server"
 
 scalaVersion := "2.11.8"
 
