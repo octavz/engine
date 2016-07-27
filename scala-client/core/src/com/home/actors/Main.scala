@@ -12,32 +12,19 @@ import com.home.actors.client.impl.ServiceImpl
 import com.home.actors.client.ui.dialogs.LoginDialog
 
 class Main extends ApplicationAdapter {
-  private var batch: SpriteBatch = _
-  private var img: Texture = _
-  private var stage: Stage = _
-  private var skin: Skin = _
-  private var dlgLogin: Dialog = _
-  final private val engine: PooledEngine = new PooledEngine
-  final private val service: Service = new ServiceImpl(engine)
+  private lazy val batch = new SpriteBatch()
+  private lazy val view = new ScreenViewport
+  private lazy val stage = new Stage(view)
+  private lazy val skin = new Skin(Gdx.files.internal("data/uiskin.json"))
+  private lazy val dlgLogin = new LoginDialog(stage, skin, service)
+  private val engine = new PooledEngine
+  private val service = new ServiceImpl(engine)
 
   override def create() {
-    val view: ScreenViewport = new ScreenViewport
-    stage = new Stage(view)
     Gdx.input.setInputProcessor(stage)
-    batch = new SpriteBatch
-    img = new Texture("badlogic.jpg")
-    skin = new Skin(Gdx.files.internal("data/uiskin.json"))
-    //        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-    //        pixmap.setColor(Color.WHITE);
-    //        pixmap.fill();
-    val loginDialog: Dialog = createLoginDialog
-    loginDialog.show(stage)
+    dlgLogin.show(stage)
   }
 
-  private def createLoginDialog: Dialog = {
-    if (dlgLogin == null) dlgLogin = new LoginDialog(stage, skin, service)
-    dlgLogin
-  }
 
   override def resize(width: Int, height: Int) {
     stage.getViewport.update(width, height, true)
@@ -47,7 +34,6 @@ class Main extends ApplicationAdapter {
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     batch.begin()
-    batch.draw(img, 0, 0)
     batch.end()
     stage.draw()
   }

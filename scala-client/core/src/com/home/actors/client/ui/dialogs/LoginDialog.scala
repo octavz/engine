@@ -14,7 +14,7 @@ class LoginDialog(val stage: Stage, val skin: Skin, val service: Service) extend
   init()
 
   private def init() {
-    val contentTable: Table = getContentTable
+    val contentTable = getContentTable
     contentTable.add(new Label("Enter login/password", getSkin)).colspan(2)
     contentTable.row
     contentTable.add(new Label("Login: ", getSkin)).align(Align.right)
@@ -31,23 +31,21 @@ class LoginDialog(val stage: Stage, val skin: Skin, val service: Service) extend
     stage.setKeyboardFocus(textLogin)
   }
 
-  private def validateLogin(user: String, pass: String): String = if (user.length > 0 && pass.length > 0) ""
-  else "User or password is not sent"
+  private def validateLogin(user: String, pass: String) = if (user.length > 0 && pass.length > 0) "" else "User or password is not sent"
 
   override def result(obj: Any) {
-    val result: Boolean = obj.asInstanceOf[Boolean]
+    val result = obj.asInstanceOf[Boolean]
     if (result) {
-      val login: String = textLogin.getText
-      val pass: String = textPass.getText
-      val valid: String = validateLogin(login, pass)
+      val login = textLogin.getText
+      val pass = textPass.getText
+      val valid = validateLogin(login, pass)
       if (valid.length == 0) {
         service.login(login, pass)
-        this.remove
-      }
-      else {
-        this.cancel()
+        remove()
+      } else {
+        cancel()
         lblMessage.setText(valid)
-        this.show(stage)
+        show(stage)
       }
     }
   }

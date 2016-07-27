@@ -60,6 +60,7 @@ object AshleyScalaModule {
       }
       entity
     }
+
   }
 
 
