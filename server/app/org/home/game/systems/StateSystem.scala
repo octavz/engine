@@ -4,10 +4,10 @@ import javax.inject.{Inject, Singleton}
 
 import com.badlogic.ashley.core.{ComponentMapper, Entity, Family}
 import com.badlogic.ashley.systems.IteratingSystem
-import org.home.game.components.StateComponent
+import org.home.commons.game.components.StateComponent
 import org.home.services.MainService
 import play.api.Logger
-import org.home.utils.AshleyScalaModule._
+import org.home.commons.utils.AshleyScalaModule._
 
 import scala.concurrent._
 import duration._

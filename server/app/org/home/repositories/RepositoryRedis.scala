@@ -4,18 +4,17 @@ import javax.inject._
 
 import akka.actor.ActorSystem
 import com.badlogic.ashley.core.Entity
-import org.home.models._
-import org.home.models.universe.Universe
+import org.home.commons.models.universe.Universe
 import scredis._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import org.home.utils.Constants._
 import com.softwaremill.quicklens._
-import org.home.game.components.{SessionComponent, StateComponent, UserComponent}
+import org.home.commons.game.components.{SessionComponent, StateComponent, UserComponent}
 import play.api.Logger
-import org.home.utils.AshleyScalaModule._
-import org.home.utils._
+import org.home.commons.utils.AshleyScalaModule._
+import org.home.commons.utils._
 
 @Singleton
 class RepositoryRedis @Inject()(actorSystem: ActorSystem) extends Repository {

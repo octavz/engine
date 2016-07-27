@@ -4,7 +4,7 @@ import play.api.Logger
 import play.api.mvc.{Results, AnyContent, Request}
 import play.api.mvc.Result
 import scala.concurrent.ExecutionContext.Implicits.global
-import org.home.utils._
+import org.home.commons.utils._
 
 import scala.concurrent.Future
 

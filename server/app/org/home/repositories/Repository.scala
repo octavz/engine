@@ -1,9 +1,9 @@
 package org.home.repositories
 
 import com.badlogic.ashley.core.Entity
-import org.home.game.components.{SessionComponent, UserComponent}
-import org.home.models._
-import org.home.models.universe._
+import org.home.commons.game.components.{SessionComponent, UserComponent}
+import org.home.commons.models._
+import org.home.commons.models.universe._
 
 import scala.concurrent._
 
