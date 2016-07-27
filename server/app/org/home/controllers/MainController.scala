@@ -145,4 +145,3 @@ class MainController @Inject()(system: ActorSystem, world: World, service: MainS
   }
 
 }
-

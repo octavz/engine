@@ -42,7 +42,7 @@
   (prn (player :items))
   )
 
-(defn do-login [ctrl email pass]
+(defn do-login [screen entities ctrl email pass]
   (do
     (dialog! ctrl :cancel)
     (if (or (str/blank? email) (str/blank? pass))
@@ -55,33 +55,50 @@
                              "POST"
                              (generate-string {:login email :password pass}))]
         (net! :send-http-request request listener)
-        ""))) )
+        ""))))
 
+(defn user-bar [screen entities ui-skin] (let [lbl-player (label "name" ui-skin)
+                                               lbl-money (label "10C" ui-skin)
+                                               lbl-sector (label "Solar One" ui-skin)
+                                               lbl-position (label "10,100" ui-skin)
+                                               bar (horizontal [lbl-player lbl-money lbl-sector lbl-position] 
+                                                               :align 16
+                                                               :space 10
+                                                               :set-width (graphics! :get-width)
+                                                               :fill 0
+                                                               :set-y (- (graphics! :get-height) 10)
+                                                               )
+                                               ]
+                                           (horizontal! bar :layout)
+                                           bar))
 
-(defn login-dialog [ui-skin] 
-  (let  [txtEmail (text-field "test" ui-skin)
-          txtPass (text-field "test" ui-skin :set-password-mode true :set-password-character \*)
-          lblError (label "" ui-skin)
-         ret-dialog (ActorEntity. (proxy [Dialog] ["Login" ui-skin]
+(defn login-dialog [screen entities ui-skin] 
+  (let  [txt-email (text-field "test" ui-skin)
+         txt-pass (text-field "test" ui-skin :set-password-mode true :set-password-character \*)
+         lbl-error (label "" ui-skin)
+         dlg-ret (ActorEntity. (proxy [Dialog] ["Login" ui-skin]
              (result [stuff] 
-               (let [result (do-login this
-                                      (text-field! txtEmail :get-text)
-                                                                              (text-field! txtPass :get-text))]
-                                                         (when-not (str/blank? result)
-                                                           (label! lblError :set-text result))))))
-         content-table (dialog! ret-dialog :get-content-table)]
+               (let [result (do-login screen
+                                      entities
+                                      this
+                                      (text-field! txt-email :get-text)
+                                      (text-field! txt-pass :get-text))]
+                 (when-not (str/blank? result)
+                   (label! lbl-error :set-text result))))))
+         content-table (dialog! dlg-ret :get-content-table)]
     (cell! (table! content-table :add (:object (label "Enter login/password" ui-skin))) :colspan 2)
-      (table! content-table :row)
-    (dialog! ret-dialog :key 66 true)
-    (dialog! ret-dialog :button "Login")
-      (cell! (table! content-table :add "Login:") :align (align :right))
-    (cell! (table! content-table :add (:object txtEmail)) :width 300 :height 30)
-      (table! content-table :row)
-      (cell! (table! content-table :add "Password:") :align (align :right))
-    (cell! (table! content-table :add (:object txtPass)) :width 300 :height 30)
-      (table! content-table :row)
-      (cell! (table! content-table :add (:object lblError)) :colspan 2)
-    ret-dialog))
+    (table! content-table :row)
+    (dialog! dlg-ret :key 66 true)
+    (dialog! dlg-ret :button "Login")
+    (cell! (table! content-table :add "Login:") :align (align :right))
+    (cell! (table! content-table :add (:object txt-email)) :width 300 :height 30)
+    (table! content-table :row)
+    (cell! (table! content-table :add "Password:") :align (align :right))
+    (cell! (table! content-table :add (:object txt-pass)) :width 300 :height 30)
+    (table! content-table :row)
+    (cell! (table! content-table :add (:object lbl-error)) :colspan 2)
+    (dialog! dlg-ret :pack)
+    dlg-ret))
 
 (defscreen ui-screen
   :on-show
@@ -90,10 +107,11 @@
              :renderer (stage)
              :camera (orthographic))
     (let [ui-skin (skin skin-path)
-          dlg (login-dialog ui-skin)]
-      (dialog! dlg :pack)
+          dlg (login-dialog screen entities ui-skin)
+          bar (user-bar screen entities ui-skin)
+          ]
       (dialog! dlg :show (stage))
-      dlg))
+      [bar dlg]))
     
   :on-resize
   (fn [screen entities]
