@@ -6,7 +6,7 @@ import org.home.commons.utils.{Randomizer, Vector3D}
 case class SectorObject(id: String, name: String, objType: Int, position: Vector3D, size: SizeComponent)
 
 object SectorObject extends Createable[SectorObject] {
-  def randSize = Randomizer.newInt(10, 1000)
+  private def randSize: Int = Randomizer.newInt(10, 1000)
 
   override def create(): SectorObject = SectorObject(
     id = Randomizer.nextId,

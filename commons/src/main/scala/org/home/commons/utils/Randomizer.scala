@@ -59,11 +59,10 @@ object Randomizer {
   def newInt(min: Int = 10, max: Int = 1000): Int =
     min + Random.nextInt((max - min) + 1)
 
-  def newFromEnum(enum: Enumeration) = 
+  def newFromEnum(enum: Enumeration): enum.Value =
     enum(newInt(0, enum.values.size - 1))
 
   val timeSpanOffset = 10
-
 
   def someSector(universe: Universe): Sector = {
     val nodes = universe.sectors.nodes.map(_.value.asInstanceOf[Sector])
@@ -73,16 +72,16 @@ object Randomizer {
   /**
     * @return random string id
     */
-  def newId = UUID.randomUUID().toString
+  def newId: String = UUID.randomUUID().toString
 
-  def nextId = newString(12).toLowerCase
+  def nextId: String = newString(12).toLowerCase
 
   /**
     * @return a random time span in seconds
     */
-  def newTimeSpan = Random.nextLong() + 10
+  def newTimeSpan: Long = Random.nextLong() + 10
 
-  def newRoman() = toRomanNumerals(newInt())
+  def newRoman(): String = toRomanNumerals(newInt())
 
   private def toRomanNumerals(number: Int): String = {
     toRomanNumerals(number, List(

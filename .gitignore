@@ -8,3 +8,5 @@ target
 server/logs/*
 build
 war
+*.ipr
+*.iws
